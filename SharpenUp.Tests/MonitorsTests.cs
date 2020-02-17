@@ -32,6 +32,18 @@ namespace SharpenUp.Tests
             Assert.True( result.Status == RequestStatusType.ok );
             Assert.True( result.Error == null );
             Assert.True( result.Results[ 0 ].FriendlyName == _config[ "GOOD_MONITOR_1_FRIENDLY_NAME" ] );
+            Assert.Null( result.Results[ 0 ].Logs );
+        }
+
+        [Fact]
+        public async Task Monitor_GoodKey_GoodId_WithLogs()
+        {
+            MonitorsResult result = await _goodManager.GetMonitorAsync( Convert.ToInt32( _config[ "GOOD_MONITOR_ID_1" ] ), true );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == _config[ "GOOD_MONITOR_1_FRIENDLY_NAME" ] );
+            Assert.NotNull( result.Results[ 0 ].Logs );
         }
 
         [Fact]
@@ -47,6 +59,25 @@ namespace SharpenUp.Tests
             Assert.True( result.Error == null );
             Assert.True( result.Results[ 0 ].FriendlyName == _config[ "GOOD_MONITOR_1_FRIENDLY_NAME" ] );
             Assert.True( result.Results[ 1 ].FriendlyName == _config[ "GOOD_MONITOR_2_FRIENDLY_NAME" ] );
+            Assert.Null( result.Results[ 0 ].Logs );
+            Assert.Null( result.Results[ 1 ].Logs );
+        }
+
+        [Fact]
+        public async Task Monitors_GoodKey_GoodIds_WithLogs()
+        {
+            List<int> monitorIds = new List<int> {
+                Convert.ToInt32( _config[ "GOOD_MONITOR_ID_1" ] ),
+                Convert.ToInt32( _config[ "GOOD_MONITOR_ID_2" ] ) };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( monitorIds, true );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == _config[ "GOOD_MONITOR_1_FRIENDLY_NAME" ] );
+            Assert.True( result.Results[ 1 ].FriendlyName == _config[ "GOOD_MONITOR_2_FRIENDLY_NAME" ] );
+            Assert.NotNull( result.Results[ 0 ].Logs );
+            Assert.NotNull( result.Results[ 1 ].Logs );
         }
 
         [Fact]
@@ -56,6 +87,17 @@ namespace SharpenUp.Tests
 
             Assert.True( result.Status == RequestStatusType.ok );
             Assert.True( result.Error == null );
+            Assert.Null( result.Results[ 0 ].Logs );
+        }
+
+        [Fact]
+        public async Task AllMonitors_GoodKey_WithLogs()
+        {
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( true );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.NotNull( result.Results[ 0 ].Logs );
         }
 
         [Fact]

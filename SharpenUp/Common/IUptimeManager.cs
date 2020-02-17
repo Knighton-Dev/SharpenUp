@@ -7,8 +7,8 @@ namespace SharpenUp.Common
     public interface IUptimeManager
     {
         Task<AccountDetailsResult> GetAccountDetailsAsync();
-        Task<MonitorsResult> GetMonitorAsync( int monitorId );
-        Task<MonitorsResult> GetMonitorsAsync();
-        Task<MonitorsResult> GetMonitorsAsync( List<int> monitorIds );
+        Task<MonitorsResult> GetMonitorAsync( int monitorId, bool includeLogs = false );
+        Task<MonitorsResult> GetMonitorsAsync( bool includeLogs = false );
+        Task<MonitorsResult> GetMonitorsAsync( List<int> monitorIds, bool includeLogs = false );
     }
 }

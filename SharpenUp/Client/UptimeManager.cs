@@ -40,22 +40,22 @@ namespace SharpenUp.Client
             }
         }
 
-        public async Task<MonitorsResult> GetMonitorAsync( int monitorId )
+        public async Task<MonitorsResult> GetMonitorAsync( int monitorId, bool includeLogs = false )
         {
             List<int> monitors = new List<int>
             {
                 monitorId
             };
 
-            return await GetMonitorsAsync( monitors );
+            return await GetMonitorsAsync( monitors, includeLogs );
         }
 
-        public async Task<MonitorsResult> GetMonitorsAsync()
+        public async Task<MonitorsResult> GetMonitorsAsync( bool includeLogs = false )
         {
-            return await GetMonitorsAsync( null );
+            return await GetMonitorsAsync( null, includeLogs );
         }
 
-        public async Task<MonitorsResult> GetMonitorsAsync( List<int> monitorIds )
+        public async Task<MonitorsResult> GetMonitorsAsync( List<int> monitorIds, bool includeLogs = false )
         {
             try
             {
@@ -65,6 +65,11 @@ namespace SharpenUp.Client
                 {
                     queryString.Append( "&monitors=" );
                     queryString.Append( string.Join( "-", monitorIds ) );
+                }
+
+                if ( includeLogs )
+                {
+                    queryString.Append( "&logs=1" );
                 }
 
                 RestClient client = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
