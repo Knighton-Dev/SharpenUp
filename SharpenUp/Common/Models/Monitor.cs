@@ -29,5 +29,8 @@ namespace SharpenUp.Common.Models
 
         [JsonProperty( PropertyName = "logs" )]
         public List<Log> Logs { get; set; }
+
+        [JsonProperty( PropertyName = "all_time_uptime_ratio" )]
+        public double UptimeRatio { get; set; }
     }
 }
