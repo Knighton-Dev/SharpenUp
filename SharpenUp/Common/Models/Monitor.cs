@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SharpenUp.Common.Types;
 
 namespace SharpenUp.Common.Models
 {
@@ -13,10 +14,16 @@ namespace SharpenUp.Common.Models
         [JsonProperty( PropertyName = "url" )]
         public string URL { get; set; }
 
+        [JsonProperty( PropertyName = "type" )]
+        public MonitorType MonitorType { get; set; }
+
         [JsonProperty( PropertyName = "interval" )]
         public int Interval { get; set; }
 
         [JsonProperty( PropertyName = "create_datetime" )]
         public int CreationTime { get; set; }
+
+        [JsonProperty( PropertyName = "status" )]
+        public OnlineStatusType OnlineStatus { get; set; }
     }
 }

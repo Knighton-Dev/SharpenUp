@@ -6,7 +6,7 @@ namespace SharpenUp.Common.Models
     public class AccountDetailsResult
     {
         [JsonProperty( PropertyName = "stat" )]
-        public StatusType Status { get; set; }
+        public RequestStatusType Status { get; set; }
 
         [JsonProperty( PropertyName = "error" )]
         public Error Error { get; set; }

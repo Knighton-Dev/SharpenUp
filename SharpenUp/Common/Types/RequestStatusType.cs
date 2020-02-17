@@ -1,6 +1,6 @@
 ﻿namespace SharpenUp.Common.Types
 {
-    public enum StatusType
+    public enum RequestStatusType
     {
         ok,
         fail

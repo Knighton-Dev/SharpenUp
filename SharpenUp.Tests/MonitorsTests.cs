@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using SharpenUp.Client;
@@ -23,20 +25,45 @@ namespace SharpenUp.Tests
         }
 
         [Fact]
-        public async Task Monitors_GoodKey()
+        public async Task Monitor_GoodKey_GoodId()
+        {
+            MonitorsResult result = await _goodManager.GetMonitorAsync( Convert.ToInt32( _config[ "GOOD_MONITOR_ID_1" ] ) );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == _config[ "GOOD_MONITOR_1_FRIENDLY_NAME" ] );
+        }
+
+        [Fact]
+        public async Task Monitors_GoodKey_GoodIds()
+        {
+            List<int> monitorIds = new List<int> {
+                Convert.ToInt32( _config[ "GOOD_MONITOR_ID_1" ] ),
+                Convert.ToInt32( _config[ "GOOD_MONITOR_ID_2" ] ) };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( monitorIds );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == _config[ "GOOD_MONITOR_1_FRIENDLY_NAME" ] );
+            Assert.True( result.Results[ 1 ].FriendlyName == _config[ "GOOD_MONITOR_2_FRIENDLY_NAME" ] );
+        }
+
+        [Fact]
+        public async Task AllMonitors_GoodKey()
         {
             MonitorsResult result = await _goodManager.GetMonitorsAsync();
 
-            Assert.True( result.Status == StatusType.ok );
+            Assert.True( result.Status == RequestStatusType.ok );
             Assert.True( result.Error == null );
         }
 
         [Fact]
-        public async Task Monitors_BadKey()
+        public async Task AllMonitors_BadKey()
         {
             MonitorsResult result = await _badManager.GetMonitorsAsync();
 
-            Assert.True( result.Status == StatusType.fail );
+            Assert.True( result.Status == RequestStatusType.fail );
             Assert.True( result.Results == null );
         }
     }

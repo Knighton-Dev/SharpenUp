@@ -27,7 +27,7 @@ namespace SharpenUp.Tests
         {
             AccountDetailsResult accountDetails = await _goodManager.GetAccountDetailsAsync();
 
-            Assert.True( accountDetails.Status == StatusType.ok );
+            Assert.True( accountDetails.Status == RequestStatusType.ok );
             Assert.True( accountDetails.Error == null );
             Assert.True( accountDetails.Account.Email == _config[ "ACCOUNT_EMAIL" ] );
         }
@@ -37,7 +37,7 @@ namespace SharpenUp.Tests
         {
             AccountDetailsResult accountDetails = await _badManager.GetAccountDetailsAsync();
 
-            Assert.True( accountDetails.Status == StatusType.fail );
+            Assert.True( accountDetails.Status == RequestStatusType.fail );
             Assert.True( accountDetails.Account == null );
             Assert.True( accountDetails.Error.Type == "invalid_parameter" );
             Assert.True( accountDetails.Error.ParameterName == "api_key" );

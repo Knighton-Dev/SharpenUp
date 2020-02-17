@@ -7,7 +7,7 @@ namespace SharpenUp.Common.Models
     public class MonitorsResult
     {
         [JsonProperty( PropertyName = "stat" )]
-        public StatusType Status { get; set; }
+        public RequestStatusType Status { get; set; }
 
         [JsonProperty( PropertyName = "pagination" )]
         public Pagination Pagination { get; set; }
