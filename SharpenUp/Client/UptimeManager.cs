@@ -1,9 +1,9 @@
 ﻿using System;
-using SharpenUp.Common;
 using System.Threading.Tasks;
-using SharpenUp.Common.Models;
-using RestSharp;
 using Newtonsoft.Json;
+using RestSharp;
+using SharpenUp.Common;
+using SharpenUp.Common.Models;
 
 namespace SharpenUp.Client
 {
@@ -16,7 +16,7 @@ namespace SharpenUp.Client
             _apiKey = apiKey;
         }
 
-        public async Task<AccountDetails> GetAccountDetailsAsync()
+        public async Task<AccountDetailsResult> GetAccountDetailsAsync()
         {
             try
             {
@@ -30,7 +30,29 @@ namespace SharpenUp.Client
 
                 IRestResponse response = await client.ExecuteAsync( request );
 
-                return JsonConvert.DeserializeObject<AccountDetails>( response.Content );
+                return JsonConvert.DeserializeObject<AccountDetailsResult>( response.Content );
+            }
+            catch ( Exception e )
+            {
+                throw e;
+            }
+        }
+
+        public async Task<MonitorsResult> GetMonitorsAsync()
+        {
+            try
+            {
+                RestClient client = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
+                RestRequest request = new RestRequest( Method.POST );
+
+                request.AddHeader( "content-type", "application/x-www-form-urlencoded" );
+                request.AddHeader( "cache-control", "no-cache" );
+
+                request.AddParameter( "application/x-www-form-urlencoded", $"api_key={_apiKey}&format=json", ParameterType.RequestBody );
+
+                IRestResponse response = await client.ExecuteAsync( request );
+
+                return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
             }
             catch ( Exception e )
             {

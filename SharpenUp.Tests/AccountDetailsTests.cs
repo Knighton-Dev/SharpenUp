@@ -1,13 +1,11 @@
-﻿using System;
-using Xunit;
-using SharpenUp.Common;
-using SharpenUp.Client;
-using SharpenUp.Common.Models;
-using SharpenUp.Common.Types;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using System.Configuration.Assemblies;
-using System.IO;
+using SharpenUp.Client;
+using SharpenUp.Common;
+using SharpenUp.Common.Models;
+using SharpenUp.Common.Types;
+using Xunit;
 
 namespace SharpenUp.Tests
 {
@@ -27,7 +25,7 @@ namespace SharpenUp.Tests
         [Fact]
         public async Task AccountDetails_GoodKey()
         {
-            AccountDetails accountDetails = await _goodManager.GetAccountDetailsAsync();
+            AccountDetailsResult accountDetails = await _goodManager.GetAccountDetailsAsync();
 
             Assert.True( accountDetails.Status == StatusType.ok );
             Assert.True( accountDetails.Error == null );
@@ -37,7 +35,7 @@ namespace SharpenUp.Tests
         [Fact]
         public async Task AccountDetails_BadKey()
         {
-            AccountDetails accountDetails = await _badManager.GetAccountDetailsAsync();
+            AccountDetailsResult accountDetails = await _badManager.GetAccountDetailsAsync();
 
             Assert.True( accountDetails.Status == StatusType.fail );
             Assert.True( accountDetails.Account == null );

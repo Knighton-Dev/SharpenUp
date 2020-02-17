@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using SharpenUp.Common.Types;
-using Newtonsoft.Json;
 
 namespace SharpenUp.Common.Models
 {
-    public class AccountDetails
+    public class AccountDetailsResult
     {
         [JsonProperty( PropertyName = "stat" )]
         public StatusType Status { get; set; }

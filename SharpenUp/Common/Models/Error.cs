@@ -12,5 +12,8 @@ namespace SharpenUp.Common.Models
 
         [JsonProperty( PropertyName = "passed_value" )]
         public string PassedValue { get; set; }
+
+        [JsonProperty( PropertyName = "message" )]
+        public string Message { get; set; }
     }
 }
