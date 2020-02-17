@@ -1,0 +1,13 @@
+﻿{
+  "ConnectionStrings": {
+    "DefaultConnection": "DataSource=app.db"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "GOOD_API_KEY": "YOUR_API_KEY",
+  "ACCOUNT_EMAIL": "EMAIL_ADDRESS_FOR_UPTIME_ROBOT_ACCOUNT"
+}
