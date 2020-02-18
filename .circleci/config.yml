@@ -9,4 +9,5 @@
     
      steps:
        - checkout
-       - run: dotnet build ../SharpenUp/SharpenUp.csproj 
+       - run: pwd
+       - run: dotnet build SharpenUp/SharpenUp.csproj 
