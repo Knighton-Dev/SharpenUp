@@ -28,12 +28,17 @@ namespace SharpenUp.Tests
                 MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) }
             };
 
+            // This is kind of weird logic, but I wanted to make sure I was getting a DateTime from the result,not an int.
+            DateTimeOffset offset = DateTimeOffset.FromUnixTimeSeconds( 1564749285 );
+            DateTime createDate = offset.UtcDateTime;
+
             MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
 
             Assert.True( result.Status == RequestStatusType.ok );
             Assert.True( result.Error == null );
             Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
             Assert.Null( result.Results[ 0 ].Logs );
+            Assert.True( result.Results[ 0 ].CreationDate == createDate );
         }
 
         [Fact]

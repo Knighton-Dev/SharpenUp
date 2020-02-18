@@ -23,7 +23,16 @@ namespace SharpenUp.Common.Models
         public int Interval { get; set; }
 
         [JsonProperty( PropertyName = "create_datetime" )]
-        public int CreationTimeInt { get; set; } // TODO: Need to convert this to DateTime
+        private int CreationTimeInt { get; set; }
+
+        public DateTime CreationDate
+        {
+            get
+            {
+                DateTimeOffset offset = DateTimeOffset.FromUnixTimeSeconds( CreationTimeInt );
+                return offset.UtcDateTime;
+            }
+        }
 
         [JsonProperty( PropertyName = "status" )]
         public OnlineStatusType OnlineStatus { get; set; }
