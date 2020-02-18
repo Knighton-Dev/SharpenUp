@@ -1,6 +1,6 @@
-[![CircleCI](https://img.shields.io/circleci/build/github/IanKnighton/SharpenUp?label=Circle%20CI&style=for-the-badge&logo=CircleCI)]()
-[![DotNet](https://img.shields.io/static/v1?label=.Net%20Version&message=2.1&color=orange&style=for-the-badge&logo=.NET)]()
-[![Licnese](https://img.shields.io/github/license/IanKnighton/SharpenUp?color=blue&style=for-the-badge)]()
+![CircleCI](https://img.shields.io/circleci/build/github/IanKnighton/SharpenUp?label=Circle%20CI&style=for-the-badge&logo=CircleCI)
+[![DotNet](https://img.shields.io/static/v1?label=.Net%20Version&message=2.1&color=orange&style=for-the-badge&logo=.NET)](https://github.com/dotnet/standard)
+[![Licnese](https://img.shields.io/github/license/IanKnighton/SharpenUp?color=blue&style=for-the-badge)](/LICENSE)
 
 # Sharpen Up
 
