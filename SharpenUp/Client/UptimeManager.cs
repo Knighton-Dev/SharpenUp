@@ -68,6 +68,15 @@ namespace SharpenUp.Client
                     queryString.Append( string.Join( "-", request.MonitorTypes ) );
                 }
 
+                if( request.IncludeAlertContacts )
+                {
+                    queryString.Append( "&alert_contacts=1" );
+                }
+
+                if(request.IncludeSSLInfo){
+                    queryString.Append( "&ssl=1" );
+                }
+
                 RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
                 RestRequest restRequest = new RestRequest( Method.POST );
 

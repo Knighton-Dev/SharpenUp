@@ -76,6 +76,50 @@ namespace SharpenUp.Tests
             Assert.NotNull( result.Results[ 0 ].Logs );
             Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
         }
+        
+        [Fact]
+        public async Task Monitor_GoodKey_GoodId_WithLogs_WithUptime_WithAlertContact()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
+                IncludeLogs = true,
+                IncludeAllTimeUptimeRatio = true,
+                IncludeAlertContacts = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.NotNull( result.Results[ 0 ].Logs );
+            Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
+            Assert.NotNull(result.Results[0].AlertContacts);
+        }
+
+        [Fact]
+        public async Task Monitor_GoodKey_GoodId_WithLogs_WithUptime_WithAlertContact_WithSSL()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
+                IncludeLogs = true,
+                IncludeAllTimeUptimeRatio = true,
+                IncludeAlertContacts = true,
+                IncludeSSLInfo = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.NotNull( result.Results[ 0 ].Logs );
+            Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
+            Assert.NotNull(result.Results[0].AlertContacts);
+            Assert.NotNull(result.Results[0].SSLInfo);
+        }
 
         [Fact]
         public async Task Monitors_GoodKey_GoodIds()
