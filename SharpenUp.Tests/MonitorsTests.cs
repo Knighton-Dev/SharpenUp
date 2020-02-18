@@ -25,7 +25,7 @@ namespace SharpenUp.Tests
         {
             MonitorsResult result = await _goodManager.GetMonitorAsync( Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) );
 
-            if ( !result.Error.Type.Equals( "internal" ) )
+            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
             {
                 Assert.True( result.Status == RequestStatusType.ok );
                 Assert.True( result.Error == null );
@@ -39,7 +39,7 @@ namespace SharpenUp.Tests
         {
             MonitorsResult result = await _goodManager.GetMonitorAsync( Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ), true );
 
-            if ( !result.Error.Type.Equals( "internal" ) )
+            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
             {
                 Assert.True( result.Status == RequestStatusType.ok );
                 Assert.True( result.Error == null );
@@ -54,7 +54,7 @@ namespace SharpenUp.Tests
             MonitorsResult result = await _goodManager.GetMonitorAsync( Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ), true, true );
 
 
-            if ( !result.Error.Type.Equals( "internal" ) )
+            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
             {
                 Assert.True( result.Status == RequestStatusType.ok );
                 Assert.True( result.Error == null );
@@ -73,7 +73,7 @@ namespace SharpenUp.Tests
 
             MonitorsResult result = await _goodManager.GetMonitorsAsync( monitorIds );
 
-            if ( !result.Error.Type.Equals( "internal" ) )
+            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
             {
                 Assert.True( result.Status == RequestStatusType.ok );
                 Assert.True( result.Error == null );
@@ -94,7 +94,7 @@ namespace SharpenUp.Tests
             MonitorsResult result = await _goodManager.GetMonitorsAsync( monitorIds, true );
 
 
-            if ( !result.Error.Type.Equals( "internal" ) )
+            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
             {
                 Assert.True( result.Status == RequestStatusType.ok );
                 Assert.True( result.Error == null );
@@ -110,7 +110,7 @@ namespace SharpenUp.Tests
         {
             MonitorsResult result = await _goodManager.GetMonitorsAsync();
 
-            if ( !result.Error.Type.Equals( "internal" ) )
+            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
             {
                 Assert.True( result.Status == RequestStatusType.ok );
                 Assert.True( result.Error == null );
@@ -123,7 +123,7 @@ namespace SharpenUp.Tests
         {
             MonitorsResult result = await _goodManager.GetMonitorsAsync( true );
 
-            if ( !result.Error.Type.Equals( "internal" ) )
+            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
             {
                 Assert.True( result.Status == RequestStatusType.ok );
                 Assert.True( result.Error == null );

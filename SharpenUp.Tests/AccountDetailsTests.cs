@@ -24,7 +24,7 @@ namespace SharpenUp.Tests
         {
             AccountDetailsResult accountDetails = await _goodManager.GetAccountDetailsAsync();
 
-            if ( !accountDetails.Error.Type.Equals( "internal" ) )
+            if ( accountDetails.Error != null && !accountDetails.Error.Type.Equals( "internal" ) )
             {
                 Assert.True( accountDetails.Status == RequestStatusType.ok );
                 Assert.True( accountDetails.Error == null );
