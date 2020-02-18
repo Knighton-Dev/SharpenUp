@@ -23,118 +23,125 @@ namespace SharpenUp.Tests
         [Fact]
         public async Task Monitor_GoodKey_GoodId()
         {
-            MonitorsResult result = await _goodManager.GetMonitorAsync( Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) );
-
-            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
+            MonitorsRequest request = new MonitorsRequest
             {
-                Assert.True( result.Status == RequestStatusType.ok );
-                Assert.True( result.Error == null );
-                Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
-                Assert.Null( result.Results[ 0 ].Logs );
-            }
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) }
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.Null( result.Results[ 0 ].Logs );
         }
 
         [Fact]
         public async Task Monitor_GoodKey_GoodId_WithLogs()
         {
-            MonitorsResult result = await _goodManager.GetMonitorAsync( Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ), true );
-
-            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
+            MonitorsRequest request = new MonitorsRequest
             {
-                Assert.True( result.Status == RequestStatusType.ok );
-                Assert.True( result.Error == null );
-                Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
-                Assert.NotNull( result.Results[ 0 ].Logs );
-            }
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
+                IncludeLogs = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.NotNull( result.Results[ 0 ].Logs );
         }
 
         [Fact]
         public async Task Monitor_GoodKey_GoodId_WithLogs_WithUptime()
         {
-            MonitorsResult result = await _goodManager.GetMonitorAsync( Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ), true, true );
-
-
-            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
+            MonitorsRequest request = new MonitorsRequest
             {
-                Assert.True( result.Status == RequestStatusType.ok );
-                Assert.True( result.Error == null );
-                Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
-                Assert.NotNull( result.Results[ 0 ].Logs );
-                Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
-            }
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
+                IncludeLogs = true,
+                IncludeAllTimeUptimeRatio = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.NotNull( result.Results[ 0 ].Logs );
+            Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
         }
 
         [Fact]
         public async Task Monitors_GoodKey_GoodIds()
         {
-            List<int> monitorIds = new List<int> {
-                Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ),
-                Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) ) };
-
-            MonitorsResult result = await _goodManager.GetMonitorsAsync( monitorIds );
-
-            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
+            MonitorsRequest request = new MonitorsRequest
             {
-                Assert.True( result.Status == RequestStatusType.ok );
-                Assert.True( result.Error == null );
-                Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
-                Assert.True( result.Results[ 1 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ) );
-                Assert.Null( result.Results[ 0 ].Logs );
-                Assert.Null( result.Results[ 1 ].Logs );
-            }
+                MonitorIds = new List<int> {
+                    Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ),
+                    Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) ) }
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.True( result.Results[ 1 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ) );
+            Assert.Null( result.Results[ 0 ].Logs );
+            Assert.Null( result.Results[ 1 ].Logs );
         }
 
         [Fact]
         public async Task Monitors_GoodKey_GoodIds_WithLogs()
         {
-            List<int> monitorIds = new List<int> {
-                Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ),
-                Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) ) };
-
-            MonitorsResult result = await _goodManager.GetMonitorsAsync( monitorIds, true );
-
-
-            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
+            MonitorsRequest request = new MonitorsRequest
             {
-                Assert.True( result.Status == RequestStatusType.ok );
-                Assert.True( result.Error == null );
-                Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
-                Assert.True( result.Results[ 1 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ) );
-                Assert.NotNull( result.Results[ 0 ].Logs );
-                Assert.NotNull( result.Results[ 1 ].Logs );
-            }
+                MonitorIds = new List<int> {
+                    Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ),
+                    Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) ) },
+                IncludeLogs = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.True( result.Results[ 1 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ) );
+            Assert.NotNull( result.Results[ 0 ].Logs );
+            Assert.NotNull( result.Results[ 1 ].Logs );
         }
 
         [Fact]
         public async Task AllMonitors_GoodKey()
         {
-            MonitorsResult result = await _goodManager.GetMonitorsAsync();
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( new MonitorsRequest() );
 
-            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
-            {
-                Assert.True( result.Status == RequestStatusType.ok );
-                Assert.True( result.Error == null );
-                Assert.Null( result.Results[ 0 ].Logs );
-            }
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.Null( result.Results[ 0 ].Logs );
         }
 
         [Fact]
         public async Task AllMonitors_GoodKey_WithLogs()
         {
-            MonitorsResult result = await _goodManager.GetMonitorsAsync( true );
-
-            if ( result.Error != null && !result.Error.Type.Equals( "internal" ) )
+            MonitorsRequest request = new MonitorsRequest
             {
-                Assert.True( result.Status == RequestStatusType.ok );
-                Assert.True( result.Error == null );
-                Assert.NotNull( result.Results[ 0 ].Logs );
-            }
+                IncludeLogs = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.NotNull( result.Results[ 0 ].Logs );
         }
 
         [Fact]
         public async Task AllMonitors_BadKey()
         {
-            MonitorsResult result = await _badManager.GetMonitorsAsync();
+            MonitorsResult result = await _badManager.GetMonitorsAsync( new MonitorsRequest() );
 
             Assert.True( result.Status == RequestStatusType.fail );
             Assert.True( result.Results == null );
