@@ -10,4 +10,4 @@
      steps:
        - checkout
        - run: dotnet build SharpenUp/SharpenUp.csproj
-       - run: dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj
+       - run: dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj -v n --results-directory:test_coverage --collect:"Code Coverage"
