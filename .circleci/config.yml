@@ -10,4 +10,7 @@
      steps:
        - checkout
        - run: dotnet build SharpenUp/SharpenUp.csproj
-       - run: dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj
+       - run: dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj --logger "trx;LogFileName=unit_tests.xml" 
+       - store_test_results:
+          path: SharpenUp.Tests/TestResults
+
