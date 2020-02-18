@@ -10,4 +10,3 @@
      steps:
        - checkout
        - run: dotnet build SharpenUp/SharpenUp.csproj
-       - run: dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj 
