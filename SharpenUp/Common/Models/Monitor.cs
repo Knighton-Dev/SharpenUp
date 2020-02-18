@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SharpenUp.Common.Types;
 using System.Collections.Generic;
+using System;
 
 namespace SharpenUp.Common.Models
 {
@@ -22,7 +23,16 @@ namespace SharpenUp.Common.Models
         public int Interval { get; set; }
 
         [JsonProperty( PropertyName = "create_datetime" )]
-        public int CreationTime { get; set; } // TODO: Need to convert this to DateTime
+        private int CreationTimeInt { get; set; }
+
+        public DateTime CreationDate
+        {
+            get
+            {
+                DateTimeOffset offset = DateTimeOffset.FromUnixTimeSeconds( CreationTimeInt );
+                return offset.UtcDateTime;
+            }
+        }
 
         [JsonProperty( PropertyName = "status" )]
         public OnlineStatusType OnlineStatus { get; set; }
@@ -32,5 +42,11 @@ namespace SharpenUp.Common.Models
 
         [JsonProperty( PropertyName = "all_time_uptime_ratio" )]
         public double UptimeRatio { get; set; }
+
+        [JsonProperty( PropertyName = "alert_contacts" )]
+        public List<AlertContact> AlertContacts { get; set; }
+
+        [JsonProperty( PropertyName = "ssl" )]
+        public SSLInfo SSLInfo { get; set; }
     }
 }

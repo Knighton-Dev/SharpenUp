@@ -40,52 +40,52 @@ namespace SharpenUp.Client
             }
         }
 
-        public async Task<MonitorsResult> GetMonitorAsync( int monitorId, bool includeLogs = false, bool includeUptimeRatio = false )
-        {
-            List<int> monitors = new List<int>
-            {
-                monitorId
-            };
-
-            return await GetMonitorsAsync( monitors, includeLogs, includeUptimeRatio );
-        }
-
-        public async Task<MonitorsResult> GetMonitorsAsync( bool includeLogs = false, bool includeUptimeRatio = false )
-        {
-            return await GetMonitorsAsync( null, includeLogs, includeUptimeRatio );
-        }
-
-        public async Task<MonitorsResult> GetMonitorsAsync( List<int> monitorIds, bool includeLogs = false, bool includeUptimeRatio = false )
+        public async Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request )
         {
             try
             {
                 StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
-                if ( monitorIds?.Count > 0 )
+                if ( request.MonitorIds?.Count > 0 )
                 {
                     queryString.Append( "&monitors=" );
-                    queryString.Append( string.Join( "-", monitorIds ) );
+                    queryString.Append( string.Join( "-", request.MonitorIds ) );
                 }
 
-                if ( includeLogs )
+                if ( request.IncludeLogs )
                 {
                     queryString.Append( "&logs=1" );
                 }
 
-                if ( includeUptimeRatio )
+                if ( request.IncludeAllTimeUptimeRatio )
                 {
                     queryString.Append( "&all_time_uptime_ratio=1" );
                 }
 
-                RestClient client = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
-                RestRequest request = new RestRequest( Method.POST );
+                if ( request.MonitorTypes?.Count > 0 )
+                {
+                    queryString.Append( "&types=" );
+                    queryString.Append( string.Join( "-", request.MonitorTypes ) );
+                }
 
-                request.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-                request.AddHeader( "cache-control", "no-cache" );
+                if( request.IncludeAlertContacts )
+                {
+                    queryString.Append( "&alert_contacts=1" );
+                }
 
-                request.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
+                if(request.IncludeSSLInfo){
+                    queryString.Append( "&ssl=1" );
+                }
 
-                IRestResponse response = await client.ExecuteAsync( request );
+                RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
+                RestRequest restRequest = new RestRequest( Method.POST );
+
+                restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
+                restRequest.AddHeader( "cache-control", "no-cache" );
+
+                restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
+
+                IRestResponse response = await restClient.ExecuteAsync( restRequest );
 
                 return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
             }

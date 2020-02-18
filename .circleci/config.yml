@@ -9,8 +9,12 @@
     
      steps:
        - checkout
-       - run: dotnet build SharpenUp/SharpenUp.csproj
-       - run: dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj --logger "junit;LogFileName=xunit/results.xml" 
+       - run: 
+          name: Build
+          command: dotnet build SharpenUp/SharpenUp.csproj
+       - run: 
+          name: Test
+          command: dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj --logger "junit;LogFileName=xunit/results.xml" 
        - store_test_results:
           path: SharpenUp.Tests/TestResults
 
