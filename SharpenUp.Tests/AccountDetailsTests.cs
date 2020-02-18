@@ -1,6 +1,5 @@
-﻿using System.IO;
+﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using SharpenUp.Client;
 using SharpenUp.Common;
 using SharpenUp.Common.Models;
@@ -13,12 +12,10 @@ namespace SharpenUp.Tests
     {
         private readonly IUptimeManager _goodManager;
         private readonly IUptimeManager _badManager;
-        private readonly IConfiguration _config;
 
         public AccountDetailsTests()
         {
-            _config = new ConfigurationBuilder().SetBasePath( Directory.GetCurrentDirectory() ).AddJsonFile( "appsettings.json", false, true ).Build();
-            _goodManager = new UptimeManager( _config[ "GOOD_API_KEY" ] );
+            _goodManager = new UptimeManager( Environment.GetEnvironmentVariable( "GOOD_API_KEY" ) );
             _badManager = new UptimeManager( "thisKeyIsBad" );
         }
 
@@ -29,7 +26,7 @@ namespace SharpenUp.Tests
 
             Assert.True( accountDetails.Status == RequestStatusType.ok );
             Assert.True( accountDetails.Error == null );
-            Assert.True( accountDetails.Account.Email == _config[ "ACCOUNT_EMAIL" ] );
+            Assert.True( accountDetails.Account.Email == Environment.GetEnvironmentVariable( "ACCOUNT_EMAIL" ) );
         }
 
         [Fact]
