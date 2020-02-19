@@ -68,12 +68,13 @@ namespace SharpenUp.Client
                     queryString.Append( string.Join( "-", request.MonitorTypes ) );
                 }
 
-                if( request.IncludeAlertContacts )
+                if ( request.IncludeAlertContacts )
                 {
                     queryString.Append( "&alert_contacts=1" );
                 }
 
-                if(request.IncludeSSLInfo){
+                if ( request.IncludeSSLInfo )
+                {
                     queryString.Append( "&ssl=1" );
                 }
 

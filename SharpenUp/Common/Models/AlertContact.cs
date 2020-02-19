@@ -4,19 +4,19 @@ namespace SharpenUp.Common.Models
 {
     public class AlertContact
     {
-        [JsonProperty(PropertyName="id")]
+        [JsonProperty( PropertyName = "id" )]
         public int Id { get; set; }
 
-        [JsonProperty(PropertyName="value")]
+        [JsonProperty( PropertyName = "value" )]
         public string Value { get; set; }
 
-        [JsonProperty(PropertyName="type")]
+        [JsonProperty( PropertyName = "type" )]
         public int Type { get; set; } // TODO: Map out this type
 
-        [JsonProperty(PropertyName="threshold")]
+        [JsonProperty( PropertyName = "threshold" )]
         public int Threshold { get; set; }
 
-        [JsonProperty(PropertyName="recurrence")]
+        [JsonProperty( PropertyName = "recurrence" )]
         public int Recurrence { get; set; }
     }
 }

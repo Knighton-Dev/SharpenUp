@@ -76,7 +76,7 @@ namespace SharpenUp.Tests
             Assert.NotNull( result.Results[ 0 ].Logs );
             Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
         }
-        
+
         [Fact]
         public async Task Monitor_GoodKey_GoodId_WithLogs_WithUptime_WithAlertContact()
         {
@@ -95,7 +95,7 @@ namespace SharpenUp.Tests
             Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
             Assert.NotNull( result.Results[ 0 ].Logs );
             Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
-            Assert.NotNull(result.Results[0].AlertContacts);
+            Assert.NotNull( result.Results[ 0 ].AlertContacts );
         }
 
         [Fact]
@@ -117,8 +117,8 @@ namespace SharpenUp.Tests
             Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
             Assert.NotNull( result.Results[ 0 ].Logs );
             Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
-            Assert.NotNull(result.Results[0].AlertContacts);
-            Assert.NotNull(result.Results[0].SSLInfo);
+            Assert.NotNull( result.Results[ 0 ].AlertContacts );
+            Assert.NotNull( result.Results[ 0 ].SSLInfo );
         }
 
         [Fact]
