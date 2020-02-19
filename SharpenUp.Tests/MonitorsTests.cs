@@ -20,8 +20,10 @@ namespace SharpenUp.Tests
             _badManager = new UptimeManager( "thisKeyIsBad" );
         }
 
+        #region Test Single Monitor ID
+
         [Fact]
-        public async Task Monitor_GoodKey_GoodId()
+        public async Task SingleMonitor_GoodKey_GoodId()
         {
             MonitorsRequest request = new MonitorsRequest
             {
@@ -41,8 +43,12 @@ namespace SharpenUp.Tests
             Assert.True( result.Results[ 0 ].CreationDate == createDate );
         }
 
+        #endregion
+
+        #region Test Single Flags
+
         [Fact]
-        public async Task Monitor_GoodKey_GoodId_WithLogs()
+        public async Task SingleMonitor_GoodKey_GoodId_WithLogs()
         {
             MonitorsRequest request = new MonitorsRequest
             {
@@ -59,7 +65,100 @@ namespace SharpenUp.Tests
         }
 
         [Fact]
-        public async Task Monitor_GoodKey_GoodId_WithLogs_WithUptime()
+        public async Task SingleMonitor_GoodKey_GoodId_WithUptime()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
+                IncludeAllTimeUptimeRatio = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
+        }
+
+        [Fact]
+        public async Task AllMonitors_GoodKey_WithLogs()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                IncludeLogs = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.NotNull( result.Results[ 0 ].Logs );
+        }
+
+        [Fact]
+        public async Task AllMonitors_GoodKey_WithUptime()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                IncludeAllTimeUptimeRatio = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
+        }
+
+        [Fact]
+        public async Task MultipleMonitors_GoodKey_GoodIds_WithLogs()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> {
+                    Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ),
+                    Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) ) },
+                IncludeLogs = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.True( result.Results[ 1 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ) );
+            Assert.NotNull( result.Results[ 0 ].Logs );
+            Assert.NotNull( result.Results[ 1 ].Logs );
+        }
+
+        [Fact]
+        public async Task MultipleMonitors_GoodKey_GoodIds_WithUptime()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> {
+                    Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ),
+                    Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) ) },
+                IncludeLogs = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.True( result.Results[ 1 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ) );
+            Assert.True( result.Results[ 0 ].UptimeRatio > 0 );
+            Assert.True( result.Results[ 1 ].UptimeRatio > 0 );
+        }
+
+        #endregion
+
+        #region Test Combinations of Flags
+
+        [Fact]
+        public async Task SingleMonitor_GoodKey_GoodId_WithLogs_WithUptime()
         {
             MonitorsRequest request = new MonitorsRequest
             {
@@ -78,7 +177,7 @@ namespace SharpenUp.Tests
         }
 
         [Fact]
-        public async Task Monitor_GoodKey_GoodId_WithLogs_WithUptime_WithAlertContact()
+        public async Task SingleMonitor_GoodKey_GoodId_WithLogs_WithUptime_WithAlertContact()
         {
             MonitorsRequest request = new MonitorsRequest
             {
@@ -99,7 +198,7 @@ namespace SharpenUp.Tests
         }
 
         [Fact]
-        public async Task Monitor_GoodKey_GoodId_WithLogs_WithUptime_WithAlertContact_WithSSL()
+        public async Task SingleMonitor_GoodKey_GoodId_WithLogs_WithUptime_WithAlertContact_WithSSL()
         {
             MonitorsRequest request = new MonitorsRequest
             {
@@ -121,8 +220,12 @@ namespace SharpenUp.Tests
             Assert.NotNull( result.Results[ 0 ].SSLInfo );
         }
 
+        #endregion
+
+        #region Test for Multiple Monitor IDs
+
         [Fact]
-        public async Task Monitors_GoodKey_GoodIds()
+        public async Task MultipleMonitors_GoodKey_GoodIds()
         {
             MonitorsRequest request = new MonitorsRequest
             {
@@ -141,26 +244,9 @@ namespace SharpenUp.Tests
             Assert.Null( result.Results[ 1 ].Logs );
         }
 
-        [Fact]
-        public async Task Monitors_GoodKey_GoodIds_WithLogs()
-        {
-            MonitorsRequest request = new MonitorsRequest
-            {
-                MonitorIds = new List<int> {
-                    Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ),
-                    Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) ) },
-                IncludeLogs = true
-            };
+        #endregion
 
-            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
-
-            Assert.True( result.Status == RequestStatusType.ok );
-            Assert.True( result.Error == null );
-            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
-            Assert.True( result.Results[ 1 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ) );
-            Assert.NotNull( result.Results[ 0 ].Logs );
-            Assert.NotNull( result.Results[ 1 ].Logs );
-        }
+        #region Test with No IDs
 
         [Fact]
         public async Task AllMonitors_GoodKey()
@@ -172,20 +258,7 @@ namespace SharpenUp.Tests
             Assert.Null( result.Results[ 0 ].Logs );
         }
 
-        [Fact]
-        public async Task AllMonitors_GoodKey_WithLogs()
-        {
-            MonitorsRequest request = new MonitorsRequest
-            {
-                IncludeLogs = true
-            };
-
-            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
-
-            Assert.True( result.Status == RequestStatusType.ok );
-            Assert.True( result.Error == null );
-            Assert.NotNull( result.Results[ 0 ].Logs );
-        }
+        #endregion
 
         [Fact]
         public async Task AllMonitors_BadKey()
