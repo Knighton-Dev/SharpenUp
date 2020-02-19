@@ -46,37 +46,72 @@ namespace SharpenUp.Client
             {
                 StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
+                #region Query String Modifications
+
+                // Monitor IDs
                 if ( request.MonitorIds?.Count > 0 )
                 {
                     queryString.Append( "&monitors=" );
                     queryString.Append( string.Join( "-", request.MonitorIds ) );
                 }
 
-                if ( request.IncludeLogs )
-                {
-                    queryString.Append( "&logs=1" );
-                }
-
-                if ( request.IncludeAllTimeUptimeRatio )
-                {
-                    queryString.Append( "&all_time_uptime_ratio=1" );
-                }
-
+                // MonitorTypes
                 if ( request.MonitorTypes?.Count > 0 )
                 {
                     queryString.Append( "&types=" );
                     queryString.Append( string.Join( "-", request.MonitorTypes ) );
                 }
+                // StatusTypes
+                // UptimeDateRanges
 
+                // IncludeAllTimeUptimeRatio
+                if ( request.IncludeAllTimeUptimeRatio )
+                {
+                    queryString.Append( "&all_time_uptime_ratio=1" );
+                }
+
+                // IncludeAllTimeUptimeDurations
+
+                // Include Logs
+                if ( request.IncludeLogs )
+                {
+                    queryString.Append( "&logs=1" );
+                }
+
+                // LogStartDate
+                // LogEndDate
+                // LogsLimit
+                // IncludeResponseTimes
+                // ResponseTimesStartDate
+                // ResponseTimesEndDate
+
+                // IncludeAlertContacts
                 if ( request.IncludeAlertContacts )
                 {
                     queryString.Append( "&alert_contacts=1" );
                 }
 
+                // IncludeMaintenanceWindows
+                // IncludeCustomHTTPHeaders
+                // IncludeCustomHttpStatus
+
+                // IncludeTimezone
+                if ( request.IncludeTimezone )
+                {
+                    queryString.Append( "&timezone=1" );
+                }
+
+                // Offset
+                // Limit
+                // SearchTerm
+
+                // IncludeSLLInfo
                 if ( request.IncludeSSLInfo )
                 {
                     queryString.Append( "&ssl=1" );
                 }
+
+                #endregion
 
                 RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
                 RestRequest restRequest = new RestRequest( Method.POST );

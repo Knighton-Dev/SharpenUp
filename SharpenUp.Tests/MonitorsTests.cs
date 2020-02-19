@@ -82,6 +82,23 @@ namespace SharpenUp.Tests
         }
 
         [Fact]
+        public async Task SingleMonitor_GoodKey_GoodId_WithTimezone()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
+                IncludeTimezone = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.NotEqual( 0, result.TimeZone );
+        }
+
+        [Fact]
         public async Task AllMonitors_GoodKey_WithLogs()
         {
             MonitorsRequest request = new MonitorsRequest
@@ -109,6 +126,21 @@ namespace SharpenUp.Tests
             Assert.True( result.Status == RequestStatusType.ok );
             Assert.True( result.Error == null );
             Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
+        }
+
+        [Fact]
+        public async Task AllMonitors_GoodKey_WithTimezone()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                IncludeTimezone = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.NotEqual( 0, result.TimeZone );
         }
 
         [Fact]
@@ -140,7 +172,7 @@ namespace SharpenUp.Tests
                 MonitorIds = new List<int> {
                     Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ),
                     Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) ) },
-                IncludeLogs = true
+                IncludeAllTimeUptimeRatio = true
             };
 
             MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
@@ -149,8 +181,29 @@ namespace SharpenUp.Tests
             Assert.True( result.Error == null );
             Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
             Assert.True( result.Results[ 1 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ) );
-            Assert.True( result.Results[ 0 ].UptimeRatio > 0 );
-            Assert.True( result.Results[ 1 ].UptimeRatio > 0 );
+            Assert.NotEqual( 0, result.Results[ 0 ].UptimeRatio );
+            Assert.NotEqual( 0, result.Results[ 1 ].UptimeRatio );
+        }
+
+        [Fact]
+        public async Task MultipleMonitors_GoodKey_GoodIds_WithTimezone()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> {
+                    Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ),
+                    Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) ) },
+                IncludeTimezone = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.True( result.Results[ 1 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ) );
+            Assert.NotEqual( 0, result.TimeZone );
+            Assert.NotEqual( 0, result.TimeZone );
         }
 
         #endregion

@@ -17,5 +17,8 @@ namespace SharpenUp.Common.Models
 
         [JsonProperty( PropertyName = "monitors" )]
         public List<Monitor> Results { get; set; }
+
+        [JsonProperty( PropertyName = "timezone" )]
+        public int TimeZone { get; set; }
     }
 }
