@@ -1,20 +1,25 @@
- version: 2.1
-
- orbs:
+version: 2.1
+orbs:
   win: circleci/windows@2.2.0
-
- jobs:
-   build:
-     executor: win/default     
-    
-     steps:
-       - checkout
-       - run: 
+jobs:
+  build:
+    executor: win/default
+    steps:
+      - checkout
+      - run:
           name: Build
           command: dotnet build SharpenUp/SharpenUp.csproj
-       - run: 
+      - run:
+          name: Install Coveralls
+          command: >-
+            dotnet tool install -g coveralls.net --version 1.0.0
+      - run:
           name: Test
-          command: dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj --logger "junit;LogFileName=xunit/results.xml" 
-       - store_test_results:
+          command: >-
+            dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj --logger "junit;LogFileName=xunit/results.xml" /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
+      - store_test_results:
           path: SharpenUp.Tests/TestResults
-
+      - run:
+          name: Upload to Coveralls
+          command: >-
+            csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitBranch ${CIRCLE_BRANCH} --commitAuthor ${CIRCLE_USERNAME}
