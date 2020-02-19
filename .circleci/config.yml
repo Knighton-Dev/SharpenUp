@@ -23,4 +23,4 @@ jobs:
       - run:
           name: Upload to Coveralls
           command: >-
-            csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitId $env:CIRCLE_SHA1 --commitBranch $env:CIRCLE_BRANCH --commitAuthor $env:CIRCLE_USERNAME --commitEmail "ian@knighton.dev" --commitMessage "`git log -1 --pretty=%B`"" --jobId $env:CIRCLE_BUILD_NUM
+            csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitId $env:CIRCLE_SHA1 --commitBranch $env:CIRCLE_BRANCH --commitAuthor $env:CIRCLE_USERNAME --commitEmail "ian@knighton.dev" --commitMessage "`git log -1 --pretty=%B`" --jobId $env:CIRCLE_BUILD_NUM
