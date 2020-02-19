@@ -334,6 +334,9 @@ namespace SharpenUp.Tests
             Assert.True( result.Status == RequestStatusType.ok );
             Assert.True( result.Error == null );
             Assert.Null( result.Results[ 0 ].Logs );
+            Assert.Equal( 0, result.Pagination.Offset );
+            Assert.Equal( 50, result.Pagination.Limit );
+            Assert.Equal( 7, result.Pagination.Total );
         }
 
         #endregion
