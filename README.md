@@ -2,7 +2,7 @@
 ![Coveralls](https://img.shields.io/coveralls/github/IanKnighton/SharpenUp?style=for-the-badge)
 [![DotNet](https://img.shields.io/static/v1?label=Standard&message=2.1&color=orange&style=for-the-badge&logo=.NET)](https://github.com/dotnet/standard)
 [![Licnese](https://img.shields.io/github/license/IanKnighton/SharpenUp?color=blue&style=for-the-badge)](/LICENSE)
-[![Twitter](https://img.shields.io/twitter/follow/ProbablyNotIan?style=for-the-badge)]()
+[![Twitter](https://img.shields.io/twitter/follow/ProbablyNotIan?style=for-the-badge)](https://twitter.com/ProbablyNotIan)
 
 # Sharpen Up
 
