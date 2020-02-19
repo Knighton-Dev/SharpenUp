@@ -9,21 +9,17 @@ jobs:
       - run:
           name: Build
           command: dotnet build SharpenUp/SharpenUp.csproj
-      # - run:
-      #     name: Install Coveralls
-      #     command: >-
-      #       dotnet tool install -g coveralls.net --version 1.0.0
-      # - run:
-      #     name: Test
-      #     command: >-
-      #       dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj --logger "junit;LogFileName=xunit/results.xml" /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
-      # - store_test_results:
-      #     path: SharpenUp.Tests/TestResults
       - run:
-          name: Test Echo
+          name: Install Coveralls
           command: >-
-            echo $env:CIRCLE_BUILD_NUM
-      # - run:
-      #     name: Upload to Coveralls
-      #     command: >-
-      #       csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitId "`git log -1 --format=%H`" --commitBranch "`git rev-parse --abbrev-ref HEAD`" --commitAuthor "`git log -1 --format=%an`" --commitEmail "git log -1 --format=%ae " --commitMessage "`git log -1 --pretty=%B`" --jobId `echo ${CIRCLE_BUILD_NUM}`
+            dotnet tool install -g coveralls.net --version 1.0.0
+      - run:
+          name: Test
+          command: >-
+            dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj --logger "junit;LogFileName=xunit/results.xml" /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
+      - store_test_results:
+          path: SharpenUp.Tests/TestResults
+      - run:
+          name: Upload to Coveralls
+          command: >-
+            csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitId "`git log -1 --format=%H`" --commitBranch "`git rev-parse --abbrev-ref HEAD`" --commitAuthor "`git log -1 --format=%an`" --commitEmail "git log -1 --format=%ae " --commitMessage "`git log -1 --pretty=%B`" --jobId `echo $env:CIRCLE_BUILD_NUM`
