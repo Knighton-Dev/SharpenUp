@@ -352,3 +352,4 @@ SharpenUp.Tests/appsettings.json
 SharpenUp.sln
 .DS_Store
 .vscode
+envSetup.sh
