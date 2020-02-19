@@ -7,26 +7,20 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Test Powershell
-          command: $COMMIT_ID = (git log -1 --format=%H)
+          name: Build
+          command: dotnet build SharpenUp/SharpenUp.csproj
       - run:
-          name: Test Powershell
-          command: $env:COMMIT_ID
-      # - run:
-      #     name: Build
-      #     command: dotnet build SharpenUp/SharpenUp.csproj
-      # - run:
-      #     name: Install Coveralls
-      #     command: >-
-      #       dotnet tool install -g coveralls.net --version 1.0.0
-      #     shell: bash
-      # - run:
-      #     name: Test
-      #     command: >-
-      #       dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj --logger "junit;LogFileName=xunit/results.xml" /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
-      # - store_test_results:
-      #     path: SharpenUp.Tests/TestResults
-      # - run:
-      #     name: Upload to Coveralls
-      #     command: >-
-      #       csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitId `git log -1 --format=%H` --commitBranch `git rev-parse --abbrev-ref HEAD` --commitAuthor `git log -1 --format=%an` --commitEmail `git log -1 --format=%ae` --commitMessage `git log -1 --pretty=%B` --jobId $env:CIRCLE_BUILD_NUM
+          name: Install Coveralls
+          command: >-
+            dotnet tool install -g coveralls.net --version 1.0.0
+          shell: bash
+      - run:
+          name: Test
+          command: >-
+            dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj --logger "junit;LogFileName=xunit/results.xml" /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
+      - store_test_results:
+          path: SharpenUp.Tests/TestResults
+      - run:
+          name: Upload to Coveralls
+          command: >-
+            csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitId $env:CIRCLE_SHA1 --commitBranch $env:CIRCLE_BRANCH --commitAuthor $env:CIRCLE_USERNAME --commitEmail "ian@knighton.dev" --commitMessage "`git log -1 --pretty=%B`"" --jobId $env:CIRCLE_BUILD_NUM
