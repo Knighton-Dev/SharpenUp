@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SharpenUp.Common.Models
 {
@@ -14,11 +15,14 @@ namespace SharpenUp.Common.Models
         public int MonitorInterval { get; set; }
 
         [JsonProperty( PropertyName = "up_monitors" )]
+        [ExcludeFromCodeCoverage]
         public int UpMonitors { get; set; }
 
+        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "down_monitors" )]
         public int DownMonitors { get; set; }
 
+        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "paused_monitors" )]
         public int PausedMonitors { get; set; }
     }

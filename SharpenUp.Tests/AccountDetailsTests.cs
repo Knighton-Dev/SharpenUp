@@ -27,6 +27,8 @@ namespace SharpenUp.Tests
             Assert.True( accountDetails.Status == RequestStatusType.ok );
             Assert.True( accountDetails.Error == null );
             Assert.True( accountDetails.Account.Email == Environment.GetEnvironmentVariable( "ACCOUNT_EMAIL" ) );
+            Assert.Equal( 50, accountDetails.Account.MonitorLimit );
+            Assert.Equal( 5, accountDetails.Account.MonitorInterval );
         }
 
         [Fact]
