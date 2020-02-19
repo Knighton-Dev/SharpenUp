@@ -8,7 +8,10 @@ jobs:
       - checkout
       - run:
           name: Test Powershell
-          command: $COMMIT_ID = (git log -1 --format=%H) && $env:COMMIT_ID
+          command: $COMMIT_ID = (git log -1 --format=%H)
+      - run:
+          name: Test Powershell
+          command: $env:COMMIT_ID
       # - run:
       #     name: Build
       #     command: dotnet build SharpenUp/SharpenUp.csproj
