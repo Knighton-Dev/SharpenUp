@@ -10,21 +10,16 @@ jobs:
           name: Build
           command: dotnet build SharpenUp/SharpenUp.csproj
       - run:
+          name: Install Coveralls
+          command: >-
+            dotnet tool install -g coveralls.net --version 1.0.0
+      - run:
           name: Test
           command: >-
-            dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj --logger
-            "junit;LogFileName=xunit/results.xml"
+            dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj --logger "junit;LogFileName=xunit/results.xml" /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
       - store_test_results:
           path: SharpenUp.Tests/TestResults
       - run:
-          name: Get Code Coverage
-          command: >-
-            dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj
-            /p:CollectCoverage=true /p:CoverletOutput=TestResults/
-            /p:CoverletOutputFormat=opencover
-      - run:
           name: Upload to Coveralls
           command: >-
-            csmacnz.Coveralls --opencover -i
-            SharpenUp.Tests/TestResults/coverage.opencover.xml
-            --useRelativePaths
+            csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths
