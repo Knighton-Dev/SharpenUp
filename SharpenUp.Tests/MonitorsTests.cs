@@ -273,6 +273,31 @@ namespace SharpenUp.Tests
             Assert.NotNull( result.Results[ 0 ].SSLInfo );
         }
 
+        [Fact]
+        public async Task SingleMonitor_GoodKey_GoodId_WithLogs_WithUptime_WithAlertContact_WithSSL_WithTimezone()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
+                IncludeLogs = true,
+                IncludeAllTimeUptimeRatio = true,
+                IncludeAlertContacts = true,
+                IncludeSSLInfo = true,
+                IncludeTimezone = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.NotNull( result.Results[ 0 ].Logs );
+            Assert.NotEqual( 0, result.Results[ 0 ].UptimeRatio );
+            Assert.NotNull( result.Results[ 0 ].AlertContacts );
+            Assert.NotNull( result.Results[ 0 ].SSLInfo );
+            Assert.NotEqual( 0, result.TimeZone );
+        }
+
         #endregion
 
         #region Test for Multiple Monitor IDs
