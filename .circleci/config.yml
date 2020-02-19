@@ -20,6 +20,10 @@ jobs:
       - store_test_results:
           path: SharpenUp.Tests/TestResults
       - run:
-          name: Upload to Coveralls
+          name: Test Echo
           command: >-
-            csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitId "`git log -1 --format=%H`" --commitBranch "`git rev-parse --abbrev-ref HEAD`" --commitAuthor "`git log -1 --format=%an`" --commitEmail "git log -1 --format=%ae " --commitMessage "`git log -1 --pretty=%B`" --jobId `echo ${CIRCLE_BUILD_NUM}`
+            echo $CIRCLE_BUILD_NUM
+      # - run:
+      #     name: Upload to Coveralls
+      #     command: >-
+      #       csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitId "`git log -1 --format=%H`" --commitBranch "`git rev-parse --abbrev-ref HEAD`" --commitAuthor "`git log -1 --format=%an`" --commitEmail "git log -1 --format=%ae " --commitMessage "`git log -1 --pretty=%B`" --jobId `echo ${CIRCLE_BUILD_NUM}`
