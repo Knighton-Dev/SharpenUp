@@ -248,6 +248,7 @@ namespace SharpenUp.Tests
             Assert.NotNull( result.Results[ 0 ].Logs );
             Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
             Assert.NotNull( result.Results[ 0 ].AlertContacts );
+            Assert.Equal( Environment.GetEnvironmentVariable( "ACCOUNT_EMAIL" ), result.Results[ 0 ].AlertContacts[ 0 ].Value );
         }
 
         [Fact]

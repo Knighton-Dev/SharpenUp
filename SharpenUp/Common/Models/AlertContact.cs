@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SharpenUp.Common.Models
 {
     public class AlertContact
     {
+        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "id" )]
         public int Id { get; set; }
 
@@ -13,9 +15,11 @@ namespace SharpenUp.Common.Models
         [JsonProperty( PropertyName = "type" )]
         public int Type { get; set; } // TODO: Map out this type
 
+        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "threshold" )]
         public int Threshold { get; set; }
 
+        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "recurrence" )]
         public int Recurrence { get; set; }
     }

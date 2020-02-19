@@ -13,6 +13,7 @@ jobs:
           name: Install Coveralls
           command: >-
             dotnet tool install -g coveralls.net --version 1.0.0
+          shell: bash
       - run:
           name: Test
           command: >-
@@ -22,4 +23,4 @@ jobs:
       - run:
           name: Upload to Coveralls
           command: >-
-            csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitBranch ${CIRCLE_BRANCH} --commitAuthor ${CIRCLE_USERNAME}
+            csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitId $env:CIRCLE_SHA1 --commitBranch $env:CIRCLE_BRANCH --commitAuthor $env:CIRCLE_USERNAME --commitEmail "ian@knighton.dev" --commitMessage "FAKE MESSAGE" --jobId $env:CIRCLE_BUILD_NUM
