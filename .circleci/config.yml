@@ -23,4 +23,3 @@ jobs:
           name: Upload to Coveralls
           command: >-
             csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitId `git log -1 --format=%H` --commitBranch `git rev-parse --abbrev-ref HEAD` --commitAuthor `git log -1 --format=%an` --commitEmail `git log -1 --format=%ae` --commitMessage `git log -1 --pretty=%B` --jobId $CIRCLE_BUILD_NUM
-          shell: bash.exe
