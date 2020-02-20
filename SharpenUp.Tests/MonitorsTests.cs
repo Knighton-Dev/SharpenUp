@@ -358,6 +358,15 @@ namespace SharpenUp.Tests
             Assert.Equal( 7, result.Pagination.Total );
         }
 
+        [Fact]
+        public async Task AllMonitors_GoodKey_NoRequest()
+        {
+            MonitorsResult result = await _goodManager.GetMonitorsAsync();
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+        }
+
         #endregion
 
         [Fact]

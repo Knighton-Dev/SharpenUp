@@ -40,6 +40,33 @@ namespace SharpenUp.Client
             }
         }
 
+        public async Task<AlertContactsResult> GetAlertContactsAsync()
+        {
+            try
+            {
+                RestClient client = new RestClient( "https://api.uptimerobot.com/v2/getAlertContacts" );
+                RestRequest request = new RestRequest( Method.POST );
+
+                request.AddHeader( "content-type", "application/x-www-form-urlencoded" );
+                request.AddHeader( "cache-control", "no-cache" );
+
+                request.AddParameter( "application/x-www-form-urlencoded", $"api_key={_apiKey}&format=json", ParameterType.RequestBody );
+
+                IRestResponse response = await client.ExecuteAsync( request );
+
+                return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+            }
+            catch ( Exception e )
+            {
+                throw e;
+            }
+        }
+
+        public async Task<MonitorsResult> GetMonitorsAsync()
+        {
+            return await GetMonitorsAsync( new MonitorsRequest() );
+        }
+
         public async Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request )
         {
             try
