@@ -26,7 +26,7 @@ namespace SharpenUp.Common.Models
         public bool IncludeTimezone { get; set; } = false;
         public int Offset { get; set; } = 0;
         public int Limit { get; set; } = 50;
-        public int SearchTerm { get; set; }
-        public bool IncludeSSLInfo{get;set;}=false;
+        public string SearchTerm { get; set; }
+        public bool IncludeSSLInfo { get; set; } = false;
     }
 }
