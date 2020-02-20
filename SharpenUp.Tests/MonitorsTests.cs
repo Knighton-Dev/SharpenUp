@@ -22,6 +22,7 @@ namespace SharpenUp.Tests
 
         #region Test Single Monitor ID
 
+        // TODO: Cleanup the assertions
         [Fact]
         public async Task SingleMonitor_GoodKey_GoodId()
         {
@@ -48,6 +49,7 @@ namespace SharpenUp.Tests
         #region Test Single Flags
 
         // TODO: Implement
+        // TODO: Cleanup the assertions
         [Fact( Skip = "Not Implemented" )]
         public async Task SingleMonitor_GoodKey_GoodId_WithMonitorTypes()
         {
@@ -228,6 +230,7 @@ namespace SharpenUp.Tests
 
         #region Test Combinations of Flags
 
+        // TODO: Cleanup the assertions
         [Fact]
         public async Task SingleMonitor_GoodKey_GoodId_WithLogs_WithUptime()
         {
@@ -333,12 +336,10 @@ namespace SharpenUp.Tests
 
             MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
 
-            Assert.True( result.Status == RequestStatusType.ok );
-            Assert.True( result.Error == null );
-            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
-            Assert.True( result.Results[ 1 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ) );
-            Assert.Null( result.Results[ 0 ].Logs );
-            Assert.Null( result.Results[ 1 ].Logs );
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.NotNull( result.Results );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ), result.Results[ 1 ].FriendlyName );
         }
 
         #endregion
@@ -350,9 +351,8 @@ namespace SharpenUp.Tests
         {
             MonitorsResult result = await _goodManager.GetMonitorsAsync( new MonitorsRequest() );
 
-            Assert.True( result.Status == RequestStatusType.ok );
-            Assert.True( result.Error == null );
-            Assert.Null( result.Results[ 0 ].Logs );
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.NotNull( result.Results );
             Assert.Equal( 0, result.Pagination.Offset );
             Assert.Equal( 50, result.Pagination.Limit );
             Assert.Equal( 7, result.Pagination.Total );
@@ -363,8 +363,8 @@ namespace SharpenUp.Tests
         {
             MonitorsResult result = await _goodManager.GetMonitorsAsync();
 
-            Assert.True( result.Status == RequestStatusType.ok );
-            Assert.True( result.Error == null );
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
         }
 
         #endregion
@@ -374,8 +374,8 @@ namespace SharpenUp.Tests
         {
             MonitorsResult result = await _badManager.GetMonitorsAsync( new MonitorsRequest() );
 
-            Assert.True( result.Status == RequestStatusType.fail );
-            Assert.True( result.Results == null );
+            Assert.Equal( RequestStatusType.fail, result.Status );
+            Assert.Null( result.Results );
         }
     }
 }
