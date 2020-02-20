@@ -61,8 +61,18 @@ namespace SharpenUp.Client
                     queryString.Append( "&types=" );
                     queryString.Append( string.Join( "-", request.MonitorTypes ) );
                 }
+
                 // StatusTypes
+                if ( request.StatusTypes?.Count > 0 )
+                {
+                    throw new NotImplementedException();
+                }
+
                 // UptimeDateRanges
+                if ( request.UptimeDateRanges[ 0 ].Item1 != DateTime.MinValue )
+                {
+                    throw new NotImplementedException();
+                }
 
                 // IncludeAllTimeUptimeRatio
                 if ( request.IncludeAllTimeUptimeRatio )
@@ -71,6 +81,10 @@ namespace SharpenUp.Client
                 }
 
                 // IncludeAllTimeUptimeDurations
+                if ( request.IncludeAllTimeUptimeDurations )
+                {
+                    throw new NotImplementedException();
+                }
 
                 // Include Logs
                 if ( request.IncludeLogs )
@@ -79,11 +93,40 @@ namespace SharpenUp.Client
                 }
 
                 // LogStartDate
+                if ( request.LogsStartDate != DateTime.MinValue )
+                {
+                    throw new NotImplementedException();
+                }
+
                 // LogEndDate
+                if ( request.LogsEndDate != DateTime.MaxValue )
+                {
+                    throw new NotImplementedException();
+                }
+
                 // LogsLimit
+                if ( request.LogsLimit != 50 )
+                {
+                    throw new NotImplementedException();
+                }
+
                 // IncludeResponseTimes
+                if ( request.IncludeResponseTimes )
+                {
+                    throw new NotImplementedException();
+                }
+
                 // ResponseTimesStartDate
+                if ( request.ResponseTimesStartDate != DateTime.MinValue )
+                {
+                    throw new NotImplementedException();
+                }
+
                 // ResponseTimesEndDate
+                if ( request.ResponseTimesEndDate != DateTime.MaxValue )
+                {
+                    throw new NotImplementedException();
+                }
 
                 // IncludeAlertContacts
                 if ( request.IncludeAlertContacts )
@@ -92,8 +135,22 @@ namespace SharpenUp.Client
                 }
 
                 // IncludeMaintenanceWindows
+                if ( request.IncludeMaintenanceWindows )
+                {
+                    throw new NotImplementedException();
+                }
+
                 // IncludeCustomHTTPHeaders
+                if ( request.IncludeCustomHttpHeaders )
+                {
+                    throw new NotImplementedException();
+                }
+
                 // IncludeCustomHttpStatus
+                if ( request.IncludeCustomHttpStatus )
+                {
+                    throw new NotImplementedException();
+                }
 
                 // IncludeTimezone
                 if ( request.IncludeTimezone )
@@ -102,8 +159,22 @@ namespace SharpenUp.Client
                 }
 
                 // Offset
+                if ( request.Offset != 0 )
+                {
+                    throw new NotImplementedException();
+                }
+
                 // Limit
+                if ( request.Limit != 50 )
+                {
+                    throw new NotImplementedException();
+                }
+
                 // SearchTerm
+                if ( !string.IsNullOrWhiteSpace( request.SearchTerm ) )
+                {
+                    throw new NotImplementedException();
+                }
 
                 // IncludeSLLInfo
                 if ( request.IncludeSSLInfo )

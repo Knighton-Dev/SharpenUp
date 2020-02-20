@@ -47,6 +47,24 @@ namespace SharpenUp.Tests
 
         #region Test Single Flags
 
+        // TODO: Implement
+        [Fact( Skip = "Not Implemented" )]
+        public async Task SingleMonitor_GoodKey_GoodId_WithMonitorTypes()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
+                MonitorTypes = new List<MonitorType> { MonitorType.Https, MonitorType.Keyword }
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.True( result.Status == RequestStatusType.ok );
+            Assert.True( result.Error == null );
+            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.NotNull( result.Results[ 0 ].Logs );
+        }
+
         [Fact]
         public async Task SingleMonitor_GoodKey_GoodId_WithLogs()
         {
