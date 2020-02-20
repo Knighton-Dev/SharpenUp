@@ -19,6 +19,7 @@ namespace SharpenUp.Tests
             _badManager = new UptimeManager( "thisKeyIsBad" );
         }
 
+        // TODO: Cleanup the assertions
         [Fact]
         public async Task AccountDetails_GoodKey()
         {
