@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json;
-using SharpenUp.Common.Types;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using Newtonsoft.Json;
+using SharpenUp.Common.Models.Alerts;
+using SharpenUp.Common.Types;
 
-namespace SharpenUp.Common.Models
+namespace SharpenUp.Common.Models.Monitors
 {
     public class Monitor
     {
