@@ -6,7 +6,7 @@
     <PackageVersion>0.0.1</PackageVersion>
     <Authors>Ian Knighton</Authors>
     <Copyright>Knighton.dev</Copyright>
-    <PackageLicenseUrl>https://github.com/IanKnighton/SharpenUp/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Owners>Ian Knighton</Owners>
     <PackageProjectUrl>https://github.com/IanKnighton/SharpenUp</PackageProjectUrl>
     <Summary>A library for working with the Uptime Robot API</Summary>
