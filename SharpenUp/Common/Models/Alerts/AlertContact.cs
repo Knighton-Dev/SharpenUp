@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SharpenUp.Common.Models
+namespace SharpenUp.Common.Models.Alerts
 {
     public class AlertContact
     {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using SharpenUp.Client;
 using SharpenUp.Common;
-using SharpenUp.Common.Models;
+using SharpenUp.Common.Models.Accounts;
 using SharpenUp.Common.Types;
 using Xunit;
 
