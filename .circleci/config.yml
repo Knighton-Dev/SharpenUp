@@ -7,20 +7,48 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build
-          command: dotnet build SharpenUp/SharpenUp.csproj
+        - name: Dotnet Build
+        - command: dotnet build SharpenUp/SharpenUp.csproj -c Release
+  test:
+    executor: win/default
+    steps: 
+      - checkout
       - run:
           name: Install Coveralls
-          command: >-
-            dotnet tool install -g coveralls.net --version 1.0.0
-          shell: bash
+          command: dotnet tool install -g coveralls.net --version 1.0.0
       - run:
-          name: Test
-          command: >-
-            dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj --logger "junit;LogFileName=xunit/results.xml" /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
+        - name: Dotnet Build
+        - command: dotnet build SharpenUp/SharpenUp.csproj -c Release
+      - run:
+        - name: Dotnet Test
+        - command: dotnet test SharpenUp.Tests/SharpenUp.Tests.csproj --logger "junit;LogFileName=xunit/results.xml" /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
       - store_test_results:
           path: SharpenUp.Tests/TestResults
       - run:
-          name: Upload to Coveralls
-          command: >-
-            csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitId $env:CIRCLE_SHA1 --commitBranch $env:CIRCLE_BRANCH --commitAuthor $env:CIRCLE_USERNAME --commitEmail "ian@knighton.dev" --commitMessage "FAKE MESSAGE" --jobId $env:CIRCLE_BUILD_NUM
+        - name: Upload to Coveralls.IO
+        - command: csmacnz.Coveralls --opencover -i SharpenUp.Tests/TestResults/coverage.opencover.xml --useRelativePaths --commitId $env:CIRCLE_SHA1 --commitBranch $env:CIRCLE_BRANCH --commitAuthor $env:CIRCLE_USERNAME --commitEmail "ian@knighton.dev" --commitMessage "FAKE MESSAGE" --jobId $env:CIRCLE_BUILD_NUM
+  deploy:
+    executor: win/default
+    steps:
+      - checkout
+      - run:
+        - name: Pack for NuGet
+        - command: dotnet pack SharpenUp/SharpenUp.csproj -c Release
+      - run:
+        - name: Push to Nuget
+        - command: dotnet nuget push SharpenUp/bin/Release/*.nupkg -k $env:NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - build
+      - test:
+        - requires:
+          - build
+      - deploy:
+        - requires:
+          - test
+        - filters:
+          - branches:
+              only: master
