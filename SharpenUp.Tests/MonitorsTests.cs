@@ -230,7 +230,6 @@ namespace SharpenUp.Tests
 
         #region Test Combinations of Flags
 
-        // TODO: Cleanup the assertions
         [Fact]
         public async Task SingleMonitor_GoodKey_GoodId_WithLogs_WithUptime()
         {
@@ -243,11 +242,11 @@ namespace SharpenUp.Tests
 
             MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
 
-            Assert.True( result.Status == RequestStatusType.ok );
-            Assert.True( result.Error == null );
-            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
             Assert.NotNull( result.Results[ 0 ].Logs );
-            Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
+            Assert.NotEqual( 0, result.Results[ 0 ].UptimeRatio );
         }
 
         [Fact]
@@ -263,11 +262,11 @@ namespace SharpenUp.Tests
 
             MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
 
-            Assert.True( result.Status == RequestStatusType.ok );
-            Assert.True( result.Error == null );
-            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
             Assert.NotNull( result.Results[ 0 ].Logs );
-            Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
+            Assert.NotEqual( 0, result.Results[ 0 ].UptimeRatio );
             Assert.NotNull( result.Results[ 0 ].AlertContacts );
             Assert.Equal( Environment.GetEnvironmentVariable( "ACCOUNT_EMAIL" ), result.Results[ 0 ].AlertContacts[ 0 ].Value );
         }
@@ -286,11 +285,11 @@ namespace SharpenUp.Tests
 
             MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
 
-            Assert.True( result.Status == RequestStatusType.ok );
-            Assert.True( result.Error == null );
-            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
             Assert.NotNull( result.Results[ 0 ].Logs );
-            Assert.True( result.Results[ 0 ].UptimeRatio != 0 );
+            Assert.NotEqual( 0, result.Results[ 0 ].UptimeRatio );
             Assert.NotNull( result.Results[ 0 ].AlertContacts );
             Assert.NotNull( result.Results[ 0 ].SSLInfo );
         }
@@ -310,9 +309,9 @@ namespace SharpenUp.Tests
 
             MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
 
-            Assert.True( result.Status == RequestStatusType.ok );
-            Assert.True( result.Error == null );
-            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
             Assert.NotNull( result.Results[ 0 ].Logs );
             Assert.NotEqual( 0, result.Results[ 0 ].UptimeRatio );
             Assert.NotNull( result.Results[ 0 ].AlertContacts );
