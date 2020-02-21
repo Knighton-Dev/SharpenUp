@@ -19,15 +19,14 @@ namespace SharpenUp.Tests
             _badManager = new UptimeManager( "thisKeyIsBad" );
         }
 
-        // TODO: Cleanup the assertions
         [Fact]
         public async Task AccountDetails_GoodKey()
         {
             AccountDetailsResult accountDetails = await _goodManager.GetAccountDetailsAsync();
 
-            Assert.True( accountDetails.Status == RequestStatusType.ok );
-            Assert.True( accountDetails.Error == null );
-            Assert.True( accountDetails.Account.Email == Environment.GetEnvironmentVariable( "ACCOUNT_EMAIL" ) );
+            Assert.Equal( RequestStatusType.ok, accountDetails.Status );
+            Assert.Null( accountDetails.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "ACCOUNT_EMAIL" ), accountDetails.Account.Email );
             Assert.Equal( 50, accountDetails.Account.MonitorLimit );
             Assert.Equal( 5, accountDetails.Account.MonitorInterval );
         }
@@ -37,11 +36,11 @@ namespace SharpenUp.Tests
         {
             AccountDetailsResult accountDetails = await _badManager.GetAccountDetailsAsync();
 
-            Assert.True( accountDetails.Status == RequestStatusType.fail );
-            Assert.True( accountDetails.Account == null );
-            Assert.True( accountDetails.Error.Type == "invalid_parameter" );
-            Assert.True( accountDetails.Error.ParameterName == "api_key" );
-            Assert.True( accountDetails.Error.PassedValue == "thisKeyIsBad" );
+            Assert.Equal( RequestStatusType.fail, accountDetails.Status );
+            Assert.Null( accountDetails.Account );
+            Assert.Equal( "invalid_parameter", accountDetails.Error.Type );
+            Assert.Equal( "api_key", accountDetails.Error.ParameterName );
+            Assert.Equal( "thisKeyIsBad", accountDetails.Error.PassedValue );
         }
     }
 }
