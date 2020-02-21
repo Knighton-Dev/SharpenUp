@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
 using SharpenUp.Common;
-using SharpenUp.Common.Models;
-using System.Collections.Generic;
-using System.Text;
+using SharpenUp.Common.Models.Accounts;
+using SharpenUp.Common.Models.Alerts;
+using SharpenUp.Common.Models.Monitors;
 
 namespace SharpenUp.Client
 {

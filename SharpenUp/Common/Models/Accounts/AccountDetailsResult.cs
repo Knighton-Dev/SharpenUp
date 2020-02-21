@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SharpenUp.Common.Types;
 
-namespace SharpenUp.Common.Models
+namespace SharpenUp.Common.Models.Accounts
 {
     public class AccountDetailsResult
     {

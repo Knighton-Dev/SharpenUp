@@ -22,6 +22,9 @@
     <Folder Include="Client\" />
     <Folder Include="Common\Models\" />
     <Folder Include="Common\Types\" />
+    <Folder Include="Common\Models\Accounts\" />
+    <Folder Include="Common\Models\Monitors\" />
+    <Folder Include="Common\Models\Alerts\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
