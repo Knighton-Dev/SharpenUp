@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SharpenUp.Common.Models
 {
+    [ExcludeFromCodeCoverage]
     public class Reason
     {
         [JsonProperty( PropertyName = "code" )]
