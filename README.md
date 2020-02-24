@@ -7,6 +7,10 @@
 
 # Sharpen Up
 
+*A .Net Standard library for working with the Uptime Robot API.*
+
+## About
+
 This is a .Net Standard 2.1 library for working with the [Uptime Robot API](https://uptimerobot.com/api). I had looked into writing my own uptime monitoring tool, but I found this was an easier jumping off point. 
 
 This is very much a **WORK IN PROGRESS**. I appreciate being made aware of any issues you find once this hits NuGet, but please refrain from creating issues before that point. 
