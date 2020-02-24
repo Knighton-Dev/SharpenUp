@@ -18,7 +18,7 @@ namespace SharpenUp.Common.Models.PublicStatusPages
         public int Sort { get; set; }
 
         [JsonProperty( PropertyName = "status" )]
-        public OnlineStatusType Status { get; set; }
+        public PublicStatusPageStatusType Status { get; set; }
 
         [JsonProperty( PropertyName = "standard_url" )]
         public string StandardURL { get; set; }
