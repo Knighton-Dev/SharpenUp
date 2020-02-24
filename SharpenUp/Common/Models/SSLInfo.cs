@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json;
 
 namespace SharpenUp.Common.Models
 {
+    [ExcludeFromCodeCoverage]
     public class SSLInfo
     {
         [JsonProperty( PropertyName = "brand" )]
