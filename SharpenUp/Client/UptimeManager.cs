@@ -7,6 +7,8 @@ using SharpenUp.Common;
 using SharpenUp.Common.Models.Accounts;
 using SharpenUp.Common.Models.Alerts;
 using SharpenUp.Common.Models.Monitors;
+using System.Web;
+using System.Collections.Generic;
 
 namespace SharpenUp.Client
 {
@@ -93,13 +95,28 @@ namespace SharpenUp.Client
                 // StatusTypes
                 if ( request.StatusTypes?.Count > 0 )
                 {
-                    throw new NotImplementedException();
+                    queryString.Append( "&statuses=" );
+                    queryString.Append( string.Join( "-", request.MonitorTypes ) );
                 }
 
                 // UptimeDateRanges
                 if ( request.UptimeDateRanges[ 0 ].Item1 != DateTime.MinValue )
                 {
-                    throw new NotImplementedException();
+                    List<Tuple<double, double>> convertedDates = new List<Tuple<double, double>>();
+                    List<string> joinedRanges = new List<string>();
+
+                    foreach ( var range in request.UptimeDateRanges )
+                    {
+                        convertedDates.Add( new Tuple<double, double>( ConvertDateTimeToSeconds( range.Item1 ), ConvertDateTimeToSeconds( range.Item2 ) ) );
+                    }
+
+                    foreach ( var dateRange in convertedDates )
+                    {
+                        joinedRanges.Add( $"{dateRange.Item1}_{dateRange.Item2}" );
+                    }
+
+                    queryString.Append( "&custom_uptime_ranges=" );
+                    queryString.Append( string.Join( "-", joinedRanges ) );
                 }
 
                 // IncludeAllTimeUptimeRatio
@@ -111,49 +128,56 @@ namespace SharpenUp.Client
                 // IncludeAllTimeUptimeDurations
                 if ( request.IncludeAllTimeUptimeDurations )
                 {
-                    throw new NotImplementedException();
+                    queryString.Append( "&all_time_uptime_durations=1" );
                 }
 
                 // Include Logs
                 if ( request.IncludeLogs )
                 {
                     queryString.Append( "&logs=1" );
-                }
 
-                // LogStartDate
-                if ( request.LogsStartDate != DateTime.MinValue )
-                {
-                    throw new NotImplementedException();
-                }
+                    // LogStartDate
+                    if ( request.LogsStartDate != DateTime.MinValue )
+                    {
+                        queryString.Append( $"&logs_start_date={ConvertDateTimeToSeconds( request.LogsStartDate )}" );
+                    }
 
-                // LogEndDate
-                if ( request.LogsEndDate != DateTime.MaxValue )
-                {
-                    throw new NotImplementedException();
-                }
+                    // LogEndDate
+                    if ( request.LogsEndDate != DateTime.MaxValue )
+                    {
+                        queryString.Append( $"&logs_end_date={ConvertDateTimeToSeconds( request.LogsEndDate )}" );
+                    }
 
-                // LogsLimit
-                if ( request.LogsLimit != 50 )
-                {
-                    throw new NotImplementedException();
+                    // LogsLimit
+                    if ( request.LogsLimit != 50 )
+                    {
+                        queryString.Append( $"&logs_limit={request.LogsLimit}" );
+                    }
                 }
 
                 // IncludeResponseTimes
                 if ( request.IncludeResponseTimes )
                 {
-                    throw new NotImplementedException();
-                }
+                    queryString.Append( "&response_times=1" );
 
-                // ResponseTimesStartDate
-                if ( request.ResponseTimesStartDate != DateTime.MinValue )
-                {
-                    throw new NotImplementedException();
-                }
-
-                // ResponseTimesEndDate
-                if ( request.ResponseTimesEndDate != DateTime.MaxValue )
-                {
-                    throw new NotImplementedException();
+                    // ResponseTimesStartDate
+                    if ( request.ResponseTimesStartDate != DateTime.MinValue && request.ResponseTimesEndDate != DateTime.MaxValue )
+                    {
+                        TimeSpan timeSpan = request.ResponseTimesEndDate - request.ResponseTimesStartDate;
+                        if ( timeSpan.TotalDays > 7 )
+                        {
+                            queryString.Append( $"&response_times_start_date={ConvertDateTimeToSeconds( request.ResponseTimesStartDate )}" );
+                            queryString.Append( $"&response_times_end_date={ConvertDateTimeToSeconds( request.ResponseTimesEndDate )}" );
+                        }
+                        else
+                        {
+                            throw new Exception( "Difference between the start and end date can not exceed 7 days." );
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception( "Both Start and End Date must be specified." );
+                    }
                 }
 
                 // IncludeAlertContacts
@@ -165,19 +189,19 @@ namespace SharpenUp.Client
                 // IncludeMaintenanceWindows
                 if ( request.IncludeMaintenanceWindows )
                 {
-                    throw new NotImplementedException();
+                    queryString.Append( "&mwindows=1" );
                 }
 
                 // IncludeCustomHTTPHeaders
                 if ( request.IncludeCustomHttpHeaders )
                 {
-                    throw new NotImplementedException();
+                    queryString.Append( "&custom_http_headers=1" );
                 }
 
                 // IncludeCustomHttpStatus
                 if ( request.IncludeCustomHttpStatus )
                 {
-                    throw new NotImplementedException();
+                    queryString.Append( "&custom_http_statuses=1" );
                 }
 
                 // IncludeTimezone
@@ -187,21 +211,21 @@ namespace SharpenUp.Client
                 }
 
                 // Offset
-                if ( request.Offset != 0 )
+                if ( request.PaginationOffset != 0 )
                 {
-                    throw new NotImplementedException();
+                    queryString.Append( $"&offset={request.PaginationOffset}" );
                 }
 
                 // Limit
-                if ( request.Limit != 50 )
+                if ( request.PaginationLimit != 50 )
                 {
-                    throw new NotImplementedException();
+                    queryString.Append( $"&liumit={request.PaginationLimit}" );
                 }
 
                 // SearchTerm
                 if ( !string.IsNullOrWhiteSpace( request.SearchTerm ) )
                 {
-                    throw new NotImplementedException();
+                    queryString.Append( $"&search={HttpUtility.UrlEncode( request.SearchTerm )}" );
                 }
 
                 // IncludeSLLInfo
@@ -228,6 +252,12 @@ namespace SharpenUp.Client
             {
                 throw e;
             }
+        }
+
+        private double ConvertDateTimeToSeconds( DateTime date )
+        {
+            TimeSpan span = date.Subtract( new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc ) );
+            return span.TotalSeconds;
         }
     }
 }
