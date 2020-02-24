@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Newtonsoft.Json;
 using RestSharp;
 using SharpenUp.Common;
 using SharpenUp.Common.Models.Accounts;
 using SharpenUp.Common.Models.Alerts;
 using SharpenUp.Common.Models.Monitors;
-using System.Web;
-using System.Collections.Generic;
+using SharpenUp.Common.Models.PublicStatusPages;
 
 namespace SharpenUp.Client
 {
@@ -102,6 +103,7 @@ namespace SharpenUp.Client
                 // UptimeDateRanges
                 if ( request.UptimeDateRanges[ 0 ].Item1 != DateTime.MinValue )
                 {
+                    // HACK: This doesn't feel great, but I think it works. 
                     List<Tuple<double, double>> convertedDates = new List<Tuple<double, double>>();
                     List<string> joinedRanges = new List<string>();
 
@@ -252,6 +254,17 @@ namespace SharpenUp.Client
             {
                 throw e;
             }
+        }
+
+        public async Task<PublicStatusPagesResult> GetPublicStatusPagesAsync()
+        {
+            return await GetPublicStatusPagesAsync( new PublicStatusPagesRequest() );
+        }
+
+        // TODO: Come back and finish this. 
+        public async Task<PublicStatusPagesResult> GetPublicStatusPagesAsync( PublicStatusPagesRequest request )
+        {
+            return null;
         }
 
         private double ConvertDateTimeToSeconds( DateTime date )

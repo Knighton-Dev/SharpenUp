@@ -25,6 +25,7 @@
     <Folder Include="Common\Models\Accounts\" />
     <Folder Include="Common\Models\Monitors\" />
     <Folder Include="Common\Models\Alerts\" />
+    <Folder Include="Common\Models\PublicStatusPages\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />

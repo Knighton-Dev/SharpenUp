@@ -2,6 +2,7 @@
 using SharpenUp.Common.Models.Accounts;
 using SharpenUp.Common.Models.Alerts;
 using SharpenUp.Common.Models.Monitors;
+using SharpenUp.Common.Models.PublicStatusPages;
 
 namespace SharpenUp.Common
 {
@@ -11,5 +12,7 @@ namespace SharpenUp.Common
         Task<AlertContactsResult> GetAlertContactsAsync();
         Task<MonitorsResult> GetMonitorsAsync();
         Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request );
+        Task<PublicStatusPagesResult> GetPublicStatusPagesAsync();
+        Task<PublicStatusPagesResult> GetPublicStatusPagesAsync( PublicStatusPagesRequest request );
     }
 }
