@@ -1,5 +1,4 @@
-﻿using System;
-namespace SharpenUp.Common.Types
+﻿namespace SharpenUp.Common.Types
 {
     public enum MonitorType
     {
