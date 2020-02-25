@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RestSharp;
 using SharpenUp.Common;
 using SharpenUp.Common.Models.Accounts;
 using SharpenUp.Common.Models.Alerts;
 using SharpenUp.Common.Models.Monitors;
 using SharpenUp.Common.Models.PublicStatusPages;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace SharpenUp.Client
 {
@@ -47,6 +47,8 @@ namespace SharpenUp.Client
             }
         }
 
+        #region Alert Contacts
+
         /// <summary>
         /// The list of alert contacts can be called with this method.
         /// </summary>
@@ -71,6 +73,10 @@ namespace SharpenUp.Client
                 throw e;
             }
         }
+
+        #endregion
+
+        #region Monitors
 
         /// <summary>
         /// This is a Swiss-Army knife type of a method for getting any information on monitors.
@@ -275,6 +281,10 @@ namespace SharpenUp.Client
             }
         }
 
+        #endregion
+
+        #region Public Status Pages
+
         /// <summary>
         /// The list of public status pages can be called with this method.
         /// </summary>
@@ -327,10 +337,17 @@ namespace SharpenUp.Client
             }
         }
 
+        #endregion
+
+        #region Private Methods
+
+        // TODO: Test this, I don't actually know if it works. 
         private double ConvertDateTimeToSeconds ( DateTime date )
         {
             TimeSpan span = date.Subtract( new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc ) );
             return span.TotalSeconds;
         }
+
+        #endregion
     }
 }

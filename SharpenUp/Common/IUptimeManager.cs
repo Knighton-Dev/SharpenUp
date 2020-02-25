@@ -13,10 +13,16 @@ namespace SharpenUp.Common
         /// </summary>
         Task<AccountDetailsResult> GetAccountDetailsAsync ();
 
+        #region Alert Contacts
+
         /// <summary>
         /// The list of alert contacts can be called with this method.
         /// </summary>
         Task<AlertContactsResult> GetAlertContactsAsync ();
+
+        #endregion
+
+        #region Monitors
 
         /// <summary>
         /// This is a Swiss-Army knife type of a method for getting any information on monitors.
@@ -35,6 +41,10 @@ namespace SharpenUp.Common
         /// <param name="request">A Monitors Request object.</param>
         Task<MonitorsResult> GetMonitorsAsync ( MonitorsRequest request );
 
+        #endregion
+
+        #region Public Status Pages
+
         /// <summary>
         /// The list of public status pages can be called with this method.
         /// </summary>
@@ -45,5 +55,7 @@ namespace SharpenUp.Common
         /// </summary>
         /// <param name="request">A Public Status Pages Request object.</param>
         Task<PublicStatusPagesResult> GetPublicStatusPagesAsync ( PublicStatusPagesRequest request );
+
+        #endregion
     }
 }
