@@ -17,12 +17,15 @@ namespace SharpenUp.Client
     {
         private readonly string _apiKey;
 
-        public UptimeManager( string apiKey )
+        public UptimeManager ( string apiKey )
         {
             _apiKey = apiKey;
         }
 
-        public async Task<AccountDetailsResult> GetAccountDetailsAsync()
+        /// <summary>
+        /// Account details (max number of monitors that can be added and number of up/down/paused monitors) can be grabbed using this method.
+        /// </summary>
+        public async Task<AccountDetailsResult> GetAccountDetailsAsync ()
         {
             try
             {
@@ -44,7 +47,10 @@ namespace SharpenUp.Client
             }
         }
 
-        public async Task<AlertContactsResult> GetAlertContactsAsync()
+        /// <summary>
+        /// The list of alert contacts can be called with this method.
+        /// </summary>
+        public async Task<AlertContactsResult> GetAlertContactsAsync ()
         {
             try
             {
@@ -66,12 +72,25 @@ namespace SharpenUp.Client
             }
         }
 
-        public async Task<MonitorsResult> GetMonitorsAsync()
+        /// <summary>
+        /// This is a Swiss-Army knife type of a method for getting any information on monitors.
+        /// By default, it lists all the monitors in a user's account, their friendly names, types (http, keyword, port, etc.), statuses (up, down, etc.) and uptime ratios.
+        /// There are optional parameters which lets the getMonitors method to output information on any given monitors rather than all of them.
+        /// And also, parameters exist for getting the notification logs (alerts) for each monitor and even which alert contacts were alerted on each notification.
+        /// </summary>
+        public async Task<MonitorsResult> GetMonitorsAsync ()
         {
             return await GetMonitorsAsync( new MonitorsRequest() );
         }
 
-        public async Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request )
+        /// <summary>
+        /// This is a Swiss-Army knife type of a method for getting any information on monitors.
+        /// By default, it lists all the monitors in a user's account, their friendly names, types (http, keyword, port, etc.), statuses (up, down, etc.) and uptime ratios.
+        /// There are optional parameters which lets the getMonitors method to output information on any given monitors rather than all of them.
+        /// And also, parameters exist for getting the notification logs (alerts) for each monitor and even which alert contacts were alerted on each notification.
+        /// </summary>
+        /// <param name="request">A Monitors Request object.</param>
+        public async Task<MonitorsResult> GetMonitorsAsync ( MonitorsRequest request )
         {
             try
             {
@@ -256,18 +275,59 @@ namespace SharpenUp.Client
             }
         }
 
-        public async Task<PublicStatusPagesResult> GetPublicStatusPagesAsync()
+        /// <summary>
+        /// The list of public status pages can be called with this method.
+        /// </summary>
+        public async Task<PublicStatusPagesResult> GetPublicStatusPagesAsync ()
         {
             return await GetPublicStatusPagesAsync( new PublicStatusPagesRequest() );
         }
 
-        // TODO: Come back and finish this. 
-        public async Task<PublicStatusPagesResult> GetPublicStatusPagesAsync( PublicStatusPagesRequest request )
+        /// <summary>
+        /// The list of public status pages can be called with this method.
+        /// </summary>
+        /// <param name="request">A Public Status Pages Request object.</param>
+        public async Task<PublicStatusPagesResult> GetPublicStatusPagesAsync ( PublicStatusPagesRequest request )
         {
-            return null;
+            try
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                if ( request.PageIds?.Count > 0 )
+                {
+                    queryString.Append( "&psps=" );
+                    queryString.Append( string.Join( "-", request.PageIds ) );
+                }
+
+                if ( request.PaginationOffest != 0 )
+                {
+                    queryString.Append( $"&offset={request.PaginationOffest}" );
+                }
+
+                if ( request.PaginationLimit != 50 )
+                {
+                    queryString.Append( $"&limit={request.PaginationLimit}" );
+                }
+
+                RestClient client = new RestClient( "https://api.uptimerobot.com/v2/getPSPs" );
+                RestRequest restRequest = new RestRequest( Method.POST );
+
+                restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
+                restRequest.AddHeader( "cache-control", "no-cache" );
+
+                restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
+
+                IRestResponse response = await client.ExecuteAsync( restRequest );
+
+                return JsonConvert.DeserializeObject<PublicStatusPagesResult>( response.Content );
+            }
+            catch ( Exception e )
+            {
+                throw e;
+            }
         }
 
-        private double ConvertDateTimeToSeconds( DateTime date )
+        private double ConvertDateTimeToSeconds ( DateTime date )
         {
             TimeSpan span = date.Subtract( new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc ) );
             return span.TotalSeconds;

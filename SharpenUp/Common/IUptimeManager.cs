@@ -8,11 +8,42 @@ namespace SharpenUp.Common
 {
     public interface IUptimeManager
     {
-        Task<AccountDetailsResult> GetAccountDetailsAsync();
-        Task<AlertContactsResult> GetAlertContactsAsync();
-        Task<MonitorsResult> GetMonitorsAsync();
-        Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request );
-        Task<PublicStatusPagesResult> GetPublicStatusPagesAsync();
-        Task<PublicStatusPagesResult> GetPublicStatusPagesAsync( PublicStatusPagesRequest request );
+        /// <summary>
+        /// Account details (max number of monitors that can be added and number of up/down/paused monitors) can be grabbed using this method.
+        /// </summary>
+        Task<AccountDetailsResult> GetAccountDetailsAsync ();
+
+        /// <summary>
+        /// The list of alert contacts can be called with this method.
+        /// </summary>
+        Task<AlertContactsResult> GetAlertContactsAsync ();
+
+        /// <summary>
+        /// This is a Swiss-Army knife type of a method for getting any information on monitors.
+        /// By default, it lists all the monitors in a user's account, their friendly names, types (http, keyword, port, etc.), statuses (up, down, etc.) and uptime ratios.
+        /// There are optional parameters which lets the getMonitors method to output information on any given monitors rather than all of them.
+        /// And also, parameters exist for getting the notification logs (alerts) for each monitor and even which alert contacts were alerted on each notification.
+        /// </summary>
+        Task<MonitorsResult> GetMonitorsAsync ();
+
+        /// <summary>
+        /// This is a Swiss-Army knife type of a method for getting any information on monitors.
+        /// By default, it lists all the monitors in a user's account, their friendly names, types (http, keyword, port, etc.), statuses (up, down, etc.) and uptime ratios.
+        /// There are optional parameters which lets the getMonitors method to output information on any given monitors rather than all of them.
+        /// And also, parameters exist for getting the notification logs (alerts) for each monitor and even which alert contacts were alerted on each notification.
+        /// </summary>
+        /// <param name="request">A Monitors Request object.</param>
+        Task<MonitorsResult> GetMonitorsAsync ( MonitorsRequest request );
+
+        /// <summary>
+        /// The list of public status pages can be called with this method.
+        /// </summary>
+        Task<PublicStatusPagesResult> GetPublicStatusPagesAsync ();
+
+        /// <summary>
+        /// The list of public status pages can be called with this method.
+        /// </summary>
+        /// <param name="request">A Public Status Pages Request object.</param>
+        Task<PublicStatusPagesResult> GetPublicStatusPagesAsync ( PublicStatusPagesRequest request );
     }
 }
