@@ -46,8 +46,8 @@ jobs:
       - run:
           name: Push to Nuget
           command: >-
-              dotnet nuget push SharpenUp/bin/Release/*.nupkg -k
-              $env:NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+              dotnet nuget push C:\Users\circleci\project\SharpenUp\bin\Release\*.nupkg -k
+              $env:NUGET_API_KEY -s https://api.nuget.org/v3/index.json -n true
 workflows:
   version: 2
   build-test-and-deploy:
