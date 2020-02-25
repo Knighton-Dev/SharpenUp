@@ -13,13 +13,61 @@
 
 This is a .Net Standard 2.1 library for working with the [Uptime Robot API](https://uptimerobot.com/api). I had looked into writing my own uptime monitoring tool, but I found this was an easier jumping off point. 
 
-This is very much a **WORK IN PROGRESS**. I appreciate being made aware of any issues you find once this hits NuGet, but please refrain from creating issues before that point. 
-
 ## Usage
 
-As mentioned, this is currently in development so if you're interested in using it you'll need to clone/download the repo and link the `.csproj` file in your project. 
+There are two options.
 
-I moved away from using an `appsettings.json` file since it made it very difficult to work with in CircleCI. Was this the correct decision? I'm not sure, but it's what I'm doing for the time being. 
+1) Clone the repo and add the `SharpenUp.csproj` to your solution file. 
+```
+git clone https://github.com/IanKnighton/SharpenUp.git
+```
+2) Use the latest version of the NuGet package.
+```
+dotnet add package SharpenUp
+```
+
+Once you have the reference in your project, you can instantiate the library using the `IUptimeManager` interface.
+
+Like this:
+
+```csharp
+using SharpenUp.Client;
+using SharpenUp.Common;
+
+namespace Application
+{
+    class Program
+    {
+        static async Task Main( string[] args )
+        {
+            IUptimeManager manager = new UptimeManager( "YOUR_API_KEY" );
+        }
+    }
+}
+```
+
+From there, you can reference the methods exposed in the `IUptimeManager` interface just like you would any other library. 
+
+```csharp
+using SharpenUp.Client;
+using SharpenUp.Common;
+using SharpenUp.Common.Models.Monitors;
+
+namespace Application
+{
+    class Program
+    {
+        static async Task Main( string[] args )
+        {
+            IUptimeManager manager = new UptimeManager( "YOUR_API_KEY" );
+            MonitorsResult result = await manager.GetMonitorsAsync();
+        }
+    }
+}
+```
+
+
+## Development
 
 To run tests, there needs to be some environment variables set on the host machine. I put together a bash script to do it *somewhat* quickly between reboots. You could also set them in a myriad of other ways, I'm not your dad.
 
@@ -33,3 +81,31 @@ export GOOD_MONITOR_ID_2=A_VALID_ID
 export GOOD_MONITOR_1_FRIENDLY_NAME="MATCHING_NAME_1"
 export GOOD_MONITOR_2_FRIENDLY_NAME="MATCHING_NAME_2"
 ```
+
+## Endpoints Exposed
+
+This is based off of a list on the Uptime Robot reference.
+
+- ~~`POST getAccountDetails`~~ *Complete as of 0.0.3*
+- `POST getMonitors` *Mostly complete as of version 0.0.3*
+- `POST newMonitor`
+- `POST editMonitor`
+- `POST deleteMonitor`
+- `POST resetMonitor`
+- ~~`POST getAlertContacts`~~ *Complete as of 0.0.3*
+- `POST newAlertContact`
+- `POST editAlertContact`
+- `POST deleteAlertContact`
+- `POST getMWindows`
+- `POST newMWindow`
+- `POST editMWindow`
+- `POST deleteMWindow`
+- `POST getPSPs` *Mostly complete, but not yet released*
+- `POST newPSP`
+- `POST editPSP`
+- `POST deletePSP`
+
+## Acknowldegements 
+
+- [Uptime Robot](https://uptimerobot.com/) - Really, this library doesn't make sense without their service. 
+- [Shields.io](https://shields.io/) - Having matching badges that aren't a nightmare to work with is nice and I appreciate that there's a service to make it work. 

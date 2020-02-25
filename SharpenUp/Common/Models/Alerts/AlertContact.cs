@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
+using SharpenUp.Common.Types;
 
 namespace SharpenUp.Common.Models.Alerts
 {
@@ -13,7 +14,10 @@ namespace SharpenUp.Common.Models.Alerts
         public string Value { get; set; }
 
         [JsonProperty( PropertyName = "type" )]
-        public int Type { get; set; } // TODO: Map out this type
+        public AlertContactType Type { get; set; }
+
+        [JsonProperty( PropertyName = "status" )]
+        public AlertContactStatusType Status { get; set; }
 
         [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "threshold" )]
