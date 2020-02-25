@@ -100,7 +100,7 @@ This is based off of a list on the Uptime Robot reference.
 - `POST newMWindow`
 - `POST editMWindow`
 - `POST deleteMWindow`
-- `POST getPSPs` *Mostly complete, but not yet released*
+- ~~`POST getPSPs`~~ *Complete as of 0.0.5*
 - `POST newPSP`
 - `POST editPSP`
 - `POST deletePSP`
