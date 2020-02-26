@@ -1,10 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json;
 using SharpenUp.Common.Types;
+using SharpenUp.Common.Utilities;
 
 namespace SharpenUp.Common.Models.PublicStatusPages
 {
     public class PublicStatusPage
     {
+        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "id" )]
         public int Id { get; set; }
 
@@ -12,10 +16,11 @@ namespace SharpenUp.Common.Models.PublicStatusPages
         public string Name { get; set; }
 
         [JsonProperty( PropertyName = "monitors" )]
-        public int Monitors { get; set; }
+        [JsonConverter( typeof( SingleOrArrayConverter<int> ) )]
+        public List<int> Monitors { get; set; }
 
         [JsonProperty( PropertyName = "sort" )]
-        public int Sort { get; set; }
+        public PublicStatusPageSortType Sort { get; set; }
 
         [JsonProperty( PropertyName = "status" )]
         public PublicStatusPageStatusType Status { get; set; }
