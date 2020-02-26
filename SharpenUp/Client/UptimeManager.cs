@@ -6,6 +6,7 @@ using System.Web;
 using Newtonsoft.Json;
 using RestSharp;
 using SharpenUp.Common;
+using SharpenUp.Common.Types;
 using SharpenUp.Common.Models.Accounts;
 using SharpenUp.Common.Models.Alerts;
 using SharpenUp.Common.Models.MaintenanceWindows;
@@ -115,15 +116,31 @@ namespace SharpenUp.Client
                 // MonitorTypes
                 if ( request.MonitorTypes?.Count > 0 )
                 {
+                    List<int> convertToIntegers = new List<int>();
+
                     queryString.Append( "&types=" );
-                    queryString.Append( string.Join( "-", request.MonitorTypes ) );
+
+                    foreach ( MonitorType monitorType in request.MonitorTypes )
+                    {
+                        convertToIntegers.Add( (int)monitorType );
+                    }
+
+                    queryString.Append( string.Join( "-", convertToIntegers ) );
                 }
 
                 // StatusTypes
                 if ( request.StatusTypes?.Count > 0 )
                 {
+                    List<int> convertToIntegers = new List<int>();
+
                     queryString.Append( "&statuses=" );
-                    queryString.Append( string.Join( "-", request.MonitorTypes ) );
+
+                    foreach ( OnlineStatusType onlineStatusType in request.StatusTypes )
+                    {
+                        convertToIntegers.Add( (int)onlineStatusType );
+                    }
+
+                    queryString.Append( string.Join( "-", convertToIntegers ) );
                 }
 
                 // UptimeDateRanges
@@ -398,7 +415,6 @@ namespace SharpenUp.Client
 
         #region Private Methods
 
-        // TODO: Test this, I don't actually know if it works. 
         private double ConvertDateTimeToSeconds( DateTime date )
         {
             TimeSpan span = date.Subtract( new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc ) );

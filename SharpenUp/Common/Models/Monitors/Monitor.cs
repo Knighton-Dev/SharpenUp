@@ -44,6 +44,9 @@ namespace SharpenUp.Common.Models.Monitors
         [JsonProperty( PropertyName = "all_time_uptime_ratio" )]
         public double UptimeRatio { get; set; }
 
+        [JsonProperty( PropertyName = "custom_uptime_ranges" )]
+        public double CustomUptimeRatio { get; set; }
+
         [JsonProperty( PropertyName = "alert_contacts" )]
         public List<AlertContact> AlertContacts { get; set; }
 

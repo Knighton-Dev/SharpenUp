@@ -47,8 +47,7 @@ namespace SharpenUp.Tests
 
         #region Test Single Flags
 
-        // TODO: Implement
-        [Fact( Skip = "Not Implemented" )]
+        [Fact]
         public async Task SingleMonitor_GoodKey_GoodId_WithMonitorTypes()
         {
             MonitorsRequest request = new MonitorsRequest
@@ -59,10 +58,30 @@ namespace SharpenUp.Tests
 
             MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
 
-            Assert.True( result.Status == RequestStatusType.ok );
-            Assert.True( result.Error == null );
-            Assert.True( result.Results[ 0 ].FriendlyName == Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ) );
-            Assert.NotNull( result.Results[ 0 ].Logs );
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
+            Assert.NotEqual( MonitorType.Heartbeat, result.Results[ 0 ].MonitorType );
+        }
+
+        [Fact]
+        public async Task SingleMonitor_GoodKey_GoodId_WithUptimeDateRanges()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
+                UptimeDateRanges = new List<Tuple<DateTime, DateTime>>
+                {
+                    new Tuple<DateTime, DateTime>( new DateTime( 2019, 8, 2, 12, 49, 30 ), new DateTime( 2019, 8, 14, 14, 36, 10 ) )
+                }
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
+            Assert.Equal( 100.00, result.Results[ 0 ].CustomUptimeRatio );
         }
 
         [Fact]
@@ -114,6 +133,22 @@ namespace SharpenUp.Tests
             Assert.Null( result.Error );
             Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
             Assert.NotEqual( 0, result.TimeZone );
+        }
+
+        [Fact]
+        public async Task AllMonitors_GoodKey_GoodId_WithStatusTypes()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                StatusTypes = new List<OnlineStatusType> { OnlineStatusType.Online }
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
+            Assert.NotEqual( OnlineStatusType.Paused, result.Results[ 0 ].OnlineStatus );
         }
 
         [Fact]
