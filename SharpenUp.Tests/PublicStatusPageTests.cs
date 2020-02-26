@@ -61,7 +61,7 @@ namespace SharpenUp.Tests
             PublicStatusPagesRequest request = new PublicStatusPagesRequest
             {
                 PageIds = new List<int> { 171453 },
-                PaginationOffest = 2
+                PaginationOffset = 2
             };
 
             PublicStatusPagesResult result = await _goodManager.GetPublicStatusPagesAsync( request );
@@ -83,7 +83,7 @@ namespace SharpenUp.Tests
             PublicStatusPagesRequest request = new PublicStatusPagesRequest
             {
                 PageIds = new List<int> { 98604 },
-                PaginationOffest = 2,
+                PaginationOffset = 2,
                 PaginationLimit = 15
             };
 

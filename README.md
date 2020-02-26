@@ -100,7 +100,7 @@ This is based off of a list on the Uptime Robot reference.
 - `POST newAlertContact`
 - `POST editAlertContact`
 - `POST deleteAlertContact`
-- `POST getMWindows`
+- `POST getMWindows` *Mostly complete, but untested, as of 0.0.6 (I don't have a premium account at the moment.*
 - `POST newMWindow`
 - `POST editMWindow`
 - `POST deleteMWindow`

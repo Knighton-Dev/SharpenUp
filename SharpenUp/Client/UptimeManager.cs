@@ -1,15 +1,16 @@
-﻿using Newtonsoft.Json;
-using RestSharp;
-using SharpenUp.Common;
-using SharpenUp.Common.Models.Accounts;
-using SharpenUp.Common.Models.Alerts;
-using SharpenUp.Common.Models.Monitors;
-using SharpenUp.Common.Models.PublicStatusPages;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Newtonsoft.Json;
+using RestSharp;
+using SharpenUp.Common;
+using SharpenUp.Common.Models.Accounts;
+using SharpenUp.Common.Models.Alerts;
+using SharpenUp.Common.Models.MaintenanceWindows;
+using SharpenUp.Common.Models.Monitors;
+using SharpenUp.Common.Models.PublicStatusPages;
 
 namespace SharpenUp.Client
 {
@@ -17,7 +18,7 @@ namespace SharpenUp.Client
     {
         private readonly string _apiKey;
 
-        public UptimeManager ( string apiKey )
+        public UptimeManager( string apiKey )
         {
             _apiKey = apiKey;
         }
@@ -25,7 +26,7 @@ namespace SharpenUp.Client
         /// <summary>
         /// Account details (max number of monitors that can be added and number of up/down/paused monitors) can be grabbed using this method.
         /// </summary>
-        public async Task<AccountDetailsResult> GetAccountDetailsAsync ()
+        public async Task<AccountDetailsResult> GetAccountDetailsAsync()
         {
             try
             {
@@ -52,7 +53,7 @@ namespace SharpenUp.Client
         /// <summary>
         /// The list of alert contacts can be called with this method.
         /// </summary>
-        public async Task<AlertContactsResult> GetAlertContactsAsync ()
+        public async Task<AlertContactsResult> GetAlertContactsAsync()
         {
             try
             {
@@ -84,7 +85,7 @@ namespace SharpenUp.Client
         /// There are optional parameters which lets the getMonitors method to output information on any given monitors rather than all of them.
         /// And also, parameters exist for getting the notification logs (alerts) for each monitor and even which alert contacts were alerted on each notification.
         /// </summary>
-        public async Task<MonitorsResult> GetMonitorsAsync ()
+        public async Task<MonitorsResult> GetMonitorsAsync()
         {
             return await GetMonitorsAsync( new MonitorsRequest() );
         }
@@ -96,7 +97,7 @@ namespace SharpenUp.Client
         /// And also, parameters exist for getting the notification logs (alerts) for each monitor and even which alert contacts were alerted on each notification.
         /// </summary>
         /// <param name="request">A Monitors Request object.</param>
-        public async Task<MonitorsResult> GetMonitorsAsync ( MonitorsRequest request )
+        public async Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request )
         {
             try
             {
@@ -283,12 +284,68 @@ namespace SharpenUp.Client
 
         #endregion
 
+        #region Maintenance Windows
+
+        /// <summary>
+        /// The list of maintenance windows can be called with this method.
+        /// </summary>
+        public async Task<MaintenanceWindowsResult> GetMaintenanceWindowsAsync()
+        {
+            return await GetMaintenanceWindowsAsync( new MaintenanceWindowsRequest() );
+        }
+
+        /// <summary>
+        /// The list of maintenance windows can be called with this method.
+        /// </summary>
+        /// <param name="request">Maintenance Windows Request object</param>
+        public async Task<MaintenanceWindowsResult> GetMaintenanceWindowsAsync( MaintenanceWindowsRequest request )
+        {
+            try
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                if ( request.MaintenanceWindows?.Count > 0 )
+                {
+                    queryString.Append( "&mwindows=" );
+                    queryString.Append( string.Join( "-", request.MaintenanceWindows ) );
+                }
+
+                if ( request.PaginationOffset != 0 )
+                {
+                    queryString.Append( $"&offset={request.PaginationOffset}" );
+                }
+
+                if ( request.PaginationLimit != 50 )
+                {
+                    queryString.Append( $"&limit={request.PaginationLimit}" );
+                }
+
+                RestClient client = new RestClient( "https://api.uptimerobot.com/v2/getmwindows" );
+                RestRequest restRequest = new RestRequest( Method.POST );
+
+                restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
+                restRequest.AddHeader( "cache-control", "no-cache" );
+
+                restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
+
+                IRestResponse response = await client.ExecuteAsync( restRequest );
+
+                return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
+            }
+            catch ( Exception e )
+            {
+                throw e;
+            }
+        }
+
+        #endregion
+
         #region Public Status Pages
 
         /// <summary>
         /// The list of public status pages can be called with this method.
         /// </summary>
-        public async Task<PublicStatusPagesResult> GetPublicStatusPagesAsync ()
+        public async Task<PublicStatusPagesResult> GetPublicStatusPagesAsync()
         {
             return await GetPublicStatusPagesAsync( new PublicStatusPagesRequest() );
         }
@@ -297,7 +354,7 @@ namespace SharpenUp.Client
         /// The list of public status pages can be called with this method.
         /// </summary>
         /// <param name="request">A Public Status Pages Request object.</param>
-        public async Task<PublicStatusPagesResult> GetPublicStatusPagesAsync ( PublicStatusPagesRequest request )
+        public async Task<PublicStatusPagesResult> GetPublicStatusPagesAsync( PublicStatusPagesRequest request )
         {
             try
             {
@@ -309,9 +366,9 @@ namespace SharpenUp.Client
                     queryString.Append( string.Join( "-", request.PageIds ) );
                 }
 
-                if ( request.PaginationOffest != 0 )
+                if ( request.PaginationOffset != 0 )
                 {
-                    queryString.Append( $"&offset={request.PaginationOffest}" );
+                    queryString.Append( $"&offset={request.PaginationOffset}" );
                 }
 
                 if ( request.PaginationLimit != 50 )
@@ -342,7 +399,7 @@ namespace SharpenUp.Client
         #region Private Methods
 
         // TODO: Test this, I don't actually know if it works. 
-        private double ConvertDateTimeToSeconds ( DateTime date )
+        private double ConvertDateTimeToSeconds( DateTime date )
         {
             TimeSpan span = date.Subtract( new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc ) );
             return span.TotalSeconds;
