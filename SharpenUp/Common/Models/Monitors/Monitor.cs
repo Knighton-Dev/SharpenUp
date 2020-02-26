@@ -71,5 +71,8 @@ namespace SharpenUp.Common.Models.Monitors
                 };
             }
         }
+
+        [JsonProperty( PropertyName = "response_times" )]
+        public List<ResponseTime> ResponseTimes { get; set; }
     }
 }
