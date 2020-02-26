@@ -119,6 +119,91 @@ namespace SharpenUp.Tests
         }
 
         [Fact]
+        public async Task SingleMonitor_GoodKey_GoodId_WithLogs_WithStartDate()
+        {
+            DateTime startDate = new DateTime( 2020, 1, 25, 10, 00, 00 );
+
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) ) },
+                IncludeLogs = true,
+                LogsStartDate = startDate
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
+            Assert.NotNull( result.Results[ 0 ].Logs );
+            Assert.True( result.Results[ 0 ].Logs[ result.Results[ 0 ].Logs.Count - 1 ].IncidentTime > startDate );
+        }
+
+        [Fact]
+        public async Task SingleMonitor_GoodKey_GoodId_WithLogs_WithEndDate()
+        {
+            DateTime endDate = new DateTime( 2020, 1, 25, 10, 00, 00 );
+
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) ) },
+                IncludeLogs = true,
+                LogsEndDate = endDate
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
+            Assert.NotNull( result.Results[ 0 ].Logs );
+            Assert.True( result.Results[ 0 ].Logs[ 0 ].IncidentTime < endDate );
+        }
+
+        [Fact]
+        public async Task SingleMonitor_GoodKey_GoodId_WithLogs_WithBothDates()
+        {
+            DateTime startDate = new DateTime( 2020, 1, 25, 10, 00, 00 );
+            DateTime endDate = new DateTime( 2020, 2, 15, 10, 00, 00 );
+
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) ) },
+                IncludeLogs = true,
+                LogsStartDate = startDate,
+                LogsEndDate = endDate
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
+            Assert.NotNull( result.Results[ 0 ].Logs );
+            Assert.InRange( result.Results[ 0 ].Logs[ 0 ].IncidentTime, startDate, endDate );
+            Assert.InRange( result.Results[ 0 ].Logs[ result.Results[ 0 ].Logs.Count - 1 ].IncidentTime, startDate, endDate );
+        }
+
+        [Fact]
+        public async Task SingleMonitor_GoodKey_GoodId_WithLogs_WithLimit()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
+                IncludeLogs = true,
+                LogsLimit = 5
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
+            Assert.NotNull( result.Results[ 0 ].Logs );
+            Assert.Equal( 5, result.Results[ 0 ].Logs.Count );
+        }
+
+        [Fact]
         public async Task SingleMonitor_GoodKey_GoodId_WithUptime()
         {
             MonitorsRequest request = new MonitorsRequest

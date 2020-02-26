@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using SharpenUp.Common.Types;
 
 namespace SharpenUp.Common.Models
@@ -9,7 +10,16 @@ namespace SharpenUp.Common.Models
         public OnlineStatusType OnlineStatus { get; set; }
 
         [JsonProperty( PropertyName = "datetime" )]
-        public int IncidentTime { get; set; } // TODO: Need to convert this from epoch to DateTime
+        private int IncidentTimeInt { get; set; }
+
+        public DateTime IncidentTime
+        {
+            get
+            {
+                DateTimeOffset offset = DateTimeOffset.FromUnixTimeSeconds( IncidentTimeInt );
+                return offset.UtcDateTime;
+            }
+        }
 
         [JsonProperty( PropertyName = "duration" )]
         public int Duration { get; set; } // TODO: Need to convert this to TimeSpan

@@ -6,12 +6,12 @@ using System.Web;
 using Newtonsoft.Json;
 using RestSharp;
 using SharpenUp.Common;
-using SharpenUp.Common.Types;
 using SharpenUp.Common.Models.Accounts;
 using SharpenUp.Common.Models.Alerts;
 using SharpenUp.Common.Models.MaintenanceWindows;
 using SharpenUp.Common.Models.Monitors;
 using SharpenUp.Common.Models.PublicStatusPages;
+using SharpenUp.Common.Types;
 
 namespace SharpenUp.Client
 {
