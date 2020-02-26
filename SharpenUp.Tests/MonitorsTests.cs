@@ -369,6 +369,21 @@ namespace SharpenUp.Tests
         }
 
         [Fact]
+        public async Task AllMonitors_GoodKey_GoodId_WithSearchTerm()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                SearchTerm = Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" )
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) ), result.Results[ 0 ].Id );
+        }
+
+        [Fact]
         public async Task MultipleMonitors_GoodKey_GoodIds_WithLogs()
         {
             MonitorsRequest request = new MonitorsRequest
