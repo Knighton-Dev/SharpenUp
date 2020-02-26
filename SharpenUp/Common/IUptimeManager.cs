@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using SharpenUp.Common.Models.Accounts;
 using SharpenUp.Common.Models.Alerts;
+using SharpenUp.Common.Models.MaintenanceWindows;
 using SharpenUp.Common.Models.Monitors;
 using SharpenUp.Common.Models.PublicStatusPages;
-using SharpenUp.Common.Models.MaintenanceWindows;
 
 namespace SharpenUp.Common
 {

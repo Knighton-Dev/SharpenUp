@@ -85,6 +85,23 @@ namespace SharpenUp.Tests
         }
 
         [Fact]
+        public async Task SingleMonitor_GoodKey_GoodId_WithUptimeDurations()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
+                IncludeAllTimeUptimeDurations = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
+            Assert.Equal( 0, result.Results[ 0 ].UptimeDuration.Paused );
+        }
+
+        [Fact]
         public async Task SingleMonitor_GoodKey_GoodId_WithLogs()
         {
             MonitorsRequest request = new MonitorsRequest

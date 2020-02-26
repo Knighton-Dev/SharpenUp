@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using SharpenUp.Common.Models.Alerts;
 using SharpenUp.Common.Types;
@@ -52,5 +53,23 @@ namespace SharpenUp.Common.Models.Monitors
 
         [JsonProperty( PropertyName = "ssl" )]
         public SSLInfo SSLInfo { get; set; }
+
+        [JsonProperty( PropertyName = "all_time_uptime_durations" )]
+        private string UptimeDurationString { get; set; }
+
+        public UptimeDuration UptimeDuration
+        {
+            get
+            {
+                List<string> brokenUp = UptimeDurationString.Split( '-' ).ToList();
+
+                return new UptimeDuration
+                {
+                    Up = int.Parse( brokenUp[ 0 ] ),
+                    Down = int.Parse( brokenUp[ 1 ] ),
+                    Paused = int.Parse( brokenUp[ 2 ] )
+                };
+            }
+        }
     }
 }
