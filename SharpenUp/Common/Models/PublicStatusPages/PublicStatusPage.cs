@@ -31,6 +31,4 @@ namespace SharpenUp.Common.Models.PublicStatusPages
         [JsonProperty( PropertyName = "custom_url" )]
         public string CustomURL { get; set; }
     }
-
-
 }
