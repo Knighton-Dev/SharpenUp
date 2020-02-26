@@ -260,7 +260,7 @@ namespace SharpenUp.Client
                 // Limit
                 if ( request.PaginationLimit != 50 )
                 {
-                    queryString.Append( $"&liumit={request.PaginationLimit}" );
+                    queryString.Append( $"&limit={request.PaginationLimit}" );
                 }
 
                 // SearchTerm

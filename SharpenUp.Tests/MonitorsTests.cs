@@ -338,6 +338,37 @@ namespace SharpenUp.Tests
         }
 
         [Fact]
+        public async Task AllMonitors_GoodKey_GoodId_WithPaginationOffset()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                PaginationOffset = 2
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( 2, result.Pagination.Offset );
+        }
+
+        [Fact]
+        public async Task AllMonitors_GoodKey_GoodId_WithPaginationLimit()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                PaginationLimit = 3
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( 3, result.Pagination.Limit );
+            Assert.Equal( 3, result.Results.Count );
+        }
+
+        [Fact]
         public async Task MultipleMonitors_GoodKey_GoodIds_WithLogs()
         {
             MonitorsRequest request = new MonitorsRequest
