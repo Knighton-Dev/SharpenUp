@@ -88,7 +88,6 @@ namespace SharpenUp.Common.Models.Monitors
         /// <summary>
         /// Optional (defines if the maintenance windows for the monitors will be returned. Default is 0.)
         /// </summary>
-        [ExcludeFromCodeCoverage]
         public bool IncludeMaintenanceWindows { get; set; } = false;
 
         /// <summary>
