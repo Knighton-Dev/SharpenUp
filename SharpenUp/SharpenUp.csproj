@@ -26,7 +26,6 @@
     <Folder Include="Common\Models\Monitors\" />
     <Folder Include="Common\Models\Alerts\" />
     <Folder Include="Common\Models\PublicStatusPages\" />
-    <Folder Include="Common\Utilities\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
