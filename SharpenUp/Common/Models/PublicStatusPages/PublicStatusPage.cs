@@ -1,7 +1,8 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using SharpenUp.Common.Types;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json;
+using SharpenUp.Common.Types;
+using SharpenUp.Common.Utilities;
 
 namespace SharpenUp.Common.Models.PublicStatusPages
 {
@@ -14,9 +15,9 @@ namespace SharpenUp.Common.Models.PublicStatusPages
         [JsonProperty( PropertyName = "friendly_name" )]
         public string Name { get; set; }
 
-        // TODO: This isn't parsing and I need to figure out why.
-        //[JsonProperty( PropertyName = "monitors" )]
-        //public List<int> Monitors { get; set; }
+        [JsonProperty( PropertyName = "monitors" )]
+        [JsonConverter( typeof( SingleOrArrayConverter<int> ) )]
+        public List<int> Monitors { get; set; }
 
         [JsonProperty( PropertyName = "sort" )]
         public PublicStatusPageSortType Sort { get; set; }
@@ -30,4 +31,6 @@ namespace SharpenUp.Common.Models.PublicStatusPages
         [JsonProperty( PropertyName = "custom_url" )]
         public string CustomURL { get; set; }
     }
+
+
 }

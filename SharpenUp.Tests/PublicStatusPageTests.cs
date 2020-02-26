@@ -26,11 +26,11 @@ namespace SharpenUp.Tests
             PublicStatusPagesResult result = await _goodManager.GetPublicStatusPagesAsync();
 
             Assert.Equal( RequestStatusType.ok, result.Status );
-            Assert.Equal( "Public Status", result.Results[ 0 ].Name );
-            // TODO: Test Monitors
+            Assert.Equal( Environment.GetEnvironmentVariable( "PSP_NAME_1" ), result.Results[ 0 ].Name );
+            Assert.Equal( 1, result.Results[ 0 ].Monitors?.Count );
             Assert.Equal( PublicStatusPageSortType.FriendlyName, result.Results[ 0 ].Sort );
             Assert.Equal( PublicStatusPageStatusType.Active, result.Results[ 0 ].Status );
-            Assert.Equal( "https://stats.uptimerobot.com/lvxRjU2XQ5", result.Results[ 0 ].StandardURL );
+            Assert.Equal( Environment.GetEnvironmentVariable( "PSP_URL_1" ), result.Results[ 0 ].StandardURL );
             Assert.Equal( "", result.Results[ 0 ].CustomURL );
         }
 
@@ -45,11 +45,11 @@ namespace SharpenUp.Tests
             PublicStatusPagesResult result = await _goodManager.GetPublicStatusPagesAsync( request );
 
             Assert.Equal( RequestStatusType.ok, result.Status );
-            Assert.Equal( "Public Status", result.Results[ 0 ].Name );
-            // TODO: Test Monitors
+            Assert.Equal( Environment.GetEnvironmentVariable( "PSP_NAME_1" ), result.Results[ 0 ].Name );
+            Assert.Equal( 1, result.Results[ 0 ].Monitors?.Count );
             Assert.Equal( PublicStatusPageSortType.FriendlyName, result.Results[ 0 ].Sort );
             Assert.Equal( PublicStatusPageStatusType.Active, result.Results[ 0 ].Status );
-            Assert.Equal( "https://stats.uptimerobot.com/lvxRjU2XQ5", result.Results[ 0 ].StandardURL );
+            Assert.Equal( Environment.GetEnvironmentVariable( "PSP_URL_1" ), result.Results[ 0 ].StandardURL );
             Assert.Equal( "", result.Results[ 0 ].CustomURL );
             Assert.Equal( 0, result.Pagination.Offset );
             Assert.Equal( 50, result.Pagination.Limit );
@@ -60,18 +60,18 @@ namespace SharpenUp.Tests
         {
             PublicStatusPagesRequest request = new PublicStatusPagesRequest
             {
-                PageIds = new List<int> { 98604 },
+                PageIds = new List<int> { 171453 },
                 PaginationOffest = 2
             };
 
             PublicStatusPagesResult result = await _goodManager.GetPublicStatusPagesAsync( request );
 
             Assert.Equal( RequestStatusType.ok, result.Status );
-            Assert.Equal( "Public Status", result.Results[ 0 ].Name );
-            // TODO: Test Monitors
+            Assert.Equal( Environment.GetEnvironmentVariable( "PSP_NAME_2" ), result.Results[ 0 ].Name );
+            Assert.Equal( 2, result.Results[ 0 ].Monitors?.Count );
             Assert.Equal( PublicStatusPageSortType.FriendlyName, result.Results[ 0 ].Sort );
             Assert.Equal( PublicStatusPageStatusType.Active, result.Results[ 0 ].Status );
-            Assert.Equal( "https://stats.uptimerobot.com/lvxRjU2XQ5", result.Results[ 0 ].StandardURL );
+            Assert.Equal( Environment.GetEnvironmentVariable( "PSP_URL_2" ), result.Results[ 0 ].StandardURL );
             Assert.Equal( "", result.Results[ 0 ].CustomURL );
             Assert.Equal( 2, result.Pagination.Offset );
             Assert.Equal( 50, result.Pagination.Limit );
@@ -90,11 +90,11 @@ namespace SharpenUp.Tests
             PublicStatusPagesResult result = await _goodManager.GetPublicStatusPagesAsync( request );
 
             Assert.Equal( RequestStatusType.ok, result.Status );
-            Assert.Equal( "Public Status", result.Results[ 0 ].Name );
-            // TODO: Test Monitors
+            Assert.Equal( Environment.GetEnvironmentVariable( "PSP_NAME_1" ), result.Results[ 0 ].Name );
+            Assert.Equal( 1, result.Results[ 0 ].Monitors?.Count );
             Assert.Equal( PublicStatusPageSortType.FriendlyName, result.Results[ 0 ].Sort );
             Assert.Equal( PublicStatusPageStatusType.Active, result.Results[ 0 ].Status );
-            Assert.Equal( "https://stats.uptimerobot.com/lvxRjU2XQ5", result.Results[ 0 ].StandardURL );
+            Assert.Equal( Environment.GetEnvironmentVariable( "PSP_URL_1" ), result.Results[ 0 ].StandardURL );
             Assert.Equal( "", result.Results[ 0 ].CustomURL );
             Assert.Equal( 2, result.Pagination.Offset );
             Assert.Equal( 15, result.Pagination.Limit );
