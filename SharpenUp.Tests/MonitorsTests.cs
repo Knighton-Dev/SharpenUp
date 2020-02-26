@@ -204,6 +204,45 @@ namespace SharpenUp.Tests
         }
 
         [Fact]
+        public async Task SingleMonitor_GoodKey_GoodId_WithResponseTimes()
+        {
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
+                IncludeResponseTimes = true
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
+            Assert.NotNull( result.Results[ 0 ].ResponseTimes );
+        }
+
+        [Fact( Skip = "Need to sort out the converter." )]
+        public async Task SingleMonitor_GoodKey_GoodId_WithResponseTimes_WithBothDates()
+        {
+            DateTime startDate = DateTime.Now.AddDays( -1 );
+            DateTime endDate = DateTime.Now;
+
+            MonitorsRequest request = new MonitorsRequest
+            {
+                MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
+                IncludeResponseTimes = true,
+                ResponseTimesStartDate = startDate,
+                ResponseTimesEndDate = endDate
+            };
+
+            MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
+
+            Assert.Equal( RequestStatusType.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
+            Assert.NotNull( result.Results[ 0 ].ResponseTimes );
+        }
+
+        [Fact]
         public async Task SingleMonitor_GoodKey_GoodId_WithUptime()
         {
             MonitorsRequest request = new MonitorsRequest

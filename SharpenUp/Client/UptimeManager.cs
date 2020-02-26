@@ -209,7 +209,7 @@ namespace SharpenUp.Client
                     if ( request.ResponseTimesStartDate != DateTime.MinValue && request.ResponseTimesEndDate != DateTime.MaxValue )
                     {
                         TimeSpan timeSpan = request.ResponseTimesEndDate - request.ResponseTimesStartDate;
-                        if ( timeSpan.TotalDays > 7 )
+                        if ( timeSpan.TotalDays < 7 )
                         {
                             queryString.Append( $"&response_times_start_date={ConvertDateTimeToSeconds( request.ResponseTimesStartDate )}" );
                             queryString.Append( $"&response_times_end_date={ConvertDateTimeToSeconds( request.ResponseTimesEndDate )}" );
@@ -218,10 +218,6 @@ namespace SharpenUp.Client
                         {
                             throw new Exception( "Difference between the start and end date can not exceed 7 days." );
                         }
-                    }
-                    else
-                    {
-                        throw new Exception( "Both Start and End Date must be specified." );
                     }
                 }
 
