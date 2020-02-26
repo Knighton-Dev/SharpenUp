@@ -220,7 +220,7 @@ namespace SharpenUp.Tests
             Assert.NotNull( result.Results[ 0 ].ResponseTimes );
         }
 
-        [Fact( Skip = "Need to sort out the converter." )]
+        [Fact]
         public async Task SingleMonitor_GoodKey_GoodId_WithResponseTimes_WithBothDates()
         {
             DateTime startDate = DateTime.Now.AddDays( -1 );
@@ -230,8 +230,8 @@ namespace SharpenUp.Tests
             {
                 MonitorIds = new List<int> { Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) ) },
                 IncludeResponseTimes = true,
-                ResponseTimesStartDate = startDate,
-                ResponseTimesEndDate = endDate
+                ResponseTimesStartDate = startDate.AddTicks( -( startDate.Ticks % TimeSpan.TicksPerSecond ) ),
+                ResponseTimesEndDate = endDate.AddTicks( -( endDate.Ticks % TimeSpan.TicksPerSecond ) )
             };
 
             MonitorsResult result = await _goodManager.GetMonitorsAsync( request );
