@@ -93,5 +93,47 @@ namespace SharpenUp
         }
 
         #endregion
+
+        #region Public Status Pages
+
+        public async Task<PublicStatusPageResult> GetPublicStatusPageResultsAsync()
+        {
+            return await GetPublicStatusPageResultsAsync( new PublicStatusPageRequest() );
+        }
+
+        public async Task<PublicStatusPageResult> GetPublicStatusPageResultsAsync( PublicStatusPageRequest request )
+        {
+            StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+            if ( request.PublicStatusPages?.Count > 0 )
+            {
+                queryString.Append( "&alert_contacts=" );
+                queryString.Append( string.Join( "-", request.PublicStatusPages ) );
+            }
+
+            if ( request.Offset != 0 )
+            {
+                queryString.Append( $"&offset={request.Offset}" );
+            }
+
+            if ( request.Limit != 50 )
+            {
+                queryString.Append( $"&limit={request.Limit}" );
+            }
+
+            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getAlertContacts" );
+            RestRequest restRequest = new RestRequest( Method.POST );
+
+            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
+            restRequest.AddHeader( "cache-control", "no-cache" );
+
+            restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
+
+            IRestResponse response = await restClient.ExecuteAsync( restRequest );
+
+            return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+        }
+
+        #endregion
     }
 }

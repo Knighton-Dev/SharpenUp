@@ -24,9 +24,15 @@ namespace SharpenUp.Models
         public string Monitors { get; set; }
 
         /// <summary>
-        /// The domain or subdomain that the status page will run on.
+        /// The custom domain or subdomain that the status page will run on.
         /// </summary>
-        [JsonProperty( PropertyName = "custom_domain" )]
+        [JsonProperty( PropertyName = "standard_url" )]
+        public Uri StandardDomain { get; set; }
+
+        /// <summary>
+        /// The custom domain or subdomain that the status page will run on.
+        /// </summary>
+        [JsonProperty( PropertyName = "custom_url" )]
         public Uri CustomDomain { get; set; }
 
         /// <summary>

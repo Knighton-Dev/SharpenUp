@@ -84,5 +84,13 @@ namespace SharpenUp.Tests
         }
 
         #endregion
+
+        #region Maintenance Windows
+
+        #endregion
+
+        #region Public Status Pages
+
+        #endregion
     }
 }
