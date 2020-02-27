@@ -80,6 +80,10 @@ export GOOD_MONITOR_ID_1=A_VALID_ID
 export GOOD_MONITOR_ID_2=A_VALID_ID
 export GOOD_MONITOR_1_FRIENDLY_NAME="MATCHING_NAME_1"
 export GOOD_MONITOR_2_FRIENDLY_NAME="MATCHING_NAME_2"
+export PSP_NAME_1="PUBLICE_STATUS_PAGE_1_NAME"
+export PSP_NAME_2="PUBLICE_STATUS_PAGE_2_NAME"
+export PSP_URL_1="PUBLICE_STATUS_PAGE_1_URL"
+export PSP_URL_2="PUBLICE_STATUS_PAGE_2_URL"
 ```
 
 ## Endpoints Exposed
@@ -96,11 +100,11 @@ This is based off of a list on the Uptime Robot reference.
 - `POST newAlertContact`
 - `POST editAlertContact`
 - `POST deleteAlertContact`
-- `POST getMWindows`
+- `POST getMWindows` *Mostly complete, but untested, as of 0.0.6 (I don't have a premium account at the moment.*
 - `POST newMWindow`
 - `POST editMWindow`
 - `POST deleteMWindow`
-- `POST getPSPs` *Mostly complete, but not yet released*
+- ~~`POST getPSPs`~~ *Complete as of 0.0.5*
 - `POST newPSP`
 - `POST editPSP`
 - `POST deletePSP`

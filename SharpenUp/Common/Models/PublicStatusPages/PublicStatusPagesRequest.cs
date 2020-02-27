@@ -12,7 +12,7 @@ namespace SharpenUp.Common.Models.PublicStatusPages
         /// <summary>
         /// Optional (used for pagination. Defines the record to start paginating. Default is 0)
         /// </summary>
-        public int PaginationOffest { get; set; } = 0;
+        public int PaginationOffset { get; set; } = 0;
 
         /// <summary>
         /// Optional (used for pagination. Defines the max number of records to return for the response. Default and max. is 50)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SharpenUp.Common.Types;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SharpenUp.Common.Models.Monitors
 {
@@ -83,6 +84,7 @@ namespace SharpenUp.Common.Models.Monitors
         /// </summary>
         public bool IncludeAlertContacts { get; set; } = false;
 
+        // TODO: Come back and test this when I have a premium account. 
         /// <summary>
         /// Optional (defines if the maintenance windows for the monitors will be returned. Default is 0.)
         /// </summary>

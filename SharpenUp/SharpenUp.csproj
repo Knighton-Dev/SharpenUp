@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackOnBuild>true</PackOnBuild>
-    <PackageVersion>0.0.5</PackageVersion>
+    <PackageVersion>0.0.6</PackageVersion>
     <Authors>Ian Knighton</Authors>
     <Copyright>Knighton.dev</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -26,6 +26,8 @@
     <Folder Include="Common\Models\Monitors\" />
     <Folder Include="Common\Models\Alerts\" />
     <Folder Include="Common\Models\PublicStatusPages\" />
+    <Folder Include="Common\Utilities\" />
+    <Folder Include="Common\Models\MaintenanceWindows\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
