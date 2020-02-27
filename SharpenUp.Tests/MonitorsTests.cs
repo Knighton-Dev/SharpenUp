@@ -41,6 +41,8 @@ namespace SharpenUp.Tests
             Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
             Assert.Null( result.Results[ 0 ].Logs );
             Assert.Equal( createDate, result.Results[ 0 ].CreationDate );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_URL" ), result.Results[ 0 ].URL );
+            Assert.Equal( 300, result.Results[ 0 ].Interval )
         }
 
         #endregion
@@ -99,6 +101,8 @@ namespace SharpenUp.Tests
             Assert.Null( result.Error );
             Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Results[ 0 ].FriendlyName );
             Assert.Equal( 0, result.Results[ 0 ].UptimeDuration.Paused );
+            Assert.True( result.Results[ 0 ].UptimeDuration.Up > 0 );
+            Assert.True( result.Results[ 0 ].UptimeDuration.Down > 0 );
         }
 
         [Fact]
@@ -305,6 +309,7 @@ namespace SharpenUp.Tests
             Assert.Equal( RequestStatusType.ok, result.Status );
             Assert.Null( result.Error );
             Assert.NotNull( result.Results[ 0 ].Logs );
+            Assert.True( result.Results[ 0 ].Logs[ 0 ].Duration.TotalSeconds > 0 );
         }
 
         [Fact]
@@ -594,6 +599,7 @@ namespace SharpenUp.Tests
             MonitorsResult result = await _badManager.GetMonitorsAsync( new MonitorsRequest() );
 
             Assert.Equal( RequestStatusType.fail, result.Status );
+            Assert.Equal( "api_key is invalid.", result.Error.Message );
             Assert.Null( result.Results );
         }
     }

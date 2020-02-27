@@ -30,6 +30,8 @@ namespace SharpenUp.Tests
             Assert.Equal( 50, result.Limit );
             Assert.True( result.Total > 0 );
             Assert.NotNull( result.AlertContacts );
+            Assert.Equal( AlertContactType.Email, result.AlertContacts[ 0 ].Type );
+            Assert.Equal( AlertContactStatusType.Active, result.AlertContacts[ 0 ].Status );
         }
 
         [Fact]

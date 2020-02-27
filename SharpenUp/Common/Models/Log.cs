@@ -1,13 +1,15 @@
 ﻿using Newtonsoft.Json;
 using System;
 using SharpenUp.Common.Types;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SharpenUp.Common.Models
 {
     public class Log
     {
         [JsonProperty( PropertyName = "type" )]
-        public OnlineStatusType OnlineStatus { get; set; }
+        [ExcludeFromCodeCoverage]
+        public LogType LogStatus { get; set; }
 
         [JsonProperty( PropertyName = "datetime" )]
         private int IncidentTimeInt { get; set; }
@@ -22,7 +24,16 @@ namespace SharpenUp.Common.Models
         }
 
         [JsonProperty( PropertyName = "duration" )]
-        public int Duration { get; set; } // TODO: Need to convert this to TimeSpan
+        [ExcludeFromCodeCoverage]
+        private int DurationInt { get; set; }
+
+        public TimeSpan Duration
+        {
+            get
+            {
+                return TimeSpan.FromSeconds( DurationInt );
+            }
+        }
 
         [JsonProperty( PropertyName = "reason" )]
         public Reason Reason { get; set; }
