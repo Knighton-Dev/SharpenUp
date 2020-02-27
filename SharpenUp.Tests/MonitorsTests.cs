@@ -42,7 +42,7 @@ namespace SharpenUp.Tests
             Assert.Null( result.Results[ 0 ].Logs );
             Assert.Equal( createDate, result.Results[ 0 ].CreationDate );
             Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_URL" ), result.Results[ 0 ].URL );
-            Assert.Equal( 300, result.Results[ 0 ].Interval )
+            Assert.Equal( 300, result.Results[ 0 ].Interval );
         }
 
         #endregion
