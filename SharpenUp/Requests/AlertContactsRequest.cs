@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SharpenUp.Requests
 {
@@ -8,6 +8,7 @@ namespace SharpenUp.Requests
         /// <summary>
         /// Optional (if not used, will return all alert contacts in an account. Else, it is possible to define any number of alert contacts with their IDs like: alert_contacts=236-1782-4790)
         /// </summary>
+        [ExcludeFromCodeCoverage]
         public List<int> AlertContacts { get; set; } = new List<int>();
 
         /// <summary>

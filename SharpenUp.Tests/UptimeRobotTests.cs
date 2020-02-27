@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharpenUp.Models;
 using SharpenUp.Requests;
@@ -65,13 +64,11 @@ namespace SharpenUp.Tests
             Assert.True( result.Total > 0 );
         }
 
-        // TODO: This doesn't completely test the options. 
         [Fact]
         public async Task GetAlertContactsAsync_WithRequest()
         {
             AlertContactsRequest request = new AlertContactsRequest
             {
-                AlertContacts = new List<int>(),
                 Offset = 2,
                 Limit = 20
             };
