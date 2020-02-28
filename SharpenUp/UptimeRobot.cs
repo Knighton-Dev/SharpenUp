@@ -4,6 +4,8 @@ using Newtonsoft.Json;
 using RestSharp;
 using SharpenUp.Requests;
 using SharpenUp.Results;
+using System.Collections.Generic;
+using SharpenUp.Models;
 
 namespace SharpenUp
 {
@@ -46,9 +48,29 @@ namespace SharpenUp
             return await GetMonitorsAsync( new MonitorsRequest() );
         }
 
-        private async Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request )
+        public async Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request )
         {
             StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+            if ( request.Monitors?.Count > 0 )
+            {
+                queryString.Append( "&monitors=" );
+                queryString.Append( string.Join( "-", request.Monitors ) );
+            }
+
+            if ( request.MonitorTypes?.Count > 0 )
+            {
+                List<int> convertToIntegers = new List<int>();
+
+                queryString.Append( "&types=" );
+
+                foreach ( MonitorType monitorType in request.MonitorTypes )
+                {
+                    convertToIntegers.Add( (int)monitorType );
+                }
+
+                queryString.Append( string.Join( "-", convertToIntegers ) );
+            }
 
             RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
             RestRequest restRequest = new RestRequest( Method.POST );
