@@ -47,6 +47,14 @@ namespace SharpenUp.Tests
 
         #region Monitors
 
+        [Fact]
+        public async Task GetMonitorsAsync_NoRequest()
+        {
+            MonitorsResult result = await _goodRobot.GetMonitorsAsync();
+
+            Assert.Equal( Status.ok, result.Status );
+        }
+
         #endregion
 
         #region Alert Contacts

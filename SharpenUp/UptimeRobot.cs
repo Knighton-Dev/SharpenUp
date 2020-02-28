@@ -41,6 +41,28 @@ namespace SharpenUp
 
         #region Monitors
 
+        public async Task<MonitorsResult> GetMonitorsAsync()
+        {
+            return await GetMonitorsAsync( new MonitorsRequest() );
+        }
+
+        public async Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request )
+        {
+            StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
+            RestRequest restRequest = new RestRequest( Method.POST );
+
+            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
+            restRequest.AddHeader( "cache-control", "no-cache" );
+
+            restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
+
+            IRestResponse response = await restClient.ExecuteAsync( restRequest );
+
+            return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
+        }
+
         #endregion
 
         #region Alert Contacts
@@ -96,11 +118,20 @@ namespace SharpenUp
 
         #region Public Status Pages
 
+        /// <summary>
+        /// The list of public status pages can be called with this method.
+        /// </summary>
+        /// <returns></returns>
         public async Task<PublicStatusPageResult> GetPublicStatusPagesAsync()
         {
             return await GetPublicStatusPagesAsync( new PublicStatusPageRequest() );
         }
 
+        /// <summary>
+        /// The list of public status pages can be called with this method.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task<PublicStatusPageResult> GetPublicStatusPagesAsync( PublicStatusPageRequest request )
         {
             StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );

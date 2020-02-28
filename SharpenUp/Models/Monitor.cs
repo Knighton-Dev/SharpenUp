@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace SharpenUp.Models
@@ -22,7 +21,7 @@ namespace SharpenUp.Models
         /// The URL/IP of the monitor.
         /// </summary>
         [JsonProperty( PropertyName = "url" )]
-        public Uri URL { get; set; }
+        public string URL { get; set; }
 
         /// <summary>
         /// The type of the monitor.
@@ -30,17 +29,19 @@ namespace SharpenUp.Models
         [JsonProperty( PropertyName = "type" )]
         public MonitorType MonitorType { get; set; }
 
+        // TODO: Come back and figure out how to parse this.
         /// <summary>
         /// Used only for "Port monitoring (monitor>type = 4)" and shows which pre-defined port/service is monitored or if a custom port is monitored.
         /// </summary>
-        [JsonProperty( PropertyName = "sub_type" )]
-        public MonitorSubType MonitorSubType { get; set; }
+        //[JsonProperty( PropertyName = "sub_type" )]
+        //public MonitorSubType MonitorSubType { get; set; }
 
+        // TODO: Come back and figure out how to parse this.
         /// <summary>
         /// Used only for "Keyword monitoring (monitor>type = 2)" and shows "if the monitor will be flagged as down when the keyword exists or not exists".
         /// </summary>
-        [JsonProperty( PropertyName = "keyword_type" )]
-        public KeywordType KeywordType { get; set; }
+        //[JsonProperty( PropertyName = "keyword_type" )]
+        //public KeywordType KeywordType { get; set; }
 
         /// <summary>
         /// The value of the keyword.
@@ -60,11 +61,12 @@ namespace SharpenUp.Models
         [JsonProperty( PropertyName = "http_password" )]
         public string HttpPassword { get; set; }
 
+        // TODO: Come back and figure out how to parse this.
         /// <summary>
         /// Used only for "Port monitoring (monitor>type = 4)" and shows the port monitored.
         /// </summary>
-        [JsonProperty( PropertyName = "port" )]
-        public int Port { get; set; }
+        //[JsonProperty( PropertyName = "port" )]
+        //public int Port { get; set; }
 
         /// <summary>
         /// The interval for the monitoring check (300 seconds by default).
@@ -155,6 +157,7 @@ namespace SharpenUp.Models
 
     public enum MonitorSubType
     {
+        None = 0,
         HTTP = 1,
         HTTPS = 2,
         FTP = 3,
