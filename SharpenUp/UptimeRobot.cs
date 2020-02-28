@@ -96,18 +96,18 @@ namespace SharpenUp
 
         #region Public Status Pages
 
-        public async Task<PublicStatusPageResult> GetPublicStatusPageResultsAsync()
+        public async Task<PublicStatusPageResult> GetPublicStatusPagesAsync()
         {
-            return await GetPublicStatusPageResultsAsync( new PublicStatusPageRequest() );
+            return await GetPublicStatusPagesAsync( new PublicStatusPageRequest() );
         }
 
-        public async Task<PublicStatusPageResult> GetPublicStatusPageResultsAsync( PublicStatusPageRequest request )
+        public async Task<PublicStatusPageResult> GetPublicStatusPagesAsync( PublicStatusPageRequest request )
         {
             StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
             if ( request.PublicStatusPages?.Count > 0 )
             {
-                queryString.Append( "&alert_contacts=" );
+                queryString.Append( "&psps=" );
                 queryString.Append( string.Join( "-", request.PublicStatusPages ) );
             }
 
@@ -121,7 +121,7 @@ namespace SharpenUp
                 queryString.Append( $"&limit={request.Limit}" );
             }
 
-            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getAlertContacts" );
+            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getPSPs" );
             RestRequest restRequest = new RestRequest( Method.POST );
 
             restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );

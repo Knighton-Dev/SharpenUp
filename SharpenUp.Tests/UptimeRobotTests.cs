@@ -91,6 +91,38 @@ namespace SharpenUp.Tests
 
         #region Public Status Pages
 
+        [Fact]
+        public async Task GetPublicStatusPagesAsync_NoRequest()
+        {
+            PublicStatusPageResult result = await _goodRobot.GetPublicStatusPagesAsync();
+
+            Assert.Equal( Status.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.NotNull( result.PublicStatusPages );
+            Assert.Equal( 0, result.Pagination.Offset );
+            Assert.Equal( 50, result.Pagination.Limit );
+            Assert.True( result.Pagination.Total > 0 );
+        }
+
+        [Fact]
+        public async Task GetPublicStatusPagesAsync_WithRequest()
+        {
+            PublicStatusPageRequest request = new PublicStatusPageRequest
+            {
+                Offset = 3,
+                Limit = 30
+            };
+
+            PublicStatusPageResult result = await _goodRobot.GetPublicStatusPagesAsync( request );
+
+            Assert.Equal( Status.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.NotNull( result.PublicStatusPages );
+            Assert.Equal( 3, result.Pagination.Offset );
+            Assert.Equal( 30, result.Pagination.Limit );
+            Assert.True( result.Pagination.Total > 0 );
+        }
+
         #endregion
     }
 }
