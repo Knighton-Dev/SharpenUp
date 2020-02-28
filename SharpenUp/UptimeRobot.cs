@@ -46,7 +46,7 @@ namespace SharpenUp
             return await GetMonitorsAsync( new MonitorsRequest() );
         }
 
-        public async Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request )
+        private async Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request )
         {
             StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
