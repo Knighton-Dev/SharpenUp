@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System;
 
 namespace SharpenUp.Models
 {
@@ -158,21 +160,37 @@ namespace SharpenUp.Models
         // These are all properties that are returned in the JSON, but aren't but aren't defined in the API documentation.
         // I'm really just guessing at these.
 
-        // TODO: Come back and figure out how to parse this.
         /// <summary>
         /// A list of ratios that match to the values of the CustomUptimeRatios in the request.
         /// </summary>
-        //[ExcludeFromCodeCoverage]
-        //[JsonProperty( PropertyName = "custom_uptime_ratio" )]
-        //public List<double> CustomUptimeRatio { get; set; }
+        [ExcludeFromCodeCoverage]
+        [JsonProperty( PropertyName = "custom_uptime_ratio" )]
+        private string CustomUptimeRatioString { get; set; }
 
-        // TODO: Come back and figure out how to parse this.
+        [ExcludeFromCodeCoverage]
+        public List<double> CustomUptimeRatio
+        {
+            get
+            {
+                return CustomUptimeRatioString.Split( '-' ).Select( double.Parse ).ToList();
+            }
+        }
+
         /// <summary>
         /// A list of durations that match to the values of the CustomUptimeRatios in the request.
         /// </summary>
-        //[ExcludeFromCodeCoverage]
-        //[JsonProperty( PropertyName = "custom_down_durations" )]
-        //public List<int> CustomDowntimeDurations { get; set; }
+        [ExcludeFromCodeCoverage]
+        [JsonProperty( PropertyName = "custom_down_durations" )]
+        private string CustomDowntimeDurationsString { get; set; }
+
+        [ExcludeFromCodeCoverage]
+        public List<int> CustomDowntimeDurations
+        {
+            get
+            {
+                return CustomDowntimeDurationsString.Split( '-' ).Select( int.Parse ).ToList();
+            }
+        }
 
         #endregion
     }

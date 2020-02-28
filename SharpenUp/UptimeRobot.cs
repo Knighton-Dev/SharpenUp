@@ -43,11 +43,26 @@ namespace SharpenUp
 
         #region Monitors
 
+        /// <summary>
+        /// This is a Swiss-Army knife type of a method for getting any information on monitors.
+        /// By default, it lists all the monitors in a user's account, their friendly names, types (http, keyword, port, etc.), statuses (up, down, etc.) and uptime ratios.
+        /// There are optional parameters which lets the getMonitors method to output information on any given monitors rather than all of them.
+        /// And also, parameters exist for getting the notification logs( alerts) for each monitor and even which alert contacts were alerted on each notification.
+        /// </summary>
+        /// <returns></returns>
         public async Task<MonitorsResult> GetMonitorsAsync()
         {
             return await GetMonitorsAsync( new MonitorsRequest() );
         }
 
+        /// <summary>
+        /// This is a Swiss-Army knife type of a method for getting any information on monitors.
+        /// By default, it lists all the monitors in a user's account, their friendly names, types (http, keyword, port, etc.), statuses (up, down, etc.) and uptime ratios.
+        /// There are optional parameters which lets the getMonitors method to output information on any given monitors rather than all of them.
+        /// And also, parameters exist for getting the notification logs( alerts) for each monitor and even which alert contacts were alerted on each notification.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request )
         {
             StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
