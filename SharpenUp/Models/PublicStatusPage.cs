@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using SharpenUp.Utilities;
 
 namespace SharpenUp.Models
 {
@@ -19,8 +21,9 @@ namespace SharpenUp.Models
         /// <summary>
         /// The list of monitorIDs to be displayed in status page (the values are seperated with "-" or 0 for all monitors).
         /// </summary>
-        //[JsonProperty( PropertyName = "monitors" )]
-        //public string Monitors { get; set; }
+        [JsonProperty( PropertyName = "monitors" )]
+        [JsonConverter( typeof( SingleOrArrayConverter<int> ) )]
+        public List<int> Monitors { get; set; }
 
         /// <summary>
         /// The custom domain or subdomain that the status page will run on.

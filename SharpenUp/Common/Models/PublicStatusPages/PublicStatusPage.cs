@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using SharpenUp.Common.Types;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json;
+using SharpenUp.Common.Types;
 using SharpenUp.Common.Utilities;
 
 namespace SharpenUp.Common.Models.PublicStatusPages

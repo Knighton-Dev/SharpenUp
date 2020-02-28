@@ -109,7 +109,7 @@ namespace SharpenUp.Tests
         {
             PublicStatusPageRequest request = new PublicStatusPageRequest
             {
-                Offset = 3,
+                Offset = 1,
                 Limit = 30
             };
 
@@ -118,7 +118,7 @@ namespace SharpenUp.Tests
             Assert.Equal( Status.ok, result.Status );
             Assert.Null( result.Error );
             Assert.NotNull( result.PublicStatusPages );
-            Assert.Equal( 3, result.Pagination.Offset );
+            Assert.Equal( 1, result.Pagination.Offset );
             Assert.Equal( 30, result.Pagination.Limit );
             Assert.True( result.Pagination.Total > 0 );
         }
