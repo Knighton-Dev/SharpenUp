@@ -26,46 +26,31 @@ git clone https://github.com/IanKnighton/SharpenUp.git
 dotnet add package SharpenUp
 ```
 
-Once you have the reference in your project, you can instantiate the library using the `IUptimeManager` interface.
+As of version 1.0.0, I completely re-worked the usage of this library. I realized that I had "over architected" it through a rubber ducky debugging session and greatly simplified. 
 
-Like this:
+Now everything is in a class called "UptimeRobot".
+
+It can be used like this:
 
 ```csharp
-using SharpenUp.Client;
-using SharpenUp.Common;
+using SharpenUp;
+using SharpentUp.Models;
+using SharpenUp.Requests;
+using SharpenUp.Results;
 
-namespace Application
+namespace TestApp
 {
-    class Program
+    static async Task Main( string[] args )
     {
-        static async Task Main( string[] args )
-        {
-            IUptimeManager manager = new UptimeManager( "YOUR_API_KEY" );
-        }
+        UptimeRobot robot = new UptimeRobot ( "YOUR API KEY" );
+
+        AccountDetailsResult accountDetails = await robot.GetAccountDetailsAsync();
+        PublicStatusPageResult publicStatusPages = await robot.GetPublicStatusPagesAsync();
     }
 }
 ```
 
-From there, you can reference the methods exposed in the `IUptimeManager` interface just like you would any other library. 
-
-```csharp
-using SharpenUp.Client;
-using SharpenUp.Common;
-using SharpenUp.Common.Models.Monitors;
-
-namespace Application
-{
-    class Program
-    {
-        static async Task Main( string[] args )
-        {
-            IUptimeManager manager = new UptimeManager( "YOUR_API_KEY" );
-            MonitorsResult result = await manager.GetMonitorsAsync();
-        }
-    }
-}
-```
-
+I feel like this is a lot simpler and it made it a lot easier to test. 
 
 ## Development
 
