@@ -74,17 +74,19 @@ To run tests, there needs to be some environment variables set on the host machi
 Here are the needed environment variables. 
 
 ```bash
-export GOOD_API_KEY="YOUR_API_KEY"
-export ACCOUNT_EMAIL="YOUR_ACCOUNT_EMAIL"
-export GOOD_MONITOR_ID_1=A_VALID_ID
-export GOOD_MONITOR_ID_2=A_VALID_ID
-export GOOD_MONITOR_1_FRIENDLY_NAME="MATCHING_NAME_1"
-export GOOD_MONITOR_2_FRIENDLY_NAME="MATCHING_NAME_2"
-export PSP_NAME_1="PUBLICE_STATUS_PAGE_1_NAME"
-export PSP_NAME_2="PUBLICE_STATUS_PAGE_2_NAME"
-export PSP_URL_1="PUBLICE_STATUS_PAGE_1_URL"
-export PSP_URL_2="PUBLICE_STATUS_PAGE_2_URL"
+GOOD_API_KEY="YOUR_API_KEY"
+ACCOUNT_EMAIL="YOUR_ACCOUNT_EMAIL"
+GOOD_MONITOR_ID_1=A_VALID_ID
+GOOD_MONITOR_ID_2=A_VALID_ID
+GOOD_MONITOR_1_FRIENDLY_NAME="MATCHING_NAME_1"
+GOOD_MONITOR_2_FRIENDLY_NAME="MATCHING_NAME_2"
+PSP_NAME_1="PUBLICE_STATUS_PAGE_1_NAME"
+PSP_NAME_2="PUBLICE_STATUS_PAGE_2_NAME"
+PSP_URL_1="PUBLICE_STATUS_PAGE_1_URL"
+PSP_URL_2="PUBLICE_STATUS_PAGE_2_URL"
 ```
+
+Obviously, the unit tests are written for a very specific use-case (*mine*), but I think I've considered the potential impact for others that may be trying to use the library. 
 
 ## Endpoints Exposed
 
@@ -100,7 +102,7 @@ This is based off of a list on the Uptime Robot reference.
 - `POST newAlertContact`
 - `POST editAlertContact`
 - `POST deleteAlertContact`
-- `POST getMWindows` *Mostly complete, but untested, as of 0.0.6 (I don't have a premium account at the moment.*
+- `POST getMWindows` *Mostly complete, but untested, as of 0.0.6 (I don't have a premium account at the moment.)*
 - `POST newMWindow`
 - `POST editMWindow`
 - `POST deleteMWindow`
