@@ -4,6 +4,7 @@ using SharpenUp.Models;
 using SharpenUp.Requests;
 using SharpenUp.Results;
 using Xunit;
+using System.Collections.Generic;
 
 namespace SharpenUp.Tests
 {
@@ -53,6 +54,42 @@ namespace SharpenUp.Tests
             MonitorsResult result = await _goodRobot.GetMonitorsAsync();
 
             Assert.Equal( Status.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.NotNull( result.Monitors );
+            Assert.Equal( 0, result.Pagination.Offset );
+            Assert.Equal( 50, result.Pagination.Limit );
+            Assert.True( result.Pagination.Total > 0 );
+        }
+
+        [Fact]
+        public async Task GetMonitorsAsync_WithRequest()
+        {
+            int monitorOne = Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_1" ) );
+            int monitorTwo = Convert.ToInt32( Environment.GetEnvironmentVariable( "GOOD_MONITOR_ID_2" ) );
+
+            MonitorsRequest request = new MonitorsRequest
+            {
+                Monitors = new List<int> { monitorOne, monitorTwo },
+                MonitorTypes = new List<MonitorType> { MonitorType.Keyword, MonitorType.HTTP },
+                Statuses = new List<MonitorStatus> { MonitorStatus.Up },
+                CustomUptimeRatios = new List<int> { 3, 5, 15 }
+            };
+
+            MonitorsResult result = await _goodRobot.GetMonitorsAsync( request );
+
+            Assert.Equal( monitorOne, result.Monitors[ 0 ].Id );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Monitors[ 0 ].FriendlyName );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_URL" ), result.Monitors[ 0 ].URL );
+            Assert.Equal( MonitorType.Keyword, result.Monitors[ 0 ].MonitorType );
+            // TODO: Test SubType
+            // TODO: Test KeywordType
+            Assert.Equal( "OK", result.Monitors[ 0 ].KeywordValue );
+            Assert.True( string.IsNullOrEmpty( result.Monitors[ 0 ].HttpUsername ) );
+            Assert.True( string.IsNullOrEmpty( result.Monitors[ 0 ].HttpPassword ) );
+            // TODO: Test Port
+            Assert.Equal( 300, result.Monitors[ 0 ].Interval );
+            Assert.True( string.IsNullOrEmpty( result.Monitors[ 0 ].CustomHttpHeaders ) );
+            Assert.True( string.IsNullOrEmpty( result.Monitors[ 0 ].CustomHttpStatuses ) );
         }
 
         #endregion

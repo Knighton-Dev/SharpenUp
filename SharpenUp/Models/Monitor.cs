@@ -152,6 +152,29 @@ namespace SharpenUp.Models
         /// </summary>
         [JsonProperty( PropertyName = "post_content_type" )]
         public PostContentType PostContentType { get; set; }
+
+        #region Undocumented Properties
+
+        // These are all properties that are returned in the JSON, but aren't but aren't defined in the API documentation.
+        // I'm really just guessing at these.
+
+        // TODO: Come back and figure out how to parse this.
+        /// <summary>
+        /// A list of ratios that match to the values of the CustomUptimeRatios in the request.
+        /// </summary>
+        //[ExcludeFromCodeCoverage]
+        //[JsonProperty( PropertyName = "custom_uptime_ratio" )]
+        //public List<double> CustomUptimeRatio { get; set; }
+
+        // TODO: Come back and figure out how to parse this.
+        /// <summary>
+        /// A list of durations that match to the values of the CustomUptimeRatios in the request.
+        /// </summary>
+        //[ExcludeFromCodeCoverage]
+        //[JsonProperty( PropertyName = "custom_down_durations" )]
+        //public List<int> CustomDowntimeDurations { get; set; }
+
+        #endregion
     }
 
     public enum MonitorType

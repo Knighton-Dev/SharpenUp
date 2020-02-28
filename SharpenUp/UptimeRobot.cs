@@ -72,6 +72,26 @@ namespace SharpenUp
                 queryString.Append( string.Join( "-", convertToIntegers ) );
             }
 
+            if ( request.Statuses?.Count > 0 )
+            {
+                List<int> convertToIntegers = new List<int>();
+
+                queryString.Append( "&statuses=" );
+
+                foreach ( MonitorStatus monitorType in request.Statuses )
+                {
+                    convertToIntegers.Add( (int)monitorType );
+                }
+
+                queryString.Append( string.Join( "-", convertToIntegers ) );
+            }
+
+            if ( request.CustomUptimeRatios?.Count > 0 )
+            {
+                queryString.Append( "&custom_uptime_ratios=" );
+                queryString.Append( string.Join( "-", request.CustomUptimeRatios ) );
+            }
+
             RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
             RestRequest restRequest = new RestRequest( Method.POST );
 
