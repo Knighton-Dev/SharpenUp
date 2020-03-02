@@ -146,6 +146,26 @@ namespace SharpenUp
                 }
             }
 
+            if ( request.ResponseTimes )
+            {
+                queryString.Append( "&response_times=1" );
+
+                if ( request.ResponseTimesLimit.HasValue )
+                {
+                    queryString.Append( $"&response_times_limit={request.ResponseTimesLimit.Value}" );
+                }
+            }
+
+            if ( request.AlertContacts )
+            {
+                queryString.Append( "&alert_contacts=1" );
+            }
+
+            if ( request.MaintenanceWindows )
+            {
+                queryString.Append( "&mwindows=1" );
+            }
+
             RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
             RestRequest restRequest = new RestRequest( Method.POST );
 

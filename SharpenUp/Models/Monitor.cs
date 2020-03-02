@@ -210,6 +210,15 @@ namespace SharpenUp.Models
         [JsonProperty( PropertyName = "logs" )]
         public List<Log> Logs { get; set; }
 
+        [JsonProperty( PropertyName = "response_times" )]
+        public List<ResponseTime> ResponseTimes { get; set; }
+
+        [JsonProperty( PropertyName = "alert_contacts" )]
+        public List<AlertContact> AlertContacts { get; set; }
+
+        [JsonProperty( PropertyName = "mwindows" )]
+        public List<MaintenanceWindow> MaintenanceWindows { get; set; }
+
         #endregion
     }
 

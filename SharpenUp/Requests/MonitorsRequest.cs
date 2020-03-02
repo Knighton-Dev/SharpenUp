@@ -58,5 +58,29 @@ namespace SharpenUp.Requests
         /// Optional (the number of logs to be returned in descending order). If empty, all logs are returned.
         /// </summary>
         public int? LogsLimit { get; set; } = null;
+
+        /// <summary>
+        /// Optional (defines if the response time data of each monitor will be returned. Should be set to 1 for getting them. Default is 0).
+        /// </summary>
+        public bool ResponseTimes { get; set; } = false;
+
+        /// <summary>
+        /// Optional (the number of response time logs to be returned (descending order). If empty, last 24 hours of logs are returned (if response_times_start_date and response_times_end_date are not used).
+        /// </summary>
+        public int? ResponseTimesLimit { get; set; } = null;
+
+        // TODO: Response Times Average
+        // TODO: Response Times Start Date
+        // TODO: Response Times End Date
+
+        /// <summary>
+        /// Optional (defines if the alert contacts set for the monitor to be returned. Default is 0.)
+        /// </summary>
+        public bool AlertContacts { get; set; } = false;
+
+        /// <summary>
+        /// Optional (defines if the maintenance windows for the monitors will be returned. Default is 0.)
+        /// </summary>
+        public bool MaintenanceWindows { get; set; } = false;
     }
 }

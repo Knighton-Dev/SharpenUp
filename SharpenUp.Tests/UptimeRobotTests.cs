@@ -77,7 +77,11 @@ namespace SharpenUp.Tests
                 AllTimeUptimeDurations = true,
                 IncludeLogs = true,
                 LogTypes = new List<LogType> { LogType.Up, LogType.Down },
-                LogsLimit = 50
+                LogsLimit = 50,
+                ResponseTimes = true,
+                ResponseTimesLimit = 50,
+                AlertContacts = true,
+                MaintenanceWindows = true
             };
 
             MonitorsResult result = await _goodRobot.GetMonitorsAsync( request );
@@ -96,6 +100,9 @@ namespace SharpenUp.Tests
             Assert.True( string.IsNullOrEmpty( result.Monitors[ 0 ].CustomHttpHeaders ) );
             Assert.True( string.IsNullOrEmpty( result.Monitors[ 0 ].CustomHttpStatuses ) );
             Assert.NotNull( result.Monitors[ 0 ].Logs );
+            Assert.NotNull( result.Monitors[ 0 ].ResponseTimes );
+            Assert.NotNull( result.Monitors[ 0 ].AlertContacts );
+            // TODO: Test Maintenance Windows (I don't currently have them)
         }
 
         #endregion
