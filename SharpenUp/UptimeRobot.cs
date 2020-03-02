@@ -232,6 +232,21 @@ namespace SharpenUp
         /// <summary>
         /// The list of alert contacts can be called with this method.
         /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<AlertContactsResult> GetAlertContactsAsync( int id )
+        {
+            AlertContactsRequest alertContactsRequest = new AlertContactsRequest
+            {
+                AlertContacts = new List<int> { id }
+            };
+
+            return await GetAlertContactsAsync( alertContactsRequest );
+        }
+
+        /// <summary>
+        /// The list of alert contacts can be called with this method.
+        /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         public async Task<AlertContactsResult> GetAlertContactsAsync( AlertContactsRequest request )
@@ -265,6 +280,108 @@ namespace SharpenUp
             IRestResponse response = await restClient.ExecuteAsync( restRequest );
 
             return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+        }
+
+        /// <summary>
+        /// New alert contacts of any type (mobile/SMS alert contacts are not supported yet) can be created using this method.
+        /// The alert contacts created using the API are validated with the same way as they were created from uptimerobot.com (activation link for e-mails, etc.).
+        /// </summary>
+        /// <param name="contact"></param>
+        /// <returns></returns>
+        public async Task<AlertContactsResult> CreateAlertContactAsync( ContactType contactType, string contactValue, string friendlyName )
+        {
+            if ( !string.IsNullOrWhiteSpace( friendlyName ) && !string.IsNullOrWhiteSpace( contactValue ) )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&type={(int)contactType}" );
+                queryString.Append( $"&value={HttpUtility.HtmlEncode( contactValue )}" );
+                queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+
+                RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/newAlertContact" );
+                RestRequest restRequest = new RestRequest( Method.POST );
+
+                restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
+                restRequest.AddHeader( "cache-control", "no-cache" );
+
+                restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
+
+                IRestResponse response = await restClient.ExecuteAsync( restRequest );
+
+                return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Alert contacts can be edited using this method.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<AlertContactsResult> UpdateAlertContactAsync( int alertContactId, string friendlyName, string contactValue )
+        {
+            AlertContactsResult existingContact = await GetAlertContactsAsync( alertContactId );
+
+            if ( existingContact.AlertContacts?.Count > 0 )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                if ( !string.IsNullOrWhiteSpace( friendlyName ) )
+                {
+                    queryString.Append( $"&id={alertContactId}" );
+                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+
+                    if ( existingContact.AlertContacts[ 0 ].ContactType == ContactType.WebHook && !string.IsNullOrWhiteSpace( contactValue ) )
+                    {
+                        queryString.Append( $"&value={HttpUtility.HtmlEncode( contactValue )}" );
+                    }
+
+                    RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/editAlertContact" );
+                    RestRequest restRequest = new RestRequest( Method.POST );
+
+                    restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
+                    restRequest.AddHeader( "cache-control", "no-cache" );
+
+                    restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
+
+                    IRestResponse response = await restClient.ExecuteAsync( restRequest );
+
+                    return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Alert contacts can be deleted using this method.
+        /// </summary>
+        /// <param name="alertContactId"></param>
+        /// <returns></returns>
+        public async Task<AlertContactsResult> DeleteAlertContactsAsync( int alertContactId )
+        {
+            AlertContactsResult existingContact = await GetAlertContactsAsync( alertContactId );
+
+            if ( existingContact.AlertContacts?.Count > 0 )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&id={alertContactId}" );
+
+                RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/deleteAlertContact" );
+                RestRequest restRequest = new RestRequest( Method.POST );
+
+                restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
+                restRequest.AddHeader( "cache-control", "no-cache" );
+
+                restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
+
+                IRestResponse response = await restClient.ExecuteAsync( restRequest );
+
+                return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+            }
+
+            return null;
         }
 
         #endregion
