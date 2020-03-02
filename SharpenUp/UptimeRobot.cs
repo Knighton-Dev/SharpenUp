@@ -290,7 +290,7 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<AlertContactsResult> CreateAlertContactAsync( ContactType contactType, string contactValue, string friendlyName )
         {
-            if ( !string.IsNullOrWhiteSpace( friendlyName ) && !string.IsNullOrWhiteSpace( contactValue ) )
+            if ( !string.IsNullOrWhiteSpace( friendlyName ) && !string.IsNullOrWhiteSpace( contactValue ) && contactType != ContactType.SMS )
             {
                 StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
