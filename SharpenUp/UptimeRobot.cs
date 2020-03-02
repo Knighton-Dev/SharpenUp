@@ -107,6 +107,23 @@ namespace SharpenUp
                 queryString.Append( string.Join( "-", request.CustomUptimeRatios ) );
             }
 
+            // TODO: Custom Uptime Ranges
+
+            if ( request.AllTimeUptimeRatio )
+            {
+                queryString.Append( "&all_time_uptime_ratio=1" );
+            }
+
+            if ( request.AllTimeUptimeDurations )
+            {
+                queryString.Append( "&all_time_uptime_durations=1" );
+            }
+
+            if ( request.IncludeLogs )
+            {
+                queryString.Append( "&logs=1" );
+            }
+
             RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
             RestRequest restRequest = new RestRequest( Method.POST );
 

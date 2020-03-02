@@ -96,7 +96,22 @@ namespace SharpenUp.Models
         /// </summary>
         [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "all_time_uptime_durations" )]
-        public UptimeDurations AllTimeUptimeDurations { get; set; }
+        private string AllTimeUptimeDurationsString { get; set; }
+
+        public UptimeDurations AllTimeUptimeDurations
+        {
+            get
+            {
+                List<string> brokenUp = AllTimeUptimeDurationsString.Split( '-' ).ToList();
+
+                return new UptimeDurations
+                {
+                    Up = int.Parse( brokenUp[ 0 ] ),
+                    Down = int.Parse( brokenUp[ 1 ] ),
+                    Paused = int.Parse( brokenUp[ 2 ] )
+                };
+            }
+        }
 
         /// <summary>
         /// The uptime ratio of the monitor for the given periods (if there is more than 1 period, then the values are seperated with "-").
@@ -191,6 +206,9 @@ namespace SharpenUp.Models
                 return CustomDowntimeDurationsString.Split( '-' ).Select( int.Parse ).ToList();
             }
         }
+
+        [JsonProperty( PropertyName = "logs" )]
+        public List<Log> Logs { get; set; }
 
         #endregion
     }

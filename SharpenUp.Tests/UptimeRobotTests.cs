@@ -72,7 +72,10 @@ namespace SharpenUp.Tests
                 Monitors = new List<int> { monitorOne, monitorTwo },
                 MonitorTypes = new List<MonitorType> { MonitorType.Keyword, MonitorType.HTTP },
                 Statuses = new List<MonitorStatus> { MonitorStatus.Up },
-                CustomUptimeRatios = new List<int> { 3, 5, 15 }
+                CustomUptimeRatios = new List<int> { 3, 5, 15 },
+                AllTimeUptimeRatio = true,
+                AllTimeUptimeDurations = true,
+                IncludeLogs = true
             };
 
             MonitorsResult result = await _goodRobot.GetMonitorsAsync( request );
@@ -90,6 +93,7 @@ namespace SharpenUp.Tests
             Assert.Equal( 300, result.Monitors[ 0 ].Interval );
             Assert.True( string.IsNullOrEmpty( result.Monitors[ 0 ].CustomHttpHeaders ) );
             Assert.True( string.IsNullOrEmpty( result.Monitors[ 0 ].CustomHttpStatuses ) );
+            Assert.NotNull( result.Monitors[ 0 ].Logs );
         }
 
         #endregion

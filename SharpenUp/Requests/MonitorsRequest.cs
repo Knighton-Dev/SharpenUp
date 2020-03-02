@@ -28,5 +28,22 @@ namespace SharpenUp.Requests
         /// </summary>
         [ExcludeFromCodeCoverage]
         public List<int> CustomUptimeRatios { get; set; } = null;
+
+        // TODO: Custom Uptime Ranges
+
+        /// <summary>
+        /// Optional (returns the "all time uptime ratio". It will slow down the response a bit and, if not really necessary, suggest not using it. Default is 0).
+        /// </summary>
+        public bool AllTimeUptimeRatio { get; set; } = false;
+
+        /// <summary>
+        /// Optional (returns the "all time durations of up-down-paused events". It will slow down the response a bit and, if not really necessary, suggest not using it. Default is 0).
+        /// </summary>
+        public bool AllTimeUptimeDurations { get; set; } = false;
+
+        /// <summary>
+        /// Optional (defines if the logs of each monitor will be returned. Should be set to 1 for getting the logs. Default is 0).
+        /// </summary>
+        public bool IncludeLogs { get; set; } = false;
     }
 }
