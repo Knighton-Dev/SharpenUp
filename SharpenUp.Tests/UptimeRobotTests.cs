@@ -156,14 +156,15 @@ namespace SharpenUp.Tests
 
             Assert.NotNull( newAlertContact.AlertContact );
 
-            AlertContactsResult checkExists = await _goodRobot.GetAlertContactsAsync( newAlertContact.AlertContact.Id );
+            AlertContactsResult newContactExists = await _goodRobot.GetAlertContactsAsync( newAlertContact.AlertContact.Id );
 
-            Assert.NotNull( checkExists.AlertContacts );
+            Assert.NotNull( newContactExists.AlertContacts );
 
-            AlertContactsResult updatedAlertContact = await _goodRobot.UpdateAlertContactAsync( newAlertContact.AlertContact.Id, "Really Faking", "" );
+            await _goodRobot.UpdateAlertContactAsync( newAlertContact.AlertContact.Id, "Really Faking", "" );
+            AlertContactsResult updatedContactExists = await _goodRobot.GetAlertContactsAsync( newAlertContact.AlertContact.Id );
 
-            Assert.Equal( "Fake Fakerson", newAlertContact.AlertContact.FriendlyName );
-            Assert.Equal( "Really Faking", updatedAlertContact.AlertContact.FriendlyName );
+            Assert.Equal( "Fake Fakerson", newContactExists.AlertContacts[ 0 ].FriendlyName );
+            Assert.Equal( "Really Faking", updatedContactExists.AlertContacts[ 0 ].FriendlyName );
 
             AlertContactsResult deletedAlertContact = await _goodRobot.DeleteAlertContactsAsync( newAlertContact.AlertContact.Id );
 
