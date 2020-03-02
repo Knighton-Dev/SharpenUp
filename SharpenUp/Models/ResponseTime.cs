@@ -9,7 +9,16 @@ namespace SharpenUp.Models
         /// The date and time of the log (inherits the user's timezone setting).
         /// </summary>
         [JsonProperty( PropertyName = "datetime" )]
-        public DateTime DateTime { get; set; }
+        private int DateTimeInteger { get; set; }
+
+        public DateTime DateTime
+        {
+            get
+            {
+                DateTimeOffset offset = DateTimeOffset.FromUnixTimeSeconds( DateTimeInteger );
+                return offset.UtcDateTime;
+            }
+        }
 
         /// <summary>
         /// The time to first-byte in milliseconds.

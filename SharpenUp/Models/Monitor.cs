@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System;
 
 namespace SharpenUp.Models
 {
@@ -77,36 +80,57 @@ namespace SharpenUp.Models
         /// <summary>
         /// The status of the monitor. When used with the editMonitor method 0 (to pause) or 1 (to start) can be sent.
         /// </summary>
+        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "status" )]
         public MonitorStatus Status { get; set; }
 
         /// <summary>
         /// The uptime ratio of the monitor calculated since the monitor is created.
         /// </summary>
+        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "all_time_uptime_ratio" )]
         public double AllTimeUptimeRatio { get; set; }
 
         /// <summary>
         /// The durations of all time up-down-paused events in seconds.
         /// </summary>
+        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "all_time_uptime_durations" )]
-        public UptimeDurations AllTimeUptimeDurations { get; set; }
+        private string AllTimeUptimeDurationsString { get; set; }
+
+        public UptimeDurations AllTimeUptimeDurations
+        {
+            get
+            {
+                List<string> brokenUp = AllTimeUptimeDurationsString.Split( '-' ).ToList();
+
+                return new UptimeDurations
+                {
+                    Up = int.Parse( brokenUp[ 0 ] ),
+                    Down = int.Parse( brokenUp[ 1 ] ),
+                    Paused = int.Parse( brokenUp[ 2 ] )
+                };
+            }
+        }
 
         /// <summary>
         /// The uptime ratio of the monitor for the given periods (if there is more than 1 period, then the values are seperated with "-").
         /// </summary>
+        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "custom_uptime_ratios" )]
         public List<double> CustomUptimeRatios { get; set; }
 
         /// <summary>
         /// The uptime ratio of the monitor for the given ranges (if there is more than 1 range, then the values are seperated with "-").
         /// </summary>
+        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "custom_uptime_ranges" )]
         public List<double> CustomUptimeRanges { get; set; }
 
         /// <summary>
         /// The average value of the response times (requires response_times=1).
         /// </summary>
+        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "average_response_time" )]
         public double AverageResponseTime { get; set; }
 
@@ -145,12 +169,66 @@ namespace SharpenUp.Models
         /// </summary>
         [JsonProperty( PropertyName = "post_content_type" )]
         public PostContentType PostContentType { get; set; }
+
+        #region Undocumented Properties
+
+        // These are all properties that are returned in the JSON, but aren't but aren't defined in the API documentation.
+        // I'm really just guessing at these.
+
+        /// <summary>
+        /// A list of ratios that match to the values of the CustomUptimeRatios in the request.
+        /// </summary>
+        [ExcludeFromCodeCoverage]
+        [JsonProperty( PropertyName = "custom_uptime_ratio" )]
+        private string CustomUptimeRatioString { get; set; }
+
+        [ExcludeFromCodeCoverage]
+        public List<double> CustomUptimeRatio
+        {
+            get
+            {
+                return CustomUptimeRatioString.Split( '-' ).Select( double.Parse ).ToList();
+            }
+        }
+
+        /// <summary>
+        /// A list of durations that match to the values of the CustomUptimeRatios in the request.
+        /// </summary>
+        [ExcludeFromCodeCoverage]
+        [JsonProperty( PropertyName = "custom_down_durations" )]
+        private string CustomDowntimeDurationsString { get; set; }
+
+        [ExcludeFromCodeCoverage]
+        public List<int> CustomDowntimeDurations
+        {
+            get
+            {
+                return CustomDowntimeDurationsString.Split( '-' ).Select( int.Parse ).ToList();
+            }
+        }
+
+        [JsonProperty( PropertyName = "logs" )]
+        public List<Log> Logs { get; set; }
+
+        [JsonProperty( PropertyName = "response_times" )]
+        public List<ResponseTime> ResponseTimes { get; set; }
+
+        [JsonProperty( PropertyName = "alert_contacts" )]
+        public List<AlertContact> AlertContacts { get; set; }
+
+        [JsonProperty( PropertyName = "mwindows" )]
+        public List<MaintenanceWindow> MaintenanceWindows { get; set; }
+
+        [JsonProperty( PropertyName = "ssl" )]
+        public SSL SSL { get; set; }
+
+        #endregion
     }
 
     public enum MonitorType
     {
         HTTP = 1,
-        Jeyword = 2,
+        Keyword = 2,
         Ping = 3,
         Port = 4
     }

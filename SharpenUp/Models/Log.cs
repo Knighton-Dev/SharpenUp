@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace SharpenUp.Models
 {
+    [ExcludeFromCodeCoverage]
     public class Log
     {
         /// <summary>
@@ -15,7 +17,16 @@ namespace SharpenUp.Models
         /// The date and time of the log (inherits the user's timezone setting).
         /// </summary>
         [JsonProperty( PropertyName = "datetime" )]
-        public DateTime DateTime { get; set; }
+        private int DateTimeInteger { get; set; }
+
+        public DateTime DateTime
+        {
+            get
+            {
+                DateTimeOffset offset = DateTimeOffset.FromUnixTimeSeconds( DateTimeInteger );
+                return offset.UtcDateTime;
+            }
+        }
 
         /// <summary>
         /// The duration of the downtime in seconds.
@@ -27,7 +38,7 @@ namespace SharpenUp.Models
         /// The reason of the downtime (if exists).
         /// </summary>
         [JsonProperty( PropertyName = "reason" )]
-        public string Reason { get; set; }
+        public Reason Reason { get; set; }
     }
 
     public enum LogType
@@ -36,5 +47,15 @@ namespace SharpenUp.Models
         Up = 2,
         Paused = 99,
         Started = 98
+    }
+
+    [ExcludeFromCodeCoverage]
+    public class Reason
+    {
+        [JsonProperty( PropertyName = "code" )]
+        public int Code { get; set; }
+
+        [JsonProperty( PropertyName = "detail" )]
+        public string Detail { get; set; }
     }
 }

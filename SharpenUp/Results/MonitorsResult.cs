@@ -17,5 +17,8 @@ namespace SharpenUp.Results
 
         [JsonProperty( PropertyName = "error" )]
         public Error Error { get; set; }
+
+        [JsonProperty( PropertyName = "timezone" )]
+        public int? Timezone { get; set; }
     }
 }
