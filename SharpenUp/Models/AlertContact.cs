@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace SharpenUp.Models
 {
     [ExcludeFromCodeCoverage]
-    public class AlertContact
+    public class BaseAlertConctact
     {
         /// <summary>
         /// The ID of the alert contact.
@@ -12,6 +12,16 @@ namespace SharpenUp.Models
         [JsonProperty( PropertyName = "id" )]
         public int Id { get; set; }
 
+        /// <summary>
+        /// The status of the alert contact.
+        /// </summary>
+        [JsonProperty( PropertyName = "status" )]
+        public ContactStatus ContactStatus { get; set; }
+    }
+
+    [ExcludeFromCodeCoverage]
+    public class AlertContact : BaseAlertConctact
+    {
         /// <summary>
         /// The type of the alert contact notified (Zapier, HipChat and Slack are not supported in the newAlertContact method yet).
         /// </summary>
@@ -29,12 +39,6 @@ namespace SharpenUp.Models
         /// </summary>
         [JsonProperty( PropertyName = "value" )]
         public string Value { get; set; }
-
-        /// <summary>
-        /// The status of the alert contact.
-        /// </summary>
-        [JsonProperty( PropertyName = "status" )]
-        public ContactStatus ContactStatus { get; set; }
 
         /// <summary>
         /// The x value that is set to define "if down for x minutes, alert every y minutes.

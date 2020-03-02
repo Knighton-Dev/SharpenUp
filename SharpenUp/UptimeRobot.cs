@@ -27,15 +27,7 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<AccountDetailsResult> GetAccountDetailsAsync()
         {
-            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getAccountDetails" );
-            RestRequest restRequest = new RestRequest( Method.POST );
-
-            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-            restRequest.AddHeader( "cache-control", "no-cache" );
-
-            restRequest.AddParameter( "application/x-www-form-urlencoded", $"api_key={_apiKey}&format=json", ParameterType.RequestBody );
-
-            IRestResponse response = await restClient.ExecuteAsync( restRequest );
+            IRestResponse response = await GetRestResponseAsync( "getAccountDetails", $"api_key={_apiKey}&format=json" );
 
             return JsonConvert.DeserializeObject<AccountDetailsResult>( response.Content );
         }
@@ -203,15 +195,7 @@ namespace SharpenUp
                 queryString.Append( $"&search={HttpUtility.UrlEncode( request.Search )}" );
             }
 
-            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
-            RestRequest restRequest = new RestRequest( Method.POST );
-
-            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-            restRequest.AddHeader( "cache-control", "no-cache" );
-
-            restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
-
-            IRestResponse response = await restClient.ExecuteAsync( restRequest );
+            IRestResponse response = await GetRestResponseAsync( "getMonitors", queryString.ToString() );
 
             return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
         }
@@ -227,6 +211,21 @@ namespace SharpenUp
         public async Task<AlertContactsResult> GetAlertContactsAsync()
         {
             return await GetAlertContactsAsync( new AlertContactsRequest() );
+        }
+
+        /// <summary>
+        /// The list of alert contacts can be called with this method.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<AlertContactsResult> GetAlertContactsAsync( int id )
+        {
+            AlertContactsRequest alertContactsRequest = new AlertContactsRequest
+            {
+                AlertContacts = new List<int> { id }
+            };
+
+            return await GetAlertContactsAsync( alertContactsRequest );
         }
 
         /// <summary>
@@ -254,17 +253,87 @@ namespace SharpenUp
                 queryString.Append( $"&limit={request.Limit}" );
             }
 
-            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getAlertContacts" );
-            RestRequest restRequest = new RestRequest( Method.POST );
-
-            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-            restRequest.AddHeader( "cache-control", "no-cache" );
-
-            restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
-
-            IRestResponse response = await restClient.ExecuteAsync( restRequest );
+            IRestResponse response = await GetRestResponseAsync( "getAlertContacts", queryString.ToString() );
 
             return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+        }
+
+        /// <summary>
+        /// New alert contacts of any type (mobile/SMS alert contacts are not supported yet) can be created using this method.
+        /// The alert contacts created using the API are validated with the same way as they were created from uptimerobot.com (activation link for e-mails, etc.).
+        /// </summary>
+        /// <param name="contact"></param>
+        /// <returns></returns>
+        public async Task<AlertContactsResult> CreateAlertContactAsync( ContactType contactType, string contactValue, string friendlyName )
+        {
+            if ( !string.IsNullOrWhiteSpace( friendlyName ) && !string.IsNullOrWhiteSpace( contactValue ) && contactType != ContactType.SMS )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&type={(int)contactType}" );
+                queryString.Append( $"&value={HttpUtility.HtmlEncode( contactValue )}" );
+                queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+
+                IRestResponse response = await GetRestResponseAsync( "newAlertContact", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Alert contacts can be edited using this method.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<AlertContactsResult> UpdateAlertContactAsync( int alertContactId, string friendlyName, string contactValue )
+        {
+            AlertContactsResult existingContact = await GetAlertContactsAsync( alertContactId );
+
+            if ( existingContact.AlertContacts?.Count > 0 )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                if ( !string.IsNullOrWhiteSpace( friendlyName ) )
+                {
+                    queryString.Append( $"&id={alertContactId}" );
+                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+
+                    if ( existingContact.AlertContacts[ 0 ].ContactType == ContactType.WebHook && !string.IsNullOrWhiteSpace( contactValue ) )
+                    {
+                        queryString.Append( $"&value={HttpUtility.HtmlEncode( contactValue )}" );
+                    }
+
+                    IRestResponse response = await GetRestResponseAsync( "editAlertContact", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Alert contacts can be deleted using this method.
+        /// </summary>
+        /// <param name="alertContactId"></param>
+        /// <returns></returns>
+        public async Task<AlertContactsResult> DeleteAlertContactsAsync( int alertContactId )
+        {
+            AlertContactsResult existingContact = await GetAlertContactsAsync( alertContactId );
+
+            if ( existingContact.AlertContacts?.Count > 0 )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&id={alertContactId}" );
+
+                IRestResponse response = await GetRestResponseAsync( "deleteAlertContact", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+            }
+
+            return null;
         }
 
         #endregion
@@ -305,19 +374,24 @@ namespace SharpenUp
                 queryString.Append( $"&limit={request.Limit}" );
             }
 
-            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getPSPs" );
-            RestRequest restRequest = new RestRequest( Method.POST );
-
-            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-            restRequest.AddHeader( "cache-control", "no-cache" );
-
-            restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
-
-            IRestResponse response = await restClient.ExecuteAsync( restRequest );
+            IRestResponse response = await GetRestResponseAsync( "getPSPs", queryString.ToString() );
 
             return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
         }
 
         #endregion
+
+        private async Task<IRestResponse> GetRestResponseAsync( string endpoint, string query )
+        {
+            RestClient restClient = new RestClient( $"https://api.uptimerobot.com/v2/{endpoint}" );
+            RestRequest restRequest = new RestRequest( Method.POST );
+
+            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
+            restRequest.AddHeader( "cache-control", "no-cache" );
+
+            restRequest.AddParameter( "application/x-www-form-urlencoded", query, ParameterType.RequestBody );
+
+            return await restClient.ExecuteAsync( restRequest );
+        }
     }
 }

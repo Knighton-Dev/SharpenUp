@@ -21,6 +21,12 @@ namespace SharpenUp.Results
         [JsonProperty( PropertyName = "alert_contacts" )]
         public List<AlertContact> AlertContacts { get; set; }
 
+        /// <summary>
+        /// When Creating, Updating, or Deleting an Alert Contact this is returned. 
+        /// </summary>
+        [JsonProperty( PropertyName = "alertcontact" )]
+        public BaseAlertConctact BaseAlertContact { get; set; }
+
         [JsonProperty( PropertyName = "error" )]
         public Error Error { get; set; }
     }
