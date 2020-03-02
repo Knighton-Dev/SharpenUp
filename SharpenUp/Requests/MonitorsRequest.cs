@@ -82,5 +82,37 @@ namespace SharpenUp.Requests
         /// Optional (defines if the maintenance windows for the monitors will be returned. Default is 0.)
         /// </summary>
         public bool MaintenanceWindows { get; set; } = false;
+
+        /// <summary>
+        /// Optional (defines if SSL certificate info for each monitor will be returned).
+        /// </summary>
+        public bool IncludeSSL { get; set; } = false;
+
+        /// <summary>
+        /// Optional (defines if the user's timezone should be returned. Should be set to 1 for getting it. Default is 0).
+        /// </summary>
+        public bool Timezone { get; set; } = false;
+
+        /// <summary>
+        /// Optional (used for pagination. Defines the record to start paginating. Default is 0)
+        /// </summary>
+        public int Offset { get; set; } = 0;
+
+        /// <summary>
+        /// Optional (used for pagination. Defines the max number of records to return for the response. Default and max. is 50)
+        /// </summary>
+        public int Limit { get; set; } = 50;
+
+        public string Search { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Optional (defines if the custom HTTP headers of each monitor will be returned. Should be set to 1 for getting them. Default is 0).
+        /// </summary>
+        //public bool CustomHttpHeaders { get; set; } = false;
+
+        /// <summary>
+        /// Optional (defines if the custom HTTP statuses of each monitor will be returned. Should be set to 1 for getting them. Default is 0).
+        /// </summary>
+        //public bool CustomHttpStatuses { get; set; } = false;
     }
 }

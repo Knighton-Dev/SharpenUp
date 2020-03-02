@@ -6,6 +6,7 @@ using SharpenUp.Requests;
 using SharpenUp.Results;
 using System.Collections.Generic;
 using SharpenUp.Models;
+using System.Web;
 
 namespace SharpenUp
 {
@@ -164,6 +165,42 @@ namespace SharpenUp
             if ( request.MaintenanceWindows )
             {
                 queryString.Append( "&mwindows=1" );
+            }
+
+            if ( request.IncludeSSL )
+            {
+                queryString.Append( "&ssl=1" );
+            }
+
+            // TODO: Figure these out. I don't have a "pro" plan
+            //if ( request.CustomHttpHeaders )
+            //{
+            //    queryString.Append( "&custom_http_headers=1" );
+            //}
+
+            //if ( request.CustomHttpStatuses )
+            //{
+            //    queryString.Append( "&custom_http_statuses=1" );
+            //}
+
+            if ( request.Timezone )
+            {
+                queryString.Append( "&timezone=1" );
+            }
+
+            if ( request.Offset > 0 )
+            {
+                queryString.Append( $"&offset={request.Offset}" );
+            }
+
+            if ( request.Limit < 50 )
+            {
+                queryString.Append( $"&limit={request.Limit}" );
+            }
+
+            if ( !string.IsNullOrEmpty( request.Search ) )
+            {
+                queryString.Append( $"&search={HttpUtility.UrlEncode( request.Search )}" );
             }
 
             RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );

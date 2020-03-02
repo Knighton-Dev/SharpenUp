@@ -81,14 +81,19 @@ namespace SharpenUp.Tests
                 ResponseTimes = true,
                 ResponseTimesLimit = 50,
                 AlertContacts = true,
-                MaintenanceWindows = true
+                MaintenanceWindows = true,
+                IncludeSSL = true,
+                Timezone = true,
+                Offset = 0,
+                Limit = 5,
+                Search = Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" )
             };
 
             MonitorsResult result = await _goodRobot.GetMonitorsAsync( request );
 
-            Assert.Equal( monitorOne, result.Monitors[ 0 ].Id );
-            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_FRIENDLY_NAME" ), result.Monitors[ 0 ].FriendlyName );
-            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_1_URL" ), result.Monitors[ 0 ].URL );
+            Assert.Equal( monitorTwo, result.Monitors[ 0 ].Id );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_FRIENDLY_NAME" ), result.Monitors[ 0 ].FriendlyName );
+            Assert.Equal( Environment.GetEnvironmentVariable( "GOOD_MONITOR_2_URL" ), result.Monitors[ 0 ].URL );
             Assert.Equal( MonitorType.Keyword, result.Monitors[ 0 ].MonitorType );
             // TODO: Test SubType
             // TODO: Test KeywordType
@@ -103,6 +108,9 @@ namespace SharpenUp.Tests
             Assert.NotNull( result.Monitors[ 0 ].ResponseTimes );
             Assert.NotNull( result.Monitors[ 0 ].AlertContacts );
             // TODO: Test Maintenance Windows (I don't currently have them)
+            Assert.NotNull( result.Monitors[ 0 ].SSL );
+            // TODO: Test Custom HTTP Headers and Statuses
+            Assert.NotNull( result.Timezone );
         }
 
         #endregion

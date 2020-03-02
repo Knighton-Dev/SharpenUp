@@ -219,6 +219,9 @@ namespace SharpenUp.Models
         [JsonProperty( PropertyName = "mwindows" )]
         public List<MaintenanceWindow> MaintenanceWindows { get; set; }
 
+        [JsonProperty( PropertyName = "ssl" )]
+        public SSL SSL { get; set; }
+
         #endregion
     }
 
