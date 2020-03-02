@@ -149,6 +149,27 @@ namespace SharpenUp.Tests
             Assert.True( result.Total > 0 );
         }
 
+        [Fact]
+        public async Task AlertContactsCRUDFlow()
+        {
+            AlertContactsResult newAlertContact = await _goodRobot.CreateAlertContactAsync( ContactType.Email, "fake@fakest.org", "Fake Fakerson" );
+
+            Assert.NotNull( newAlertContact.AlertContact );
+
+            AlertContactsResult checkExists = await _goodRobot.GetAlertContactsAsync( newAlertContact.AlertContact.Id );
+
+            Assert.NotNull( checkExists.AlertContacts );
+
+            AlertContactsResult updatedAlertContact = await _goodRobot.UpdateAlertContactAsync( newAlertContact.AlertContact.Id, "Really Faking", "" );
+
+            Assert.Equal( "Fake Fakerson", newAlertContact.AlertContact.FriendlyName );
+            Assert.Equal( "Really Faking", updatedAlertContact.AlertContact.FriendlyName );
+
+            AlertContactsResult deletedAlertContact = await _goodRobot.DeleteAlertContactsAsync( newAlertContact.AlertContact.Id );
+
+            Assert.Equal( Status.ok, deletedAlertContact.Status );
+        }
+
         #endregion
 
         #region Maintenance Windows
