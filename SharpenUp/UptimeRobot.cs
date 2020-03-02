@@ -27,15 +27,7 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<AccountDetailsResult> GetAccountDetailsAsync()
         {
-            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getAccountDetails" );
-            RestRequest restRequest = new RestRequest( Method.POST );
-
-            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-            restRequest.AddHeader( "cache-control", "no-cache" );
-
-            restRequest.AddParameter( "application/x-www-form-urlencoded", $"api_key={_apiKey}&format=json", ParameterType.RequestBody );
-
-            IRestResponse response = await restClient.ExecuteAsync( restRequest );
+            IRestResponse response = await GetRestResponseAsync( "getAccountDetails", $"api_key={_apiKey}&format=json" );
 
             return JsonConvert.DeserializeObject<AccountDetailsResult>( response.Content );
         }
@@ -203,15 +195,7 @@ namespace SharpenUp
                 queryString.Append( $"&search={HttpUtility.UrlEncode( request.Search )}" );
             }
 
-            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
-            RestRequest restRequest = new RestRequest( Method.POST );
-
-            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-            restRequest.AddHeader( "cache-control", "no-cache" );
-
-            restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
-
-            IRestResponse response = await restClient.ExecuteAsync( restRequest );
+            IRestResponse response = await GetRestResponseAsync( "getMonitors", queryString.ToString() );
 
             return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
         }
@@ -269,15 +253,7 @@ namespace SharpenUp
                 queryString.Append( $"&limit={request.Limit}" );
             }
 
-            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getAlertContacts" );
-            RestRequest restRequest = new RestRequest( Method.POST );
-
-            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-            restRequest.AddHeader( "cache-control", "no-cache" );
-
-            restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
-
-            IRestResponse response = await restClient.ExecuteAsync( restRequest );
+            IRestResponse response = await GetRestResponseAsync( "getAlertContacts", queryString.ToString() );
 
             return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
         }
@@ -298,15 +274,7 @@ namespace SharpenUp
                 queryString.Append( $"&value={HttpUtility.HtmlEncode( contactValue )}" );
                 queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
 
-                RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/newAlertContact" );
-                RestRequest restRequest = new RestRequest( Method.POST );
-
-                restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-                restRequest.AddHeader( "cache-control", "no-cache" );
-
-                restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
-
-                IRestResponse response = await restClient.ExecuteAsync( restRequest );
+                IRestResponse response = await GetRestResponseAsync( "newAlertContact", queryString.ToString() );
 
                 return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
             }
@@ -336,15 +304,7 @@ namespace SharpenUp
                         queryString.Append( $"&value={HttpUtility.HtmlEncode( contactValue )}" );
                     }
 
-                    RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/editAlertContact" );
-                    RestRequest restRequest = new RestRequest( Method.POST );
-
-                    restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-                    restRequest.AddHeader( "cache-control", "no-cache" );
-
-                    restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
-
-                    IRestResponse response = await restClient.ExecuteAsync( restRequest );
+                    IRestResponse response = await GetRestResponseAsync( "editAlertContact", queryString.ToString() );
 
                     return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
                 }
@@ -368,15 +328,7 @@ namespace SharpenUp
 
                 queryString.Append( $"&id={alertContactId}" );
 
-                RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/deleteAlertContact" );
-                RestRequest restRequest = new RestRequest( Method.POST );
-
-                restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-                restRequest.AddHeader( "cache-control", "no-cache" );
-
-                restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
-
-                IRestResponse response = await restClient.ExecuteAsync( restRequest );
+                IRestResponse response = await GetRestResponseAsync( "deleteAlertContact", queryString.ToString() );
 
                 return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
             }
@@ -422,19 +374,24 @@ namespace SharpenUp
                 queryString.Append( $"&limit={request.Limit}" );
             }
 
-            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getPSPs" );
-            RestRequest restRequest = new RestRequest( Method.POST );
-
-            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-            restRequest.AddHeader( "cache-control", "no-cache" );
-
-            restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
-
-            IRestResponse response = await restClient.ExecuteAsync( restRequest );
+            IRestResponse response = await GetRestResponseAsync( "getPSPs", queryString.ToString() );
 
             return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
         }
 
         #endregion
+
+        private async Task<IRestResponse> GetRestResponseAsync( string endpoint, string query )
+        {
+            RestClient restClient = new RestClient( $"https://api.uptimerobot.com/v2/{endpoint}" );
+            RestRequest restRequest = new RestRequest( Method.POST );
+
+            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
+            restRequest.AddHeader( "cache-control", "no-cache" );
+
+            restRequest.AddParameter( "application/x-www-form-urlencoded", query, ParameterType.RequestBody );
+
+            return await restClient.ExecuteAsync( restRequest );
+        }
     }
 }
