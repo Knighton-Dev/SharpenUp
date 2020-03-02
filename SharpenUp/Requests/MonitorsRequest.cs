@@ -45,5 +45,18 @@ namespace SharpenUp.Requests
         /// Optional (defines if the logs of each monitor will be returned. Should be set to 1 for getting the logs. Default is 0).
         /// </summary>
         public bool IncludeLogs { get; set; } = false;
+
+        // TODO: Logs Start Date
+        // TODO: Logs End Date
+
+        /// <summary>
+        /// Optional (the types of logs to be returned with a usage like: log_types=1-2-98). If empty, all log types are returned.
+        /// </summary>
+        public List<LogType> LogTypes { get; set; } = null;
+
+        /// <summary>
+        /// Optional (the number of logs to be returned in descending order). If empty, all logs are returned.
+        /// </summary>
+        public int? LogsLimit { get; set; } = null;
     }
 }

@@ -71,11 +71,13 @@ namespace SharpenUp.Tests
             {
                 Monitors = new List<int> { monitorOne, monitorTwo },
                 MonitorTypes = new List<MonitorType> { MonitorType.Keyword, MonitorType.HTTP },
-                Statuses = new List<MonitorStatus> { MonitorStatus.Up },
+                Statuses = new List<MonitorStatus> { MonitorStatus.Up, MonitorStatus.Down },
                 CustomUptimeRatios = new List<int> { 3, 5, 15 },
                 AllTimeUptimeRatio = true,
                 AllTimeUptimeDurations = true,
-                IncludeLogs = true
+                IncludeLogs = true,
+                LogTypes = new List<LogType> { LogType.Up, LogType.Down },
+                LogsLimit = 50
             };
 
             MonitorsResult result = await _goodRobot.GetMonitorsAsync( request );

@@ -122,6 +122,28 @@ namespace SharpenUp
             if ( request.IncludeLogs )
             {
                 queryString.Append( "&logs=1" );
+
+                // TODO: Logs Start Date
+                // TODO: Logs End Date
+
+                if ( request.LogTypes?.Count > 0 )
+                {
+                    List<int> convertToIntegers = new List<int>();
+
+                    queryString.Append( "&log_types=" );
+
+                    foreach ( LogType logType in request.LogTypes )
+                    {
+                        convertToIntegers.Add( (int)logType );
+                    }
+
+                    queryString.Append( string.Join( "-", convertToIntegers ) );
+                }
+
+                if ( request.LogsLimit.HasValue )
+                {
+                    queryString.Append( $"&logs_limit={request.LogsLimit.Value}" );
+                }
             }
 
             RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );

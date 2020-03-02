@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace SharpenUp.Models
 {
+    [ExcludeFromCodeCoverage]
     public class Log
     {
         /// <summary>
@@ -47,6 +49,7 @@ namespace SharpenUp.Models
         Started = 98
     }
 
+    [ExcludeFromCodeCoverage]
     public class Reason
     {
         [JsonProperty( PropertyName = "code" )]
