@@ -4,14 +4,17 @@ using SharpenUp.Utilities;
 
 namespace SharpenUp.Models
 {
-    public class PublicStatusPage
+    public class BasePublicStatusPage
     {
         /// <summary>
         /// The ID of the status page.
         /// </summary>
         [JsonProperty( PropertyName = "id" )]
         public int Id { get; set; }
+    }
 
+    public class PublicStatusPage : BasePublicStatusPage
+    {
         /// <summary>
         /// Friendly name of the status page (for making it easier to distinguish from others).
         /// </summary>

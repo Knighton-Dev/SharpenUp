@@ -379,8 +379,76 @@ namespace SharpenUp
             return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
         }
 
+        /// <summary>
+        /// New public status pages can be created using this method.
+        /// </summary>
+        /// <param name="friendlyName">Required</param>
+        /// <param name="monitors">required (The monitors to be displayed can be sent as 15830-32696-83920. Or 0 for displaying all monitors)</param>
+        /// <returns></returns>
+        public async Task<PublicStatusPageResult> CreatePublicStatusPageAsync( string friendlyName, List<int> monitors )
+        {
+            return await CreatePublicStatusPageAsync( friendlyName, monitors, "", "", PublicStatusPageSort.FriendlyNameAscending, false, PublicStatusPageStatus.Active );
+        }
+
+        /// <summary>
+        /// New public status pages can be created using this method.
+        /// </summary>
+        /// <param name="friendlyName">Required</param>
+        /// <param name="monitors">Required (The monitors to be displayed can be sent as 15830-32696-83920. Or 0 for displaying all monitors)</param>
+        /// <param name="customDomain">Optional</param>
+        /// <param name="password">Optional</param>
+        /// <param name="sort">Optional</param>
+        /// <param name="hideUrlLinks">Optional (for hiding the Uptime Robot links and only available in the Pro Plan)</param>
+        /// <param name="status">Optional</param>
+        /// <returns></returns>
+        public async Task<PublicStatusPageResult> CreatePublicStatusPageAsync( string friendlyName, List<int> monitors, string customDomain, string password, PublicStatusPageSort sort, bool hideUrlLinks, PublicStatusPageStatus status )
+        {
+            if ( !string.IsNullOrWhiteSpace( friendlyName ) )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+
+                if ( monitors?.Count > 0 )
+                {
+                    queryString.Append( "&monitors=" );
+                    queryString.Append( string.Join( "-", monitors ) );
+                }
+                else
+                {
+                    queryString.Append( "&monitors=0" );
+                }
+
+                if ( !string.IsNullOrWhiteSpace( customDomain ) )
+                {
+                    queryString.Append( $"&custom_domain={HttpUtility.HtmlEncode( customDomain )}" );
+                }
+
+                if ( !string.IsNullOrWhiteSpace( password ) )
+                {
+                    queryString.Append( $"&password={HttpUtility.HtmlEncode( password )}" );
+                }
+
+                queryString.Append( $"&sort={(int)sort}" );
+                queryString.Append( $"&hide_url_links={hideUrlLinks}" );
+                queryString.Append( $"&status={(int)status}" );
+
+                IRestResponse response = await GetRestResponseAsync( "newPSP", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+            }
+
+            return null;
+        }
+
         #endregion
 
+        /// <summary>
+        /// Makes reusing the RestSharp logic a little easier. 
+        /// </summary>
+        /// <param name="endpoint"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
         private async Task<IRestResponse> GetRestResponseAsync( string endpoint, string query )
         {
             RestClient restClient = new RestClient( $"https://api.uptimerobot.com/v2/{endpoint}" );
