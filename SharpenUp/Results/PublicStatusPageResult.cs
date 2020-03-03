@@ -16,7 +16,7 @@ namespace SharpenUp.Results
         public List<PublicStatusPage> PublicStatusPages { get; set; }
 
         [JsonProperty( PropertyName = "psp" )]
-        public BasePublicStatusPage PublicStatusPage { get; set; }
+        public BasePublicStatusPage BasePublicStatusPage { get; set; }
 
         [JsonProperty( PropertyName = "error" )]
         public Error Error { get; set; }

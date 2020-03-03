@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace SharpenUp.Models
 {
+    [ExcludeFromCodeCoverage]
     public class ResponseTime
     {
         /// <summary>

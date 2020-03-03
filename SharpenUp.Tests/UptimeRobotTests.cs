@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharpenUp.Models;
 using SharpenUp.Requests;
 using SharpenUp.Results;
 using Xunit;
-using System.Collections.Generic;
 
 namespace SharpenUp.Tests
 {
@@ -118,6 +118,19 @@ namespace SharpenUp.Tests
         #region Alert Contacts
 
         [Fact]
+        public async Task GetAlertContactsAsync_BadKey()
+        {
+            AlertContactsResult result = await _badRobot.GetAlertContactsAsync();
+
+            Assert.Equal( Status.fail, result.Status );
+            Assert.Null( result.AlertContacts );
+            Assert.Equal( "invalid_parameter", result.Error.Type );
+            Assert.Equal( "api_key", result.Error.ParameterName );
+            Assert.Equal( "badKey", result.Error.PassedValue );
+            Assert.Equal( "api_key is invalid.", result.Error.Message );
+        }
+
+        [Fact]
         public async Task GetAlertContactsAsync_NoRequest()
         {
             AlertContactsResult result = await _goodRobot.GetAlertContactsAsync();
@@ -216,20 +229,20 @@ namespace SharpenUp.Tests
         {
             PublicStatusPageResult publicStatusPageOne = await _goodRobot.CreatePublicStatusPageAsync( "Fake Public Status Page", new List<int>() );
 
-            Assert.NotNull( publicStatusPageOne.PublicStatusPage );
+            Assert.NotNull( publicStatusPageOne.BasePublicStatusPage );
 
-            PublicStatusPageResult publicStatusPageOneExists = await _goodRobot.GetPublicStatusPagesAsync( publicStatusPageOne.PublicStatusPage.Id );
+            PublicStatusPageResult publicStatusPageOneExists = await _goodRobot.GetPublicStatusPagesAsync( publicStatusPageOne.BasePublicStatusPage.Id );
 
             Assert.NotNull( publicStatusPageOneExists.PublicStatusPages );
 
-            await _goodRobot.UpdatePublicStatusPageAsync( publicStatusPageOne.PublicStatusPage.Id, "Super Fake", new List<int>(), "http://loser.com", "", PublicStatusPageSort.FriendlyNameDescending );
+            await _goodRobot.UpdatePublicStatusPageAsync( publicStatusPageOne.BasePublicStatusPage.Id, "Super Fake", new List<int>(), "http://loser.com", "", PublicStatusPageSort.FriendlyNameDescending );
 
-            PublicStatusPageResult publicStatusPageOneUpdated = await _goodRobot.GetPublicStatusPagesAsync( publicStatusPageOne.PublicStatusPage.Id );
+            PublicStatusPageResult publicStatusPageOneUpdated = await _goodRobot.GetPublicStatusPagesAsync( publicStatusPageOne.BasePublicStatusPage.Id );
 
             Assert.Equal( "Fake Public Status Page", publicStatusPageOneExists.PublicStatusPages[ 0 ].FriendlyName );
             Assert.Equal( "Super Fake", publicStatusPageOneUpdated.PublicStatusPages[ 0 ].FriendlyName );
 
-            PublicStatusPageResult deletedPublicStatusPageOne = await _goodRobot.DeletePublicStatusPageAsync( publicStatusPageOne.PublicStatusPage.Id );
+            PublicStatusPageResult deletedPublicStatusPageOne = await _goodRobot.DeletePublicStatusPageAsync( publicStatusPageOne.BasePublicStatusPage.Id );
 
             Assert.Equal( Status.ok, deletedPublicStatusPageOne.Status );
         }
