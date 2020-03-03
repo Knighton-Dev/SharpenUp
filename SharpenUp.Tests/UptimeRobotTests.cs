@@ -211,6 +211,29 @@ namespace SharpenUp.Tests
             Assert.True( result.Pagination.Total > 0 );
         }
 
+        [Fact]
+        public async Task PublicStatusPagesCRUDFlow()
+        {
+            PublicStatusPageResult publicStatusPageOne = await _goodRobot.CreatePublicStatusPageAsync( "Fake Public Status Page", new List<int>() );
+
+            Assert.NotNull( publicStatusPageOne.PublicStatusPage );
+
+            PublicStatusPageResult publicStatusPageOneExists = await _goodRobot.GetPublicStatusPagesAsync( publicStatusPageOne.PublicStatusPage.Id );
+
+            Assert.NotNull( publicStatusPageOneExists.PublicStatusPages );
+
+            await _goodRobot.UpdatePublicStatusPageAsync( publicStatusPageOne.PublicStatusPage.Id, "Super Fake", new List<int>(), "http://loser.com", "", PublicStatusPageSort.FriendlyNameDescending, false, PublicStatusPageStatus.Active );
+
+            PublicStatusPageResult publicStatusPageOneUpdated = await _goodRobot.GetPublicStatusPagesAsync( publicStatusPageOne.PublicStatusPage.Id );
+
+            Assert.Equal( "Fake Public Status Page", publicStatusPageOneExists.PublicStatusPages[ 0 ].FriendlyName );
+            Assert.Equal( "Super Fake", publicStatusPageOneUpdated.PublicStatusPages[ 0 ].FriendlyName );
+
+            PublicStatusPageResult deletedPublicStatusPageOne = await _goodRobot.DeletePublicStatusPageAsync( publicStatusPageOne.PublicStatusPage.Id );
+
+            Assert.Equal( Status.ok, deletedPublicStatusPageOne.Status );
+        }
+
         #endregion
     }
 }
