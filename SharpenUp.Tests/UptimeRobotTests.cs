@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharpenUp.Models;
 using SharpenUp.Requests;
 using SharpenUp.Results;
 using Xunit;
-using System.Collections.Generic;
 
 namespace SharpenUp.Tests
 {
@@ -116,6 +116,19 @@ namespace SharpenUp.Tests
         #endregion
 
         #region Alert Contacts
+
+        [Fact]
+        public async Task GetAlertContactsAsync_BadKey()
+        {
+            AlertContactsResult result = await _badRobot.GetAlertContactsAsync();
+
+            Assert.Equal( Status.fail, result.Status );
+            Assert.Null( result.AlertContacts );
+            Assert.Equal( "invalid_parameter", result.Error.Type );
+            Assert.Equal( "api_key", result.Error.ParameterName );
+            Assert.Equal( "badKey", result.Error.PassedValue );
+            Assert.Equal( "api_key is invalid.", result.Error.Message );
+        }
 
         [Fact]
         public async Task GetAlertContactsAsync_NoRequest()

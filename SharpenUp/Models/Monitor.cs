@@ -80,24 +80,25 @@ namespace SharpenUp.Models
         /// <summary>
         /// The status of the monitor. When used with the editMonitor method 0 (to pause) or 1 (to start) can be sent.
         /// </summary>
-        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "status" )]
+        [ExcludeFromCodeCoverage]
         public MonitorStatus Status { get; set; }
 
         /// <summary>
         /// The uptime ratio of the monitor calculated since the monitor is created.
         /// </summary>
-        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "all_time_uptime_ratio" )]
+        [ExcludeFromCodeCoverage]
         public double AllTimeUptimeRatio { get; set; }
 
         /// <summary>
         /// The durations of all time up-down-paused events in seconds.
         /// </summary>
-        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "all_time_uptime_durations" )]
+        [ExcludeFromCodeCoverage]
         private string AllTimeUptimeDurationsString { get; set; }
 
+        [ExcludeFromCodeCoverage]
         public UptimeDurations AllTimeUptimeDurations
         {
             get
@@ -116,22 +117,22 @@ namespace SharpenUp.Models
         /// <summary>
         /// The uptime ratio of the monitor for the given periods (if there is more than 1 period, then the values are seperated with "-").
         /// </summary>
-        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "custom_uptime_ratios" )]
+        [ExcludeFromCodeCoverage]
         public List<double> CustomUptimeRatios { get; set; }
 
         /// <summary>
         /// The uptime ratio of the monitor for the given ranges (if there is more than 1 range, then the values are seperated with "-").
         /// </summary>
-        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "custom_uptime_ranges" )]
+        [ExcludeFromCodeCoverage]
         public List<double> CustomUptimeRanges { get; set; }
 
         /// <summary>
         /// The average value of the response times (requires response_times=1).
         /// </summary>
-        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "average_response_time" )]
+        [ExcludeFromCodeCoverage]
         public double AverageResponseTime { get; set; }
 
         /// <summary>
@@ -178,8 +179,8 @@ namespace SharpenUp.Models
         /// <summary>
         /// A list of ratios that match to the values of the CustomUptimeRatios in the request.
         /// </summary>
-        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "custom_uptime_ratio" )]
+        [ExcludeFromCodeCoverage]
         private string CustomUptimeRatioString { get; set; }
 
         [ExcludeFromCodeCoverage]
@@ -260,6 +261,7 @@ namespace SharpenUp.Models
         Down = 9
     }
 
+    [ExcludeFromCodeCoverage]
     public class UptimeDurations
     {
         public int Up { get; set; }
