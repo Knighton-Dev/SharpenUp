@@ -75,24 +75,24 @@ Obviously, the unit tests are written for a very specific use-case (*mine*), but
 
 This is based off of a list on the Uptime Robot reference.
 
-- ~~`POST getAccountDetails`~~ *Complete as of 0.0.3*
-- `POST getMonitors` *Mostly complete as of version 0.0.3*
+- ~~`POST getAccountDetails`~~ *Complete as of 1.0.0*
+- `POST getMonitors` *Mostly complete as of version 1.1.0*
 - `POST newMonitor`
 - `POST editMonitor`
 - `POST deleteMonitor`
 - `POST resetMonitor`
-- ~~`POST getAlertContacts`~~ *Complete as of 0.0.3*
-- `POST newAlertContact`
-- `POST editAlertContact`
-- `POST deleteAlertContact`
-- `POST getMWindows` *Mostly complete, but untested, as of 0.0.6 (I don't have a premium account at the moment.)*
+- ~~`POST getAlertContacts`~~ *Complete as of 1.0.0*
+- ~~`POST newAlertContact`~~ *Complete as of 1.2.0*
+- ~~`POST editAlertContact`~~ *Complete as of 1.2.0*
+- ~~`POST deleteAlertContact`~~ *Complete as of 1.2.0*
+- `POST getMWindows`
 - `POST newMWindow`
 - `POST editMWindow`
 - `POST deleteMWindow`
-- ~~`POST getPSPs`~~ *Complete as of 0.0.5*
-- `POST newPSP`
-- `POST editPSP`
-- `POST deletePSP`
+- ~~`POST getPSPs`~~ *Complete as of 1.0.0*
+- ~~`POST newPSP`~~ *Complete as of 1.2.0*
+- ~~`POST editPSP`~~ *Complete as of 1.2.0*
+- ~~`POST deletePSP`~~ *Complete as of 1.2.0*
 
 ## Acknowldegements 
 
