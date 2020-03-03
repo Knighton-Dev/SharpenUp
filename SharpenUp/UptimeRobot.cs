@@ -352,6 +352,18 @@ namespace SharpenUp
         /// <summary>
         /// The list of public status pages can be called with this method.
         /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<PublicStatusPageResult> GetPublicStatusPagesAsync( int id )
+        {
+            PublicStatusPageRequest request = new PublicStatusPageRequest { PublicStatusPages = new List<int> { id } };
+
+            return await GetPublicStatusPagesAsync( request );
+        }
+
+        /// <summary>
+        /// The list of public status pages can be called with this method.
+        /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         public async Task<PublicStatusPageResult> GetPublicStatusPagesAsync( PublicStatusPageRequest request )
@@ -430,10 +442,92 @@ namespace SharpenUp
                 }
 
                 queryString.Append( $"&sort={(int)sort}" );
-                queryString.Append( $"&hide_url_links={hideUrlLinks}" );
-                queryString.Append( $"&status={(int)status}" );
+                //queryString.Append( $"&hide_url_links={hideUrlLinks}" );
+                //queryString.Append( $"&status={(int)status}" );
 
                 IRestResponse response = await GetRestResponseAsync( "newPSP", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Public status pages can be edited using this method.
+        /// </summary>
+        /// <param name="id">Required</param>
+        /// <param name="friendlyName">Optional</param>
+        /// <param name="monitors">Optional</param>
+        /// <param name="customDomain">Optional</param>
+        /// <param name="password">Optional</param>
+        /// <param name="sort">Optional</param>
+        /// <param name="hideUrlLinks">Optional (for hiding the Uptime Robot links and only available in the Pro Plan)</param>
+        /// <param name="status">Optional</param>
+        /// <returns></returns>
+        public async Task<PublicStatusPageResult> UpdatePublicStatusPageAsync( int id, string friendlyName, List<int> monitors, string customDomain, string password, PublicStatusPageSort sort, bool hideUrlLinks, PublicStatusPageStatus status )
+        {
+            PublicStatusPageResult existingPublicPage = await GetPublicStatusPagesAsync( id );
+
+            if ( existingPublicPage.PublicStatusPages?.Count > 0 )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&id={id}" );
+
+                if ( !existingPublicPage.PublicStatusPages[ 0 ].FriendlyName.Equals( friendlyName ) )
+                {
+                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+                }
+
+                if ( monitors?.Count > 0 )
+                {
+                    queryString.Append( "&monitors=" );
+                    queryString.Append( string.Join( "-", monitors ) );
+                }
+                else
+                {
+                    queryString.Append( "&monitors=0" );
+                }
+
+                if ( !existingPublicPage.PublicStatusPages[ 0 ].CustomDomain.Equals( customDomain ) )
+                {
+                    queryString.Append( $"&custom_domain={HttpUtility.HtmlEncode( customDomain )}" );
+                }
+
+                if ( !string.IsNullOrWhiteSpace( existingPublicPage.PublicStatusPages[ 0 ].Password ) && !existingPublicPage.PublicStatusPages[ 0 ].Password.Equals( password ) )
+                {
+                    queryString.Append( $"&password={HttpUtility.HtmlEncode( password )}" );
+                }
+
+                queryString.Append( $"&sort={(int)sort}" );
+                //queryString.Append( $"&hide_url_links={hideUrlLinks}" );
+                //queryString.Append( $"&status={(int)status}" );
+
+                IRestResponse response = await GetRestResponseAsync( "editPSP", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Public status pages can be deleted using this method.
+        /// </summary>
+        /// <param name="publicStatusPageId">Required</param>
+        /// <returns></returns>
+        public async Task<PublicStatusPageResult> DeletePublicStatusPageAsync( int publicStatusPageId )
+        {
+            PublicStatusPageResult existingPublicPage = await GetPublicStatusPagesAsync( publicStatusPageId );
+
+            if ( existingPublicPage.PublicStatusPages?.Count > 0 )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&id={publicStatusPageId}" );
+
+                IRestResponse response = await GetRestResponseAsync( "deletePSP", queryString.ToString() );
 
                 return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
             }
