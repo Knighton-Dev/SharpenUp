@@ -222,7 +222,7 @@ namespace SharpenUp.Tests
 
             Assert.NotNull( publicStatusPageOneExists.PublicStatusPages );
 
-            await _goodRobot.UpdatePublicStatusPageAsync( publicStatusPageOne.PublicStatusPage.Id, "Super Fake", new List<int>(), "http://loser.com", "", PublicStatusPageSort.FriendlyNameDescending, false, PublicStatusPageStatus.Active );
+            await _goodRobot.UpdatePublicStatusPageAsync( publicStatusPageOne.PublicStatusPage.Id, "Super Fake", new List<int>(), "http://loser.com", "", PublicStatusPageSort.FriendlyNameDescending );
 
             PublicStatusPageResult publicStatusPageOneUpdated = await _goodRobot.GetPublicStatusPagesAsync( publicStatusPageOne.PublicStatusPage.Id );
 
