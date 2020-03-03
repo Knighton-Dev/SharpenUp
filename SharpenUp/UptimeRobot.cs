@@ -27,15 +27,7 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<AccountDetailsResult> GetAccountDetailsAsync()
         {
-            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getAccountDetails" );
-            RestRequest restRequest = new RestRequest( Method.POST );
-
-            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-            restRequest.AddHeader( "cache-control", "no-cache" );
-
-            restRequest.AddParameter( "application/x-www-form-urlencoded", $"api_key={_apiKey}&format=json", ParameterType.RequestBody );
-
-            IRestResponse response = await restClient.ExecuteAsync( restRequest );
+            IRestResponse response = await GetRestResponseAsync( "getAccountDetails", $"api_key={_apiKey}&format=json" );
 
             return JsonConvert.DeserializeObject<AccountDetailsResult>( response.Content );
         }
@@ -203,15 +195,7 @@ namespace SharpenUp
                 queryString.Append( $"&search={HttpUtility.UrlEncode( request.Search )}" );
             }
 
-            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getMonitors" );
-            RestRequest restRequest = new RestRequest( Method.POST );
-
-            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-            restRequest.AddHeader( "cache-control", "no-cache" );
-
-            restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
-
-            IRestResponse response = await restClient.ExecuteAsync( restRequest );
+            IRestResponse response = await GetRestResponseAsync( "getMonitors", queryString.ToString() );
 
             return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
         }
@@ -227,6 +211,21 @@ namespace SharpenUp
         public async Task<AlertContactsResult> GetAlertContactsAsync()
         {
             return await GetAlertContactsAsync( new AlertContactsRequest() );
+        }
+
+        /// <summary>
+        /// The list of alert contacts can be called with this method.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<AlertContactsResult> GetAlertContactsAsync( int id )
+        {
+            AlertContactsRequest alertContactsRequest = new AlertContactsRequest
+            {
+                AlertContacts = new List<int> { id }
+            };
+
+            return await GetAlertContactsAsync( alertContactsRequest );
         }
 
         /// <summary>
@@ -254,17 +253,87 @@ namespace SharpenUp
                 queryString.Append( $"&limit={request.Limit}" );
             }
 
-            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getAlertContacts" );
-            RestRequest restRequest = new RestRequest( Method.POST );
-
-            restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
-            restRequest.AddHeader( "cache-control", "no-cache" );
-
-            restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
-
-            IRestResponse response = await restClient.ExecuteAsync( restRequest );
+            IRestResponse response = await GetRestResponseAsync( "getAlertContacts", queryString.ToString() );
 
             return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+        }
+
+        /// <summary>
+        /// New alert contacts of any type (mobile/SMS alert contacts are not supported yet) can be created using this method.
+        /// The alert contacts created using the API are validated with the same way as they were created from uptimerobot.com (activation link for e-mails, etc.).
+        /// </summary>
+        /// <param name="contact"></param>
+        /// <returns></returns>
+        public async Task<AlertContactsResult> CreateAlertContactAsync( ContactType contactType, string contactValue, string friendlyName )
+        {
+            if ( !string.IsNullOrWhiteSpace( friendlyName ) && !string.IsNullOrWhiteSpace( contactValue ) && contactType != ContactType.SMS )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&type={(int)contactType}" );
+                queryString.Append( $"&value={HttpUtility.HtmlEncode( contactValue )}" );
+                queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+
+                IRestResponse response = await GetRestResponseAsync( "newAlertContact", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Alert contacts can be edited using this method.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<AlertContactsResult> UpdateAlertContactAsync( int alertContactId, string friendlyName, string contactValue )
+        {
+            AlertContactsResult existingContact = await GetAlertContactsAsync( alertContactId );
+
+            if ( existingContact.AlertContacts?.Count > 0 )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                if ( !string.IsNullOrWhiteSpace( friendlyName ) )
+                {
+                    queryString.Append( $"&id={alertContactId}" );
+                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+
+                    if ( existingContact.AlertContacts[ 0 ].ContactType == ContactType.WebHook && !string.IsNullOrWhiteSpace( contactValue ) )
+                    {
+                        queryString.Append( $"&value={HttpUtility.HtmlEncode( contactValue )}" );
+                    }
+
+                    IRestResponse response = await GetRestResponseAsync( "editAlertContact", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Alert contacts can be deleted using this method.
+        /// </summary>
+        /// <param name="alertContactId"></param>
+        /// <returns></returns>
+        public async Task<AlertContactsResult> DeleteAlertContactsAsync( int alertContactId )
+        {
+            AlertContactsResult existingContact = await GetAlertContactsAsync( alertContactId );
+
+            if ( existingContact.AlertContacts?.Count > 0 )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&id={alertContactId}" );
+
+                IRestResponse response = await GetRestResponseAsync( "deleteAlertContact", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+            }
+
+            return null;
         }
 
         #endregion
@@ -278,6 +347,18 @@ namespace SharpenUp
         public async Task<PublicStatusPageResult> GetPublicStatusPagesAsync()
         {
             return await GetPublicStatusPagesAsync( new PublicStatusPageRequest() );
+        }
+
+        /// <summary>
+        /// The list of public status pages can be called with this method.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<PublicStatusPageResult> GetPublicStatusPagesAsync( int id )
+        {
+            PublicStatusPageRequest request = new PublicStatusPageRequest { PublicStatusPages = new List<int> { id } };
+
+            return await GetPublicStatusPagesAsync( request );
         }
 
         /// <summary>
@@ -305,19 +386,166 @@ namespace SharpenUp
                 queryString.Append( $"&limit={request.Limit}" );
             }
 
-            RestClient restClient = new RestClient( "https://api.uptimerobot.com/v2/getPSPs" );
+            IRestResponse response = await GetRestResponseAsync( "getPSPs", queryString.ToString() );
+
+            return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+        }
+
+        /// <summary>
+        /// New public status pages can be created using this method.
+        /// </summary>
+        /// <param name="friendlyName">Required</param>
+        /// <param name="monitors">required (The monitors to be displayed can be sent as 15830-32696-83920. Or 0 for displaying all monitors)</param>
+        /// <returns></returns>
+        public async Task<PublicStatusPageResult> CreatePublicStatusPageAsync( string friendlyName, List<int> monitors )
+        {
+            return await CreatePublicStatusPageAsync( friendlyName, monitors, "", "", PublicStatusPageSort.FriendlyNameAscending );
+        }
+
+        /// <summary>
+        /// New public status pages can be created using this method.
+        /// </summary>
+        /// <param name="friendlyName">Required</param>
+        /// <param name="monitors">Required (The monitors to be displayed can be sent as 15830-32696-83920. Or 0 for displaying all monitors)</param>
+        /// <param name="customDomain">Optional</param>
+        /// <param name="password">Optional</param>
+        /// <param name="sort">Optional</param>
+        /// <returns></returns>
+        public async Task<PublicStatusPageResult> CreatePublicStatusPageAsync( string friendlyName, List<int> monitors, string customDomain, string password, PublicStatusPageSort sort )
+        {
+            if ( !string.IsNullOrWhiteSpace( friendlyName ) )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+
+                if ( monitors?.Count > 0 )
+                {
+                    queryString.Append( "&monitors=" );
+                    queryString.Append( string.Join( "-", monitors ) );
+                }
+                else
+                {
+                    queryString.Append( "&monitors=0" );
+                }
+
+                if ( !string.IsNullOrWhiteSpace( customDomain ) )
+                {
+                    queryString.Append( $"&custom_domain={HttpUtility.HtmlEncode( customDomain )}" );
+                }
+
+                if ( !string.IsNullOrWhiteSpace( password ) )
+                {
+                    queryString.Append( $"&password={HttpUtility.HtmlEncode( password )}" );
+                }
+
+                queryString.Append( $"&sort={(int)sort}" );
+
+                IRestResponse response = await GetRestResponseAsync( "newPSP", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Public status pages can be edited using this method.
+        /// </summary>
+        /// <param name="id">Required</param>
+        /// <param name="friendlyName">Optional</param>
+        /// <param name="monitors">Optional</param>
+        /// <param name="customDomain">Optional</param>
+        /// <param name="password">Optional</param>
+        /// <param name="sort">Optional</param>
+        /// <returns></returns>
+        public async Task<PublicStatusPageResult> UpdatePublicStatusPageAsync( int id, string friendlyName, List<int> monitors, string customDomain, string password, PublicStatusPageSort sort )
+        {
+            PublicStatusPageResult existingPublicPage = await GetPublicStatusPagesAsync( id );
+
+            if ( existingPublicPage.PublicStatusPages?.Count > 0 )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&id={id}" );
+
+                if ( !existingPublicPage.PublicStatusPages[ 0 ].FriendlyName.Equals( friendlyName ) )
+                {
+                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+                }
+
+                if ( monitors?.Count > 0 )
+                {
+                    queryString.Append( "&monitors=" );
+                    queryString.Append( string.Join( "-", monitors ) );
+                }
+                else
+                {
+                    queryString.Append( "&monitors=0" );
+                }
+
+                if ( !existingPublicPage.PublicStatusPages[ 0 ].CustomDomain.Equals( customDomain ) )
+                {
+                    queryString.Append( $"&custom_domain={HttpUtility.HtmlEncode( customDomain )}" );
+                }
+
+                if ( !string.IsNullOrWhiteSpace( existingPublicPage.PublicStatusPages[ 0 ].Password ) && !existingPublicPage.PublicStatusPages[ 0 ].Password.Equals( password ) )
+                {
+                    queryString.Append( $"&password={HttpUtility.HtmlEncode( password )}" );
+                }
+
+                queryString.Append( $"&sort={(int)sort}" );
+
+                IRestResponse response = await GetRestResponseAsync( "editPSP", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Public status pages can be deleted using this method.
+        /// </summary>
+        /// <param name="publicStatusPageId">Required</param>
+        /// <returns></returns>
+        public async Task<PublicStatusPageResult> DeletePublicStatusPageAsync( int publicStatusPageId )
+        {
+            PublicStatusPageResult existingPublicPage = await GetPublicStatusPagesAsync( publicStatusPageId );
+
+            if ( existingPublicPage.PublicStatusPages?.Count > 0 )
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&id={publicStatusPageId}" );
+
+                IRestResponse response = await GetRestResponseAsync( "deletePSP", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+            }
+
+            return null;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Makes reusing the RestSharp logic a little easier. 
+        /// </summary>
+        /// <param name="endpoint"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        private async Task<IRestResponse> GetRestResponseAsync( string endpoint, string query )
+        {
+            RestClient restClient = new RestClient( $"https://api.uptimerobot.com/v2/{endpoint}" );
             RestRequest restRequest = new RestRequest( Method.POST );
 
             restRequest.AddHeader( "content-type", "application/x-www-form-urlencoded" );
             restRequest.AddHeader( "cache-control", "no-cache" );
 
-            restRequest.AddParameter( "application/x-www-form-urlencoded", queryString.ToString(), ParameterType.RequestBody );
+            restRequest.AddParameter( "application/x-www-form-urlencoded", query, ParameterType.RequestBody );
 
-            IRestResponse response = await restClient.ExecuteAsync( restRequest );
-
-            return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+            return await restClient.ExecuteAsync( restRequest );
         }
-
-        #endregion
     }
 }
