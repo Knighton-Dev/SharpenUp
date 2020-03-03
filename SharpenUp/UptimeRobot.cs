@@ -1,12 +1,13 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Newtonsoft.Json;
 using RestSharp;
+using SharpenUp.Models;
 using SharpenUp.Requests;
 using SharpenUp.Results;
-using System.Collections.Generic;
-using SharpenUp.Models;
-using System.Web;
 
 namespace SharpenUp
 {
@@ -27,9 +28,24 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<AccountDetailsResult> GetAccountDetailsAsync()
         {
-            IRestResponse response = await GetRestResponseAsync( "getAccountDetails", $"api_key={_apiKey}&format=json" );
+            try
+            {
+                IRestResponse response = await GetRestResponseAsync( "getAccountDetails", $"api_key={_apiKey}&format=json" );
 
-            return JsonConvert.DeserializeObject<AccountDetailsResult>( response.Content );
+                return JsonConvert.DeserializeObject<AccountDetailsResult>( response.Content );
+            }
+            catch ( Exception e )
+            {
+                return new AccountDetailsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Internal Exception",
+                        Message = e.Message
+                    }
+                };
+            }
         }
 
         #endregion
@@ -58,146 +74,161 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request )
         {
-            StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
-
-            if ( request.Monitors?.Count > 0 )
+            try
             {
-                queryString.Append( "&monitors=" );
-                queryString.Append( string.Join( "-", request.Monitors ) );
-            }
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
-            if ( request.MonitorTypes?.Count > 0 )
-            {
-                List<int> convertToIntegers = new List<int>();
-
-                queryString.Append( "&types=" );
-
-                foreach ( MonitorType monitorType in request.MonitorTypes )
+                if ( request.Monitors?.Count > 0 )
                 {
-                    convertToIntegers.Add( (int)monitorType );
+                    queryString.Append( "&monitors=" );
+                    queryString.Append( string.Join( "-", request.Monitors ) );
                 }
 
-                queryString.Append( string.Join( "-", convertToIntegers ) );
-            }
-
-            if ( request.Statuses?.Count > 0 )
-            {
-                List<int> convertToIntegers = new List<int>();
-
-                queryString.Append( "&statuses=" );
-
-                foreach ( MonitorStatus monitorType in request.Statuses )
-                {
-                    convertToIntegers.Add( (int)monitorType );
-                }
-
-                queryString.Append( string.Join( "-", convertToIntegers ) );
-            }
-
-            if ( request.CustomUptimeRatios?.Count > 0 )
-            {
-                queryString.Append( "&custom_uptime_ratios=" );
-                queryString.Append( string.Join( "-", request.CustomUptimeRatios ) );
-            }
-
-            // TODO: Custom Uptime Ranges
-
-            if ( request.AllTimeUptimeRatio )
-            {
-                queryString.Append( "&all_time_uptime_ratio=1" );
-            }
-
-            if ( request.AllTimeUptimeDurations )
-            {
-                queryString.Append( "&all_time_uptime_durations=1" );
-            }
-
-            if ( request.IncludeLogs )
-            {
-                queryString.Append( "&logs=1" );
-
-                // TODO: Logs Start Date
-                // TODO: Logs End Date
-
-                if ( request.LogTypes?.Count > 0 )
+                if ( request.MonitorTypes?.Count > 0 )
                 {
                     List<int> convertToIntegers = new List<int>();
 
-                    queryString.Append( "&log_types=" );
+                    queryString.Append( "&types=" );
 
-                    foreach ( LogType logType in request.LogTypes )
+                    foreach ( MonitorType monitorType in request.MonitorTypes )
                     {
-                        convertToIntegers.Add( (int)logType );
+                        convertToIntegers.Add( (int)monitorType );
                     }
 
                     queryString.Append( string.Join( "-", convertToIntegers ) );
                 }
 
-                if ( request.LogsLimit.HasValue )
+                if ( request.Statuses?.Count > 0 )
                 {
-                    queryString.Append( $"&logs_limit={request.LogsLimit.Value}" );
+                    List<int> convertToIntegers = new List<int>();
+
+                    queryString.Append( "&statuses=" );
+
+                    foreach ( MonitorStatus monitorType in request.Statuses )
+                    {
+                        convertToIntegers.Add( (int)monitorType );
+                    }
+
+                    queryString.Append( string.Join( "-", convertToIntegers ) );
                 }
-            }
 
-            if ( request.ResponseTimes )
-            {
-                queryString.Append( "&response_times=1" );
-
-                if ( request.ResponseTimesLimit.HasValue )
+                if ( request.CustomUptimeRatios?.Count > 0 )
                 {
-                    queryString.Append( $"&response_times_limit={request.ResponseTimesLimit.Value}" );
+                    queryString.Append( "&custom_uptime_ratios=" );
+                    queryString.Append( string.Join( "-", request.CustomUptimeRatios ) );
                 }
-            }
 
-            if ( request.AlertContacts )
+                // TODO: Custom Uptime Ranges
+
+                if ( request.AllTimeUptimeRatio )
+                {
+                    queryString.Append( "&all_time_uptime_ratio=1" );
+                }
+
+                if ( request.AllTimeUptimeDurations )
+                {
+                    queryString.Append( "&all_time_uptime_durations=1" );
+                }
+
+                if ( request.IncludeLogs )
+                {
+                    queryString.Append( "&logs=1" );
+
+                    // TODO: Logs Start Date
+                    // TODO: Logs End Date
+
+                    if ( request.LogTypes?.Count > 0 )
+                    {
+                        List<int> convertToIntegers = new List<int>();
+
+                        queryString.Append( "&log_types=" );
+
+                        foreach ( LogType logType in request.LogTypes )
+                        {
+                            convertToIntegers.Add( (int)logType );
+                        }
+
+                        queryString.Append( string.Join( "-", convertToIntegers ) );
+                    }
+
+                    if ( request.LogsLimit.HasValue )
+                    {
+                        queryString.Append( $"&logs_limit={request.LogsLimit.Value}" );
+                    }
+                }
+
+                if ( request.ResponseTimes )
+                {
+                    queryString.Append( "&response_times=1" );
+
+                    if ( request.ResponseTimesLimit.HasValue )
+                    {
+                        queryString.Append( $"&response_times_limit={request.ResponseTimesLimit.Value}" );
+                    }
+                }
+
+                if ( request.AlertContacts )
+                {
+                    queryString.Append( "&alert_contacts=1" );
+                }
+
+                if ( request.MaintenanceWindows )
+                {
+                    queryString.Append( "&mwindows=1" );
+                }
+
+                if ( request.IncludeSSL )
+                {
+                    queryString.Append( "&ssl=1" );
+                }
+
+                // TODO: Figure these out. I don't have a "pro" plan
+                //if ( request.CustomHttpHeaders )
+                //{
+                //    queryString.Append( "&custom_http_headers=1" );
+                //}
+
+                //if ( request.CustomHttpStatuses )
+                //{
+                //    queryString.Append( "&custom_http_statuses=1" );
+                //}
+
+                if ( request.Timezone )
+                {
+                    queryString.Append( "&timezone=1" );
+                }
+
+                if ( request.Offset > 0 )
+                {
+                    queryString.Append( $"&offset={request.Offset}" );
+                }
+
+                if ( request.Limit < 50 )
+                {
+                    queryString.Append( $"&limit={request.Limit}" );
+                }
+
+                if ( !string.IsNullOrEmpty( request.Search ) )
+                {
+                    queryString.Append( $"&search={HttpUtility.UrlEncode( request.Search )}" );
+                }
+
+                IRestResponse response = await GetRestResponseAsync( "getMonitors", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
+            }
+            catch ( Exception e )
             {
-                queryString.Append( "&alert_contacts=1" );
+                return new MonitorsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Internal Exception",
+                        Message = e.Message
+                    }
+                };
             }
-
-            if ( request.MaintenanceWindows )
-            {
-                queryString.Append( "&mwindows=1" );
-            }
-
-            if ( request.IncludeSSL )
-            {
-                queryString.Append( "&ssl=1" );
-            }
-
-            // TODO: Figure these out. I don't have a "pro" plan
-            //if ( request.CustomHttpHeaders )
-            //{
-            //    queryString.Append( "&custom_http_headers=1" );
-            //}
-
-            //if ( request.CustomHttpStatuses )
-            //{
-            //    queryString.Append( "&custom_http_statuses=1" );
-            //}
-
-            if ( request.Timezone )
-            {
-                queryString.Append( "&timezone=1" );
-            }
-
-            if ( request.Offset > 0 )
-            {
-                queryString.Append( $"&offset={request.Offset}" );
-            }
-
-            if ( request.Limit < 50 )
-            {
-                queryString.Append( $"&limit={request.Limit}" );
-            }
-
-            if ( !string.IsNullOrEmpty( request.Search ) )
-            {
-                queryString.Append( $"&search={HttpUtility.UrlEncode( request.Search )}" );
-            }
-
-            IRestResponse response = await GetRestResponseAsync( "getMonitors", queryString.ToString() );
-
-            return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
         }
 
         #endregion
@@ -235,27 +266,42 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<AlertContactsResult> GetAlertContactsAsync( AlertContactsRequest request )
         {
-            StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
-
-            if ( request.AlertContacts?.Count > 0 )
+            try
             {
-                queryString.Append( "&alert_contacts=" );
-                queryString.Append( string.Join( "-", request.AlertContacts ) );
-            }
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
-            if ( request.Offset != 0 )
+                if ( request.AlertContacts?.Count > 0 )
+                {
+                    queryString.Append( "&alert_contacts=" );
+                    queryString.Append( string.Join( "-", request.AlertContacts ) );
+                }
+
+                if ( request.Offset != 0 )
+                {
+                    queryString.Append( $"&offset={request.Offset}" );
+                }
+
+                if ( request.Limit != 50 )
+                {
+                    queryString.Append( $"&limit={request.Limit}" );
+                }
+
+                IRestResponse response = await GetRestResponseAsync( "getAlertContacts", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+            }
+            catch ( Exception e )
             {
-                queryString.Append( $"&offset={request.Offset}" );
+                return new AlertContactsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
             }
-
-            if ( request.Limit != 50 )
-            {
-                queryString.Append( $"&limit={request.Limit}" );
-            }
-
-            IRestResponse response = await GetRestResponseAsync( "getAlertContacts", queryString.ToString() );
-
-            return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
         }
 
         /// <summary>
@@ -266,20 +312,37 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<AlertContactsResult> CreateAlertContactAsync( ContactType contactType, string contactValue, string friendlyName )
         {
-            if ( !string.IsNullOrWhiteSpace( friendlyName ) && !string.IsNullOrWhiteSpace( contactValue ) && contactType != ContactType.SMS )
+            try
             {
-                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+                if ( !string.IsNullOrWhiteSpace( friendlyName ) && !string.IsNullOrWhiteSpace( contactValue ) && contactType != ContactType.SMS )
+                {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
-                queryString.Append( $"&type={(int)contactType}" );
-                queryString.Append( $"&value={HttpUtility.HtmlEncode( contactValue )}" );
-                queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+                    queryString.Append( $"&type={(int)contactType}" );
+                    queryString.Append( $"&value={HttpUtility.HtmlEncode( contactValue )}" );
+                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
 
-                IRestResponse response = await GetRestResponseAsync( "newAlertContact", queryString.ToString() );
+                    IRestResponse response = await GetRestResponseAsync( "newAlertContact", queryString.ToString() );
 
-                return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+                    return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+                }
+                else
+                {
+                    throw new Exception( "Incorrent Parameters" );
+                }
             }
-
-            return null;
+            catch ( Exception e )
+            {
+                return new AlertContactsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
         }
 
         /// <summary>
@@ -288,14 +351,14 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<AlertContactsResult> UpdateAlertContactAsync( int alertContactId, string friendlyName, string contactValue )
         {
-            AlertContactsResult existingContact = await GetAlertContactsAsync( alertContactId );
-
-            if ( existingContact.AlertContacts?.Count > 0 )
+            try
             {
-                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+                AlertContactsResult existingContact = await GetAlertContactsAsync( alertContactId );
 
-                if ( !string.IsNullOrWhiteSpace( friendlyName ) )
+                if ( existingContact.AlertContacts?.Count > 0 )
                 {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
                     queryString.Append( $"&id={alertContactId}" );
                     queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
 
@@ -308,9 +371,23 @@ namespace SharpenUp
 
                     return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
                 }
+                else
+                {
+                    throw new Exception( "Contact does not exist." );
+                }
             }
-
-            return null;
+            catch ( Exception e )
+            {
+                return new AlertContactsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
         }
 
         /// <summary>
@@ -320,20 +397,37 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<AlertContactsResult> DeleteAlertContactsAsync( int alertContactId )
         {
-            AlertContactsResult existingContact = await GetAlertContactsAsync( alertContactId );
-
-            if ( existingContact.AlertContacts?.Count > 0 )
+            try
             {
-                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+                AlertContactsResult existingContact = await GetAlertContactsAsync( alertContactId );
 
-                queryString.Append( $"&id={alertContactId}" );
+                if ( existingContact.AlertContacts?.Count > 0 )
+                {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
-                IRestResponse response = await GetRestResponseAsync( "deleteAlertContact", queryString.ToString() );
+                    queryString.Append( $"&id={alertContactId}" );
 
-                return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+                    IRestResponse response = await GetRestResponseAsync( "deleteAlertContact", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+                }
+                else
+                {
+                    throw new Exception( "No Alert Contact Found" );
+                }
             }
-
-            return null;
+            catch ( Exception e )
+            {
+                return new AlertContactsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
         }
 
         #endregion
@@ -368,27 +462,42 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<PublicStatusPageResult> GetPublicStatusPagesAsync( PublicStatusPageRequest request )
         {
-            StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
-
-            if ( request.PublicStatusPages?.Count > 0 )
+            try
             {
-                queryString.Append( "&psps=" );
-                queryString.Append( string.Join( "-", request.PublicStatusPages ) );
-            }
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
-            if ( request.Offset != 0 )
+                if ( request.PublicStatusPages?.Count > 0 )
+                {
+                    queryString.Append( "&psps=" );
+                    queryString.Append( string.Join( "-", request.PublicStatusPages ) );
+                }
+
+                if ( request.Offset != 0 )
+                {
+                    queryString.Append( $"&offset={request.Offset}" );
+                }
+
+                if ( request.Limit != 50 )
+                {
+                    queryString.Append( $"&limit={request.Limit}" );
+                }
+
+                IRestResponse response = await GetRestResponseAsync( "getPSPs", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+            }
+            catch ( Exception e )
             {
-                queryString.Append( $"&offset={request.Offset}" );
+                return new PublicStatusPageResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
             }
-
-            if ( request.Limit != 50 )
-            {
-                queryString.Append( $"&limit={request.Limit}" );
-            }
-
-            IRestResponse response = await GetRestResponseAsync( "getPSPs", queryString.ToString() );
-
-            return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
         }
 
         /// <summary>
@@ -413,40 +522,57 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<PublicStatusPageResult> CreatePublicStatusPageAsync( string friendlyName, List<int> monitors, string customDomain, string password, PublicStatusPageSort sort )
         {
-            if ( !string.IsNullOrWhiteSpace( friendlyName ) )
+            try
             {
-                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
-
-                queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
-
-                if ( monitors?.Count > 0 )
+                if ( !string.IsNullOrWhiteSpace( friendlyName ) )
                 {
-                    queryString.Append( "&monitors=" );
-                    queryString.Append( string.Join( "-", monitors ) );
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+
+                    if ( monitors?.Count > 0 )
+                    {
+                        queryString.Append( "&monitors=" );
+                        queryString.Append( string.Join( "-", monitors ) );
+                    }
+                    else
+                    {
+                        queryString.Append( "&monitors=0" );
+                    }
+
+                    if ( !string.IsNullOrWhiteSpace( customDomain ) )
+                    {
+                        queryString.Append( $"&custom_domain={HttpUtility.HtmlEncode( customDomain )}" );
+                    }
+
+                    if ( !string.IsNullOrWhiteSpace( password ) )
+                    {
+                        queryString.Append( $"&password={HttpUtility.HtmlEncode( password )}" );
+                    }
+
+                    queryString.Append( $"&sort={(int)sort}" );
+
+                    IRestResponse response = await GetRestResponseAsync( "newPSP", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
                 }
                 else
                 {
-                    queryString.Append( "&monitors=0" );
+                    throw new Exception( "A Friendly Name is Required" );
                 }
-
-                if ( !string.IsNullOrWhiteSpace( customDomain ) )
-                {
-                    queryString.Append( $"&custom_domain={HttpUtility.HtmlEncode( customDomain )}" );
-                }
-
-                if ( !string.IsNullOrWhiteSpace( password ) )
-                {
-                    queryString.Append( $"&password={HttpUtility.HtmlEncode( password )}" );
-                }
-
-                queryString.Append( $"&sort={(int)sort}" );
-
-                IRestResponse response = await GetRestResponseAsync( "newPSP", queryString.ToString() );
-
-                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
             }
-
-            return null;
+            catch ( Exception e )
+            {
+                return new PublicStatusPageResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
         }
 
         /// <summary>
@@ -461,47 +587,64 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<PublicStatusPageResult> UpdatePublicStatusPageAsync( int id, string friendlyName, List<int> monitors, string customDomain, string password, PublicStatusPageSort sort )
         {
-            PublicStatusPageResult existingPublicPage = await GetPublicStatusPagesAsync( id );
-
-            if ( existingPublicPage.PublicStatusPages?.Count > 0 )
+            try
             {
-                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+                PublicStatusPageResult existingPublicPage = await GetPublicStatusPagesAsync( id );
 
-                queryString.Append( $"&id={id}" );
-
-                if ( !existingPublicPage.PublicStatusPages[ 0 ].FriendlyName.Equals( friendlyName ) )
+                if ( existingPublicPage.PublicStatusPages?.Count > 0 )
                 {
-                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
-                }
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
-                if ( monitors?.Count > 0 )
-                {
-                    queryString.Append( "&monitors=" );
-                    queryString.Append( string.Join( "-", monitors ) );
+                    queryString.Append( $"&id={id}" );
+
+                    if ( !existingPublicPage.PublicStatusPages[ 0 ].FriendlyName.Equals( friendlyName ) )
+                    {
+                        queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+                    }
+
+                    if ( monitors?.Count > 0 )
+                    {
+                        queryString.Append( "&monitors=" );
+                        queryString.Append( string.Join( "-", monitors ) );
+                    }
+                    else
+                    {
+                        queryString.Append( "&monitors=0" );
+                    }
+
+                    if ( !existingPublicPage.PublicStatusPages[ 0 ].CustomDomain.Equals( customDomain ) )
+                    {
+                        queryString.Append( $"&custom_domain={HttpUtility.HtmlEncode( customDomain )}" );
+                    }
+
+                    if ( !string.IsNullOrWhiteSpace( existingPublicPage.PublicStatusPages[ 0 ].Password ) && !existingPublicPage.PublicStatusPages[ 0 ].Password.Equals( password ) )
+                    {
+                        queryString.Append( $"&password={HttpUtility.HtmlEncode( password )}" );
+                    }
+
+                    queryString.Append( $"&sort={(int)sort}" );
+
+                    IRestResponse response = await GetRestResponseAsync( "editPSP", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
                 }
                 else
                 {
-                    queryString.Append( "&monitors=0" );
+                    throw new Exception( "No Public Status Page was found!" );
                 }
-
-                if ( !existingPublicPage.PublicStatusPages[ 0 ].CustomDomain.Equals( customDomain ) )
-                {
-                    queryString.Append( $"&custom_domain={HttpUtility.HtmlEncode( customDomain )}" );
-                }
-
-                if ( !string.IsNullOrWhiteSpace( existingPublicPage.PublicStatusPages[ 0 ].Password ) && !existingPublicPage.PublicStatusPages[ 0 ].Password.Equals( password ) )
-                {
-                    queryString.Append( $"&password={HttpUtility.HtmlEncode( password )}" );
-                }
-
-                queryString.Append( $"&sort={(int)sort}" );
-
-                IRestResponse response = await GetRestResponseAsync( "editPSP", queryString.ToString() );
-
-                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
             }
-
-            return null;
+            catch ( Exception e )
+            {
+                return new PublicStatusPageResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
         }
 
         /// <summary>
@@ -511,20 +654,37 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<PublicStatusPageResult> DeletePublicStatusPageAsync( int publicStatusPageId )
         {
-            PublicStatusPageResult existingPublicPage = await GetPublicStatusPagesAsync( publicStatusPageId );
-
-            if ( existingPublicPage.PublicStatusPages?.Count > 0 )
+            try
             {
-                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+                PublicStatusPageResult existingPublicPage = await GetPublicStatusPagesAsync( publicStatusPageId );
 
-                queryString.Append( $"&id={publicStatusPageId}" );
+                if ( existingPublicPage.PublicStatusPages?.Count > 0 )
+                {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
-                IRestResponse response = await GetRestResponseAsync( "deletePSP", queryString.ToString() );
+                    queryString.Append( $"&id={publicStatusPageId}" );
 
-                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+                    IRestResponse response = await GetRestResponseAsync( "deletePSP", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+                }
+                else
+                {
+                    throw new Exception( "No Public Status Page was found!" );
+                }
             }
-
-            return null;
+            catch ( Exception e )
+            {
+                return new PublicStatusPageResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
         }
 
         #endregion
