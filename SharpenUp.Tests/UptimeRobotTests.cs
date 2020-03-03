@@ -216,20 +216,20 @@ namespace SharpenUp.Tests
         {
             PublicStatusPageResult publicStatusPageOne = await _goodRobot.CreatePublicStatusPageAsync( "Fake Public Status Page", new List<int>() );
 
-            Assert.NotNull( publicStatusPageOne.PublicStatusPage );
+            Assert.NotNull( publicStatusPageOne.BasePublicStatusPage );
 
-            PublicStatusPageResult publicStatusPageOneExists = await _goodRobot.GetPublicStatusPagesAsync( publicStatusPageOne.PublicStatusPage.Id );
+            PublicStatusPageResult publicStatusPageOneExists = await _goodRobot.GetPublicStatusPagesAsync( publicStatusPageOne.BasePublicStatusPage.Id );
 
             Assert.NotNull( publicStatusPageOneExists.PublicStatusPages );
 
-            await _goodRobot.UpdatePublicStatusPageAsync( publicStatusPageOne.PublicStatusPage.Id, "Super Fake", new List<int>(), "http://loser.com", "", PublicStatusPageSort.FriendlyNameDescending );
+            await _goodRobot.UpdatePublicStatusPageAsync( publicStatusPageOne.BasePublicStatusPage.Id, "Super Fake", new List<int>(), "http://loser.com", "", PublicStatusPageSort.FriendlyNameDescending );
 
-            PublicStatusPageResult publicStatusPageOneUpdated = await _goodRobot.GetPublicStatusPagesAsync( publicStatusPageOne.PublicStatusPage.Id );
+            PublicStatusPageResult publicStatusPageOneUpdated = await _goodRobot.GetPublicStatusPagesAsync( publicStatusPageOne.BasePublicStatusPage.Id );
 
             Assert.Equal( "Fake Public Status Page", publicStatusPageOneExists.PublicStatusPages[ 0 ].FriendlyName );
             Assert.Equal( "Super Fake", publicStatusPageOneUpdated.PublicStatusPages[ 0 ].FriendlyName );
 
-            PublicStatusPageResult deletedPublicStatusPageOne = await _goodRobot.DeletePublicStatusPageAsync( publicStatusPageOne.PublicStatusPage.Id );
+            PublicStatusPageResult deletedPublicStatusPageOne = await _goodRobot.DeletePublicStatusPageAsync( publicStatusPageOne.BasePublicStatusPage.Id );
 
             Assert.Equal( Status.ok, deletedPublicStatusPageOne.Status );
         }
