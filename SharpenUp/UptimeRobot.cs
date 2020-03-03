@@ -399,7 +399,7 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<PublicStatusPageResult> CreatePublicStatusPageAsync( string friendlyName, List<int> monitors )
         {
-            return await CreatePublicStatusPageAsync( friendlyName, monitors, "", "", PublicStatusPageSort.FriendlyNameAscending, false, PublicStatusPageStatus.Active );
+            return await CreatePublicStatusPageAsync( friendlyName, monitors, "", "", PublicStatusPageSort.FriendlyNameAscending );
         }
 
         /// <summary>
@@ -410,10 +410,8 @@ namespace SharpenUp
         /// <param name="customDomain">Optional</param>
         /// <param name="password">Optional</param>
         /// <param name="sort">Optional</param>
-        /// <param name="hideUrlLinks">Optional (for hiding the Uptime Robot links and only available in the Pro Plan)</param>
-        /// <param name="status">Optional</param>
         /// <returns></returns>
-        public async Task<PublicStatusPageResult> CreatePublicStatusPageAsync( string friendlyName, List<int> monitors, string customDomain, string password, PublicStatusPageSort sort, bool hideUrlLinks, PublicStatusPageStatus status )
+        public async Task<PublicStatusPageResult> CreatePublicStatusPageAsync( string friendlyName, List<int> monitors, string customDomain, string password, PublicStatusPageSort sort )
         {
             if ( !string.IsNullOrWhiteSpace( friendlyName ) )
             {
@@ -442,8 +440,6 @@ namespace SharpenUp
                 }
 
                 queryString.Append( $"&sort={(int)sort}" );
-                //queryString.Append( $"&hide_url_links={hideUrlLinks}" );
-                //queryString.Append( $"&status={(int)status}" );
 
                 IRestResponse response = await GetRestResponseAsync( "newPSP", queryString.ToString() );
 
@@ -462,10 +458,8 @@ namespace SharpenUp
         /// <param name="customDomain">Optional</param>
         /// <param name="password">Optional</param>
         /// <param name="sort">Optional</param>
-        /// <param name="hideUrlLinks">Optional (for hiding the Uptime Robot links and only available in the Pro Plan)</param>
-        /// <param name="status">Optional</param>
         /// <returns></returns>
-        public async Task<PublicStatusPageResult> UpdatePublicStatusPageAsync( int id, string friendlyName, List<int> monitors, string customDomain, string password, PublicStatusPageSort sort, bool hideUrlLinks, PublicStatusPageStatus status )
+        public async Task<PublicStatusPageResult> UpdatePublicStatusPageAsync( int id, string friendlyName, List<int> monitors, string customDomain, string password, PublicStatusPageSort sort )
         {
             PublicStatusPageResult existingPublicPage = await GetPublicStatusPagesAsync( id );
 
@@ -501,8 +495,6 @@ namespace SharpenUp
                 }
 
                 queryString.Append( $"&sort={(int)sort}" );
-                //queryString.Append( $"&hide_url_links={hideUrlLinks}" );
-                //queryString.Append( $"&status={(int)status}" );
 
                 IRestResponse response = await GetRestResponseAsync( "editPSP", queryString.ToString() );
 
