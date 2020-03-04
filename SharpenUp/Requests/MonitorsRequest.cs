@@ -128,12 +128,14 @@ namespace SharpenUp.Requests
 
         /// <summary>
         /// Optional (defines if the custom HTTP headers of each monitor will be returned. Should be set to 1 for getting them. Default is 0).
+        /// NOT IMPLEMENTED
         /// </summary>
-        //public bool CustomHttpHeaders { get; set; } = false;
+        public bool CustomHttpHeaders { get; set; } = false;
 
         /// <summary>
         /// Optional (defines if the custom HTTP statuses of each monitor will be returned. Should be set to 1 for getting them. Default is 0).
+        /// NOT IMPLEMENTED
         /// </summary>
-        //public bool CustomHttpStatuses { get; set; } = false;
+        public bool CustomHttpStatuses { get; set; } = false;
     }
 }

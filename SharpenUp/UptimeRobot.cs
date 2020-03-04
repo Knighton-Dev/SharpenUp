@@ -227,15 +227,15 @@ namespace SharpenUp
                 }
 
                 // TODO: Figure these out. I don't have a "pro" plan
-                //if ( request.CustomHttpHeaders )
-                //{
-                //    queryString.Append( "&custom_http_headers=1" );
-                //}
+                if ( request.CustomHttpHeaders )
+                {
+                    throw new NotImplementedException( "Not currently implemented." );
+                }
 
-                //if ( request.CustomHttpStatuses )
-                //{
-                //    queryString.Append( "&custom_http_statuses=1" );
-                //}
+                if ( request.CustomHttpStatuses )
+                {
+                    throw new NotImplementedException( "Not currently implemented." );
+                }
 
                 if ( request.Timezone )
                 {
