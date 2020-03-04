@@ -29,7 +29,10 @@ namespace SharpenUp.Requests
         [ExcludeFromCodeCoverage]
         public List<int> CustomUptimeRatios { get; set; } = null;
 
-        // TODO: Custom Uptime Ranges
+        /// <summary>
+        /// Optional (defines the ranges to calculate the uptime ratio(s) for. Ex: custom_uptime_ranges=1465440758_1466304758 to get the uptime ratios for those periods. It is possible to send multiple ranges like 1465440758_1466304758-1434682358_1434855158).
+        /// </summary>
+        public List<Tuple<DateTime, DateTime>> CustomUptimeRanges { get; set; } = null;
 
         /// <summary>
         /// Optional (returns the "all time uptime ratio". It will slow down the response a bit and, if not really necessary, suggest not using it. Default is 0).
@@ -46,8 +49,15 @@ namespace SharpenUp.Requests
         /// </summary>
         public bool IncludeLogs { get; set; } = false;
 
-        // TODO: Logs Start Date
-        // TODO: Logs End Date
+        /// <summary>
+        /// Optional (works only for the Pro Plan as 24 hour+ logs are kept only in the Pro Plan, formatted as Unix time and must be used with logs_end_date).
+        /// </summary>
+        public DateTime LogsStartDate { get; set; } = DateTime.MinValue;
+
+        /// <summary>
+        /// Optional (works only for the Pro Plan as 24 hour+ logs are kept only in the Pro Plan, formatted as Unix time and must be used with logs_start_date).
+        /// </summary>
+        public DateTime LogsEndDate { get; set; } = DateTime.MaxValue;
 
         /// <summary>
         /// Optional (the types of logs to be returned with a usage like: log_types=1-2-98). If empty, all log types are returned.
@@ -69,9 +79,20 @@ namespace SharpenUp.Requests
         /// </summary>
         public int? ResponseTimesLimit { get; set; } = null;
 
-        // TODO: Response Times Average
-        // TODO: Response Times Start Date
-        // TODO: Response Times End Date
+        /// <summary>
+        /// Optional (by default, response time value of each check is returned. The API can return average values in given minutes. Default is 0. For ex: the Uptime Robot dashboard displays the data averaged/grouped in 30 minutes).
+        /// </summary>
+        public int? ResponseTimesAverage { get; set; } = null;
+
+        /// <summary>
+        /// Optional (formatted as Unix time and must be used with response_times_end_date) (response_times_end_date - response_times_start_date can't be more than 7 days)
+        /// </summary>
+        public DateTime? ResponseTimesStartDate { get; set; } = null;
+
+        /// <summary>
+        /// Optional (formatted as Unix time and must be used with response_times_start_date) (response_times_end_date - response_times_start_date can't be more than 7 days)
+        /// </summary>
+        public DateTime? ResponseTimesEndDate { get; set; } = null;
 
         /// <summary>
         /// Optional (defines if the alert contacts set for the monitor to be returned. Default is 0.)

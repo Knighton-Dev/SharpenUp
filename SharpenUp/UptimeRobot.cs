@@ -118,7 +118,24 @@ namespace SharpenUp
                     queryString.Append( string.Join( "-", request.CustomUptimeRatios ) );
                 }
 
-                // TODO: Custom Uptime Ranges
+                if ( request.CustomUptimeRanges?.Count > 0 )
+                {
+                    List<Tuple<double, double>> convertedDates = new List<Tuple<double, double>>();
+                    List<string> joinedRanges = new List<string>();
+
+                    foreach ( Tuple<DateTime, DateTime> range in request.CustomUptimeRanges )
+                    {
+                        convertedDates.Add( new Tuple<double, double>( ConvertDateTimeToSeconds( range.Item1 ), ConvertDateTimeToSeconds( range.Item2 ) ) );
+                    }
+
+                    foreach ( var dateRange in convertedDates )
+                    {
+                        joinedRanges.Add( $"{dateRange.Item1}_{dateRange.Item2}" );
+                    }
+
+                    queryString.Append( "&custom_uptime_ranges=" );
+                    queryString.Append( string.Join( "-", joinedRanges ) );
+                }
 
                 if ( request.AllTimeUptimeRatio )
                 {
@@ -134,8 +151,15 @@ namespace SharpenUp
                 {
                     queryString.Append( "&logs=1" );
 
-                    // TODO: Logs Start Date
-                    // TODO: Logs End Date
+                    if ( request.LogsStartDate != DateTime.MinValue )
+                    {
+                        queryString.Append( $"&logs_start_date={ConvertDateTimeToSeconds( request.LogsStartDate )}" );
+                    }
+
+                    if ( request.LogsEndDate != DateTime.MaxValue )
+                    {
+                        queryString.Append( $"&logs_end_date={ConvertDateTimeToSeconds( request.LogsEndDate )}" );
+                    }
 
                     if ( request.LogTypes?.Count > 0 )
                     {
@@ -164,6 +188,26 @@ namespace SharpenUp
                     if ( request.ResponseTimesLimit.HasValue )
                     {
                         queryString.Append( $"&response_times_limit={request.ResponseTimesLimit.Value}" );
+                    }
+
+                    if ( request.ResponseTimesAverage.HasValue )
+                    {
+                        queryString.Append( $"&response_times_average={request.ResponseTimesAverage.Value}" );
+                    }
+
+                    if ( request.ResponseTimesStartDate.HasValue && request.ResponseTimesEndDate.HasValue )
+                    {
+                        TimeSpan timeSpan = request.ResponseTimesEndDate.Value - request.ResponseTimesStartDate.Value;
+
+                        if ( timeSpan.TotalDays < 7 )
+                        {
+                            queryString.Append( $"&response_times_start_date={ConvertDateTimeToSeconds( request.ResponseTimesStartDate.Value )}" );
+                            queryString.Append( $"&response_times_end_date={ConvertDateTimeToSeconds( request.ResponseTimesEndDate.Value )}" );
+                        }
+                        else
+                        {
+                            throw new Exception( "Start and End Date can not be more than 7 days apart." );
+                        }
                     }
                 }
 
@@ -706,6 +750,17 @@ namespace SharpenUp
             restRequest.AddParameter( "application/x-www-form-urlencoded", query, ParameterType.RequestBody );
 
             return await restClient.ExecuteAsync( restRequest );
+        }
+
+        /// <summary>
+        /// Converts a DateTime to Unix time. 
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        private double ConvertDateTimeToSeconds( DateTime date )
+        {
+            TimeSpan span = date.Subtract( new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc ) );
+            return span.TotalSeconds;
         }
     }
 }
