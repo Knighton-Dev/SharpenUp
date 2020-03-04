@@ -15,6 +15,9 @@ namespace SharpenUp.Results
         [JsonProperty( PropertyName = "monitors" )]
         public List<Monitor> Monitors { get; set; }
 
+        [JsonProperty( PropertyName = "monitor" )]
+        public BaseMonitor BaseMonitor { get; set; }
+
         [JsonProperty( PropertyName = "error" )]
         public Error Error { get; set; }
 

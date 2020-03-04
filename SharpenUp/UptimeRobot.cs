@@ -70,6 +70,21 @@ namespace SharpenUp
         /// There are optional parameters which lets the getMonitors method to output information on any given monitors rather than all of them.
         /// And also, parameters exist for getting the notification logs( alerts) for each monitor and even which alert contacts were alerted on each notification.
         /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<MonitorsResult> GetMonitorsAsync( int id )
+        {
+            MonitorsRequest request = new MonitorsRequest { Monitors = new List<int> { id } };
+
+            return await GetMonitorsAsync( request );
+        }
+
+        /// <summary>
+        /// This is a Swiss-Army knife type of a method for getting any information on monitors.
+        /// By default, it lists all the monitors in a user's account, their friendly names, types (http, keyword, port, etc.), statuses (up, down, etc.) and uptime ratios.
+        /// There are optional parameters which lets the getMonitors method to output information on any given monitors rather than all of them.
+        /// And also, parameters exist for getting the notification logs( alerts) for each monitor and even which alert contacts were alerted on each notification.
+        /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         public async Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request )
@@ -118,7 +133,24 @@ namespace SharpenUp
                     queryString.Append( string.Join( "-", request.CustomUptimeRatios ) );
                 }
 
-                // TODO: Custom Uptime Ranges
+                if ( request.CustomUptimeRanges?.Count > 0 )
+                {
+                    List<Tuple<double, double>> convertedDates = new List<Tuple<double, double>>();
+                    List<string> joinedRanges = new List<string>();
+
+                    foreach ( Tuple<DateTime, DateTime> range in request.CustomUptimeRanges )
+                    {
+                        convertedDates.Add( new Tuple<double, double>( ConvertDateTimeToSeconds( range.Item1 ), ConvertDateTimeToSeconds( range.Item2 ) ) );
+                    }
+
+                    foreach ( var dateRange in convertedDates )
+                    {
+                        joinedRanges.Add( $"{dateRange.Item1}_{dateRange.Item2}" );
+                    }
+
+                    queryString.Append( "&custom_uptime_ranges=" );
+                    queryString.Append( string.Join( "-", joinedRanges ) );
+                }
 
                 if ( request.AllTimeUptimeRatio )
                 {
@@ -134,8 +166,15 @@ namespace SharpenUp
                 {
                     queryString.Append( "&logs=1" );
 
-                    // TODO: Logs Start Date
-                    // TODO: Logs End Date
+                    if ( request.LogsStartDate != DateTime.MinValue )
+                    {
+                        queryString.Append( $"&logs_start_date={ConvertDateTimeToSeconds( request.LogsStartDate )}" );
+                    }
+
+                    if ( request.LogsEndDate != DateTime.MaxValue )
+                    {
+                        queryString.Append( $"&logs_end_date={ConvertDateTimeToSeconds( request.LogsEndDate )}" );
+                    }
 
                     if ( request.LogTypes?.Count > 0 )
                     {
@@ -165,6 +204,26 @@ namespace SharpenUp
                     {
                         queryString.Append( $"&response_times_limit={request.ResponseTimesLimit.Value}" );
                     }
+
+                    if ( request.ResponseTimesAverage.HasValue )
+                    {
+                        queryString.Append( $"&response_times_average={request.ResponseTimesAverage.Value}" );
+                    }
+
+                    if ( request.ResponseTimesStartDate.HasValue && request.ResponseTimesEndDate.HasValue )
+                    {
+                        TimeSpan timeSpan = request.ResponseTimesEndDate.Value - request.ResponseTimesStartDate.Value;
+
+                        if ( timeSpan.TotalDays < 7 )
+                        {
+                            queryString.Append( $"&response_times_start_date={ConvertDateTimeToSeconds( request.ResponseTimesStartDate.Value )}" );
+                            queryString.Append( $"&response_times_end_date={ConvertDateTimeToSeconds( request.ResponseTimesEndDate.Value )}" );
+                        }
+                        else
+                        {
+                            throw new Exception( "Start and End Date can not be more than 7 days apart." );
+                        }
+                    }
                 }
 
                 if ( request.AlertContacts )
@@ -183,15 +242,15 @@ namespace SharpenUp
                 }
 
                 // TODO: Figure these out. I don't have a "pro" plan
-                //if ( request.CustomHttpHeaders )
-                //{
-                //    queryString.Append( "&custom_http_headers=1" );
-                //}
+                if ( request.CustomHttpHeaders )
+                {
+                    throw new NotImplementedException( "Not currently implemented." );
+                }
 
-                //if ( request.CustomHttpStatuses )
-                //{
-                //    queryString.Append( "&custom_http_statuses=1" );
-                //}
+                if ( request.CustomHttpStatuses )
+                {
+                    throw new NotImplementedException( "Not currently implemented." );
+                }
 
                 if ( request.Timezone )
                 {
@@ -225,6 +284,141 @@ namespace SharpenUp
                     Error = new Error
                     {
                         Type = "Internal Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// New monitors of any type can be created using this method.
+        /// NOT IMPLEMENTED
+        /// </summary>
+        /// <param name="friendlyName"></param>
+        /// <param name="Url"></param>
+        /// <param name="monitorType"></param>
+        /// <returns></returns>
+        public async Task<MonitorsResult> CreateMonitorAsync( string friendlyName, string Url, MonitorType monitorType )
+        {
+            try
+            {
+                throw new NotImplementedException( "Not yet implemented" );
+            }
+            catch ( Exception e )
+            {
+                return new MonitorsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// Monitors can be edited using this method.
+        /// Important: The type of a monitor can not be edited (like changing a HTTP monitor into a Port monitor). For such cases, deleting the monitor and re-creating a new one is adviced.
+        /// NOT IMPLEMENTED
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<MonitorsResult> EditMonitorAsync( int id )
+        {
+            try
+            {
+                throw new NotImplementedException( "Not yet implemented" );
+            }
+            catch ( Exception e )
+            {
+                return new MonitorsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// Monitors can be deleted using this method.
+        /// </summary>
+        /// <param name="monitorId"></param>
+        /// <returns></returns>
+        public async Task<MonitorsResult> DeleteMonitorAsync( int monitorId )
+        {
+            try
+            {
+                MonitorsResult existingMonitor = await GetMonitorsAsync( monitorId );
+
+                if ( existingMonitor.Monitors?.Count > 0 )
+                {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                    queryString.Append( $"&id={monitorId}" );
+
+                    IRestResponse response = await GetRestResponseAsync( "deleteMonitor", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
+                }
+                else
+                {
+                    throw new Exception( "Monitor Not Found" );
+                }
+            }
+            catch ( Exception e )
+            {
+                return new MonitorsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// Monitors can be reset (deleting all stats and response time data) using this method.
+        /// </summary>
+        /// <param name="monitorId"></param>
+        /// <returns></returns>
+        public async Task<MonitorsResult> ResetMonitorAsync( int monitorId )
+        {
+            try
+            {
+                MonitorsResult existingMonitor = await GetMonitorsAsync( monitorId );
+
+                if ( existingMonitor.Monitors?.Count > 0 )
+                {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                    queryString.Append( $"&id={monitorId}" );
+
+                    IRestResponse response = await GetRestResponseAsync( "resetMonitor", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
+                }
+                else
+                {
+                    throw new Exception( "Monitor Not Found" );
+                }
+            }
+            catch ( Exception e )
+            {
+                return new MonitorsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
                         Message = e.Message
                     }
                 };
@@ -689,6 +883,8 @@ namespace SharpenUp
 
         #endregion
 
+        #region Private Methods
+
         /// <summary>
         /// Makes reusing the RestSharp logic a little easier. 
         /// </summary>
@@ -707,5 +903,18 @@ namespace SharpenUp
 
             return await restClient.ExecuteAsync( restRequest );
         }
+
+        /// <summary>
+        /// Converts a DateTime to Unix time. 
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        private double ConvertDateTimeToSeconds( DateTime date )
+        {
+            TimeSpan span = date.Subtract( new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc ) );
+            return span.TotalSeconds;
+        }
+
+        #endregion
     }
 }

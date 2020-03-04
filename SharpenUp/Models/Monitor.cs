@@ -1,19 +1,21 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System;
+using Newtonsoft.Json;
 
 namespace SharpenUp.Models
 {
-    public class Monitor
+    public class BaseMonitor
     {
         /// <summary>
         /// The ID of the monitor (can be used for monitor-specific requests).
         /// </summary>
         [JsonProperty( PropertyName = "id" )]
         public int Id { get; set; }
+    }
 
+    public class Monitor : BaseMonitor
+    {
         /// <summary>
         /// The friendly name of the monitor.
         /// </summary>

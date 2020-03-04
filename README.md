@@ -76,11 +76,11 @@ Obviously, the unit tests are written for a very specific use-case (*mine*), but
 This is based off of a list on the Uptime Robot reference.
 
 - `POST getAccountDetails` *Complete as of 1.0.0*
-- `POST getMonitors` *Mostly complete as of version 1.1.0*
-- ~~`POST newMonitor`~~
-- ~~`POST editMonitor`~~
-- ~~`POST deleteMonitor`~~
-- ~~`POST resetMonitor`~~
+- `POST getMonitors` *Mostly complete as 1.1.0*
+- ~~`POST newMonitor`~~ *Scaffolded, but not implemented*
+- ~~`POST editMonitor`~~ *Scaffolded, but not implemented*
+- `POST deleteMonitor` *Complete as of 1.3.0*
+- `POST resetMonitor` *Complete as of 1.3.0*
 - `POST getAlertContacts` *Complete as of 1.0.0*
 - `POST newAlertContact` *Complete as of 1.2.0*
 - `POST editAlertContact` *Complete as of 1.2.0*

@@ -77,6 +77,8 @@ namespace SharpenUp.Tests
                 AllTimeUptimeDurations = true,
                 IncludeLogs = true,
                 LogTypes = new List<LogType> { LogType.Up, LogType.Down },
+                LogsStartDate = new DateTime( 2020, 1, 25 ),
+                LogsEndDate = new DateTime( 2020, 2, 28 ),
                 LogsLimit = 50,
                 ResponseTimes = true,
                 ResponseTimesLimit = 50,
