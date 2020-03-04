@@ -292,6 +292,7 @@ namespace SharpenUp
 
         /// <summary>
         /// New monitors of any type can be created using this method.
+        /// NOT IMPLEMENTED
         /// </summary>
         /// <param name="friendlyName"></param>
         /// <param name="Url"></param>
@@ -320,6 +321,7 @@ namespace SharpenUp
         /// <summary>
         /// Monitors can be edited using this method.
         /// Important: The type of a monitor can not be edited (like changing a HTTP monitor into a Port monitor). For such cases, deleting the monitor and re-creating a new one is adviced.
+        /// NOT IMPLEMENTED
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -361,6 +363,46 @@ namespace SharpenUp
                     queryString.Append( $"&id={monitorId}" );
 
                     IRestResponse response = await GetRestResponseAsync( "deleteMonitor", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
+                }
+                else
+                {
+                    throw new Exception( "Monitor Not Found" );
+                }
+            }
+            catch ( Exception e )
+            {
+                return new MonitorsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// Monitors can be reset (deleting all stats and response time data) using this method.
+        /// </summary>
+        /// <param name="monitorId"></param>
+        /// <returns></returns>
+        public async Task<MonitorsResult> ResetMonitorAsync( int monitorId )
+        {
+            try
+            {
+                MonitorsResult existingMonitor = await GetMonitorsAsync( monitorId );
+
+                if ( existingMonitor.Monitors?.Count > 0 )
+                {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                    queryString.Append( $"&id={monitorId}" );
+
+                    IRestResponse response = await GetRestResponseAsync( "resetMonitor", queryString.ToString() );
 
                     return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
                 }
