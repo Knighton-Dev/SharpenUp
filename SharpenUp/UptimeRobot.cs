@@ -70,6 +70,21 @@ namespace SharpenUp
         /// There are optional parameters which lets the getMonitors method to output information on any given monitors rather than all of them.
         /// And also, parameters exist for getting the notification logs( alerts) for each monitor and even which alert contacts were alerted on each notification.
         /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<MonitorsResult> GetMonitorsAsync( int id )
+        {
+            MonitorsRequest request = new MonitorsRequest { Monitors = new List<int> { id } };
+
+            return await GetMonitorsAsync( request );
+        }
+
+        /// <summary>
+        /// This is a Swiss-Army knife type of a method for getting any information on monitors.
+        /// By default, it lists all the monitors in a user's account, their friendly names, types (http, keyword, port, etc.), statuses (up, down, etc.) and uptime ratios.
+        /// There are optional parameters which lets the getMonitors method to output information on any given monitors rather than all of them.
+        /// And also, parameters exist for getting the notification logs( alerts) for each monitor and even which alert contacts were alerted on each notification.
+        /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         public async Task<MonitorsResult> GetMonitorsAsync( MonitorsRequest request )
@@ -269,6 +284,94 @@ namespace SharpenUp
                     Error = new Error
                     {
                         Type = "Internal Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// New monitors of any type can be created using this method.
+        /// </summary>
+        /// <param name="friendlyName"></param>
+        /// <param name="Url"></param>
+        /// <param name="monitorType"></param>
+        /// <returns></returns>
+        public async Task<MonitorsResult> CreateMonitorAsync( string friendlyName, string Url, MonitorType monitorType )
+        {
+            try
+            {
+                throw new NotImplementedException( "Not yet implemented" );
+            }
+            catch ( Exception e )
+            {
+                return new MonitorsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// Monitors can be edited using this method.
+        /// Important: The type of a monitor can not be edited (like changing a HTTP monitor into a Port monitor). For such cases, deleting the monitor and re-creating a new one is adviced.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<MonitorsResult> EditMonitorAsync( int id )
+        {
+            try
+            {
+                throw new NotImplementedException( "Not yet implemented" );
+            }
+            catch ( Exception e )
+            {
+                return new MonitorsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        public async Task<MonitorsResult> DeleteMonitorAsync( int monitorId )
+        {
+            try
+            {
+                MonitorsResult existingMonitor = await GetMonitorsAsync( monitorId );
+
+                if ( existingMonitor.Monitors?.Count > 0 )
+                {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                    queryString.Append( $"&id={monitorId}" );
+
+                    IRestResponse response = await GetRestResponseAsync( "deleteMonitor", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
+                }
+                else
+                {
+                    throw new Exception( "Monitor Not Found" );
+                }
+            }
+            catch ( Exception e )
+            {
+                return new MonitorsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
                         Message = e.Message
                     }
                 };
