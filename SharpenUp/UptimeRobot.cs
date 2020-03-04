@@ -343,6 +343,11 @@ namespace SharpenUp
             }
         }
 
+        /// <summary>
+        /// Monitors can be deleted using this method.
+        /// </summary>
+        /// <param name="monitorId"></param>
+        /// <returns></returns>
         public async Task<MonitorsResult> DeleteMonitorAsync( int monitorId )
         {
             try
@@ -836,6 +841,8 @@ namespace SharpenUp
 
         #endregion
 
+        #region Private Methods
+
         /// <summary>
         /// Makes reusing the RestSharp logic a little easier. 
         /// </summary>
@@ -865,5 +872,7 @@ namespace SharpenUp
             TimeSpan span = date.Subtract( new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc ) );
             return span.TotalSeconds;
         }
+
+        #endregion
     }
 }
