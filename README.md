@@ -1,5 +1,5 @@
 ![CircleCI](https://img.shields.io/circleci/build/github/IanKnighton/SharpenUp?label=Circle%20CI&style=for-the-badge&logo=CircleCI)
-![Coveralls](https://img.shields.io/coveralls/github/IanKnighton/SharpenUp?style=for-the-badge)
+[![Coveralls](https://img.shields.io/coveralls/github/IanKnighton/SharpenUp?style=for-the-badge)](https://coveralls.io/github/IanKnighton/SharpenUp)
 [![NuGet](https://img.shields.io/nuget/v/SharpenUp?color=pink&logo=nuget&style=for-the-badge)](https://www.nuget.org/packages/SharpenUp/)
 [![Twitter](https://img.shields.io/twitter/follow/ProbablyNotIan?style=for-the-badge)](https://twitter.com/ProbablyNotIan)
 
@@ -13,14 +13,9 @@ This is a .Net Standard 2.1 library for working with the [Uptime Robot API](http
 
 ## Usage
 
-There are two options.
+You can either clone this repo and add the `.csproj` file to your project or add it via NuGet using the command:
 
-1) Clone the repo and add the `SharpenUp.csproj` to your solution file. 
-```
-git clone https://github.com/IanKnighton/SharpenUp.git
-```
-2) Use the latest version of the NuGet package.
-```
+```console
 dotnet add package SharpenUp
 ```
 
@@ -36,8 +31,6 @@ For information on the setting up the environemt, see the [Environment Setup](Us
 Obviously, the unit tests are written for a very specific use-case (*mine*), but I think I've considered the potential impact for others that may be trying to use the library. 
 
 ## Endpoints Exposed
-
-This is based off of a list on the Uptime Robot reference.
 
 - `POST getAccountDetails` *Complete as of 1.0.0*
 - `POST getMonitors` *Mostly complete as 1.1.0*
