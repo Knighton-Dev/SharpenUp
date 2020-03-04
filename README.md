@@ -24,31 +24,10 @@ git clone https://github.com/IanKnighton/SharpenUp.git
 dotnet add package SharpenUp
 ```
 
-As of version 1.0.0, I completely re-worked the usage of this library. I realized that I had "over architected" it through a rubber ducky debugging session and greatly simplified. 
+### Usage Examples
 
-Now everything is in a class called "UptimeRobot".
-
-It can be used like this:
-
-```csharp
-using SharpenUp;
-using SharpentUp.Models;
-using SharpenUp.Requests;
-using SharpenUp.Results;
-
-namespace TestApp
-{
-    static async Task Main( string[] args )
-    {
-        UptimeRobot robot = new UptimeRobot ( "YOUR API KEY" );
-
-        AccountDetailsResult accountDetails = await robot.GetAccountDetailsAsync();
-        PublicStatusPageResult publicStatusPages = await robot.GetPublicStatusPagesAsync();
-    }
-}
-```
-
-I feel like this is a lot simpler and it made it a lot easier to test. 
+- [Checking Monitor Status](UsageExamples/CheckMonitorStatus.md)
+- [Checking SSL Expiration](UsageExamples/CheckSSL.md)
 
 ## Development
 
