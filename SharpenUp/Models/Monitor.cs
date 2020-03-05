@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using SharpenUp.Utilities;
+using System;
 
 namespace SharpenUp.Models
 {
@@ -122,7 +124,23 @@ namespace SharpenUp.Models
         /// The uptime ratio of the monitor for the given ranges (if there is more than 1 range, then the values are seperated with "-").
         /// </summary>
         [JsonProperty( PropertyName = "custom_uptime_ranges" )]
-        public List<double> CustomUptimeRanges { get; set; }
+        private string CustomUptimeRangesString { get; set; }
+
+        public List<double> CustomUptimeRanges
+        {
+            get
+            {
+                List<double> returnValues = new List<double>();
+                List<string> valuesAsStrings = CustomUptimeRangesString.Split( '-' ).ToList();
+
+                foreach ( string value in valuesAsStrings )
+                {
+                    returnValues.Add( Convert.ToDouble( value ) );
+                }
+
+                return returnValues;
+            }
+        }
 
         /// <summary>
         /// The average value of the response times (requires response_times=1).
