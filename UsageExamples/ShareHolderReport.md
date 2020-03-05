@@ -19,6 +19,8 @@ namespace TestApp
     {
         static async Task Main( string[] args )
         {
+            UptimeRobot robot = new UptimeRobot( "YOUR_API_KEY" );
+
             List<int> productionMonitors = new List<int> { 1234, 5678, 9012 }; // These are not real ID's. 
             DateTime reportDate = new DateTime( 2020, 3, 1 ); // This is the only date that needs changed from month to month. 
 
@@ -26,8 +28,6 @@ namespace TestApp
             Tuple<DateTime, DateTime> lastSevenDays = new Tuple<DateTime, DateTime>( reportDate.AddDays( -7 ), reportDate );
             Tuple<DateTime, DateTime> previousCycle = new Tuple<DateTime, DateTime>( reportDate.AddMonths( -2 ), reportDate.AddMonths( -1 ) );
             Tuple<DateTime, DateTime> thisYear = new Tuple<DateTime, DateTime>( new DateTime( 2020, 1, 1 ), reportDate );
-
-            UptimeRobot robot = new UptimeRobot( "YOUR_API_KEY" );
 
             MonitorsRequest request = new MonitorsRequest
             {
@@ -37,17 +37,17 @@ namespace TestApp
 
             MonitorsResult monthResult = await robot.GetMonitorsAsync( request );
 
-            double overallUptimeAverage = 0.0;
+            double overallUptimeSum = 0.0;
 
             if ( monthResult.Monitors?.Count > 0 )
             {
                 foreach ( Monitor monitor in monthResult.Monitors )
                 {
                     overallUptimeAverage += monitor.CustomUptimeRanges[ 3 ];
-                    Console.WriteLine( $"{ monitor.FriendlyName} : 30 Day Uptime {monitor.CustomUptimeRanges[ 0 ]} | 7 Day Uptime {monitor.CustomUptimeRanges[ 1 ]} | Previous Cycle {monitor.CustomUptimeRanges[ 2 ]}" );
+                    Console.WriteLine( $"{ monitor.FriendlyName} : This Cycle {monitor.CustomUptimeRanges[ 0 ]} | 7 Day Uptime {monitor.CustomUptimeRanges[ 1 ]} | Previous Cycle {monitor.CustomUptimeRanges[ 2 ]}" );
                 }
 
-                Console.WriteLine( $"Year to Date Average: {overallUptimeAverage / monthResult.Monitors.Count}" );
+                Console.WriteLine( $"Year to Date Average: {overallUptimeSum / monthResult.Monitors.Count}" );
             }
         }
     }
