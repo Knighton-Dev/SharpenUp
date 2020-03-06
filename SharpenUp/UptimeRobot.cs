@@ -298,11 +298,69 @@ namespace SharpenUp
         /// <param name="Url"></param>
         /// <param name="monitorType"></param>
         /// <returns></returns>
-        public async Task<MonitorsResult> CreateMonitorAsync( string friendlyName, string Url, MonitorType monitorType )
+        private async Task<MonitorsResult> CreateMonitorAsync( string friendlyName, string Url,
+            MonitorType type, MonitorSubType subType, int? port, KeywordType keywordType, string keywordValue,
+            int? interval, string username, string password, string method, PostType postType,
+            string postValue, PostContentType postContentType, List<AlertContact> alertContacts,
+            List<MaintenanceWindow> maintenanceWindows, bool ignoreSSLErrors )
         {
             try
             {
-                throw new NotImplementedException( "Not yet implemented" );
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                if ( !CheckString( friendlyName ) )
+                {
+                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+                }
+                else
+                {
+                    throw new Exception( "Friendly Name is Required" );
+                }
+
+                if ( !CheckString( Url ) )
+                {
+                    queryString.Append( $"&url={HttpUtility.HtmlEncode( Url )}" );
+                }
+                else
+                {
+                    throw new Exception( "URL is Required" );
+                }
+
+                queryString.Append( $"&type={(int)type}" );
+
+                if ( type == MonitorType.Port )
+                {
+                    if ( port.HasValue )
+                    {
+                        queryString.Append( $"&sub_type={(int)subType}" );
+                        queryString.Append( $"&port={port.Value}" );
+                    }
+                    else
+                    {
+                        throw new Exception( "Port is required for Port Monitoring" );
+                    }
+                }
+                else if ( type == MonitorType.Keyword )
+                {
+                    if ( !CheckString( keywordValue ) )
+                    {
+                        queryString.Append( $"&keyword_type={(int)keywordType}" );
+                        queryString.Append( $"&keyword_valye={keywordValue}" );
+                    }
+                    else
+                    {
+                        throw new Exception( "Keyword Value is required for Keyword Monitoring" );
+                    }
+                }
+
+                if ( interval.HasValue )
+                {
+                    queryString.Append( $"&interval={interval.Value}" );
+                }
+
+                IRestResponse response = await GetRestResponseAsync( "newMonitor", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
             }
             catch ( Exception e )
             {
@@ -913,6 +971,11 @@ namespace SharpenUp
         {
             TimeSpan span = date.Subtract( new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc ) );
             return span.TotalSeconds;
+        }
+
+        private bool CheckString( string value )
+        {
+            return string.IsNullOrWhiteSpace( value );
         }
 
         #endregion
