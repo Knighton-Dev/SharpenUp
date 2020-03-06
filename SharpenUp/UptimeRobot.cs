@@ -358,6 +358,12 @@ namespace SharpenUp
                     queryString.Append( $"&interval={interval.Value}" );
                 }
 
+                if ( !CheckString( username ) && !CheckString( password ) )
+                {
+                    queryString.Append( $"&http_username={username}" );
+                    queryString.Append( $"&http_password={password}" );
+                }
+
                 IRestResponse response = await GetRestResponseAsync( "newMonitor", queryString.ToString() );
 
                 return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
