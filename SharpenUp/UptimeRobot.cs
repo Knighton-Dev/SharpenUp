@@ -697,6 +697,11 @@ namespace SharpenUp
             return await GetMaintenanceWindowsAsync( new MaintenanceWindowsRequest() );
         }
 
+        public async Task<MaintenanceWindowsResult> GetMaintenanceWindowsAsync( int id )
+        {
+            return await GetMaintenanceWindowsAsync( new MaintenanceWindowsRequest { MaintenanceWindows = new List<int> { id } } );
+        }
+
         public async Task<MaintenanceWindowsResult> GetMaintenanceWindowsAsync( MaintenanceWindowsRequest request )
         {
             try
@@ -722,6 +727,45 @@ namespace SharpenUp
                 IRestResponse response = await GetRestResponseAsync( "getMWindows", queryString.ToString() );
 
                 return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
+            }
+            catch ( Exception e )
+            {
+                return new MaintenanceWindowsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        public async Task<MaintenanceWindowsResult> CreateMaintenanceWindowAsync( string friendlyName, MaintenanceWindowType maintenanceWindowType, string value, TimeSpan startTime, int duration )
+        {
+            try
+            {
+                if ( !CheckString( friendlyName ) && !CheckString( value ) )
+                {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+                    queryString.Append( $"&type={(int)maintenanceWindowType}" );
+                    queryString.Append( $"&value={HttpUtility.HtmlEncode( value )}" );
+                    queryString.Append( $"&duration={duration}" );
+
+                    string startTimeString = $"{startTime.Hours}:{startTime.Minutes}";
+                    queryString.Append( $"&start_time={HttpUtility.HtmlEncode( startTimeString )}" );
+
+                    IRestResponse response = await GetRestResponseAsync( "newMWindow", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
+                }
+                else
+                {
+                    throw new Exception( "A Friendly Name is Required" );
+                }
             }
             catch ( Exception e )
             {
