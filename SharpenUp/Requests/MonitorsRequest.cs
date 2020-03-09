@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using SharpenUp.Models;
 using System.Diagnostics.CodeAnalysis;
+using SharpenUp.Models;
 
 namespace SharpenUp.Requests
 {

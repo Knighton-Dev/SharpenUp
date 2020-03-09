@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 using SharpenUp.Utilities;
 
@@ -32,7 +31,6 @@ namespace SharpenUp.Models
         /// <summary>
         /// The custom domain or subdomain that the status page will run on.
         /// </summary>
-        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "standard_url" )]
         public string StandardDomain { get; set; }
 
@@ -45,21 +43,18 @@ namespace SharpenUp.Models
         /// <summary>
         /// The password for the status page.
         /// </summary>
-        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "password" )]
         public string Password { get; set; }
 
         /// <summary>
         /// The sorting of the status page.
         /// </summary>
-        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "sort" )]
         public PublicStatusPageSort PublicStatusPageSort { get; set; }
 
         /// <summary>
         /// The status of the status page.
         /// </summary>
-        [ExcludeFromCodeCoverage]
         [JsonProperty( PropertyName = "status" )]
         public PublicStatusPageStatus PublicStatusPageStatus { get; set; }
     }
