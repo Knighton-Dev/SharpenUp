@@ -4,8 +4,8 @@ namespace SharpenUp.Requests
 {
     public class MaintenanceWindowsRequest
     {
-        public List<int> MaintenanceWindows { get; set; }
-        public int Offset { get; set; }
-        public int Limit { get; set; }
+        public List<int> MaintenanceWindows { get; set; } = null;
+        public int Offset { get; set; } = 0;
+        public int Limit { get; set; } = 50;
     }
 }
