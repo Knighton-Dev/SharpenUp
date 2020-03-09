@@ -298,11 +298,78 @@ namespace SharpenUp
         /// <param name="Url"></param>
         /// <param name="monitorType"></param>
         /// <returns></returns>
-        public async Task<MonitorsResult> CreateMonitorAsync( string friendlyName, string Url, MonitorType monitorType )
+        private async Task<MonitorsResult> CreateMonitorAsync( string friendlyName, string Url,
+            MonitorType type, MonitorSubType subType, int? port, KeywordType keywordType, string keywordValue,
+            int? interval, string username, string password, string method, PostType postType,
+            string postValue, PostContentType postContentType, List<AlertContact> alertContacts,
+            List<MaintenanceWindow> maintenanceWindows, bool ignoreSSLErrors )
         {
             try
             {
-                throw new NotImplementedException( "Not yet implemented" );
+
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                if ( !CheckString( friendlyName ) )
+                {
+                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+                }
+                else
+                {
+                    throw new Exception( "Friendly Name is Required" );
+                }
+
+                if ( !CheckString( Url ) )
+                {
+                    queryString.Append( $"&url={HttpUtility.HtmlEncode( Url )}" );
+                }
+                else
+                {
+                    throw new Exception( "URL is Required" );
+                }
+
+                queryString.Append( $"&type={(int)type}" );
+
+                if ( type == MonitorType.Port )
+                {
+                    if ( port.HasValue )
+                    {
+                        queryString.Append( $"&sub_type={(int)subType}" );
+                        queryString.Append( $"&port={port.Value}" );
+                    }
+                    else
+                    {
+                        throw new Exception( "Port is required for Port Monitoring" );
+                    }
+                }
+                else if ( type == MonitorType.Keyword )
+                {
+                    if ( !CheckString( keywordValue ) )
+                    {
+                        queryString.Append( $"&keyword_type={(int)keywordType}" );
+                        queryString.Append( $"&keyword_valye={keywordValue}" );
+                    }
+                    else
+                    {
+                        throw new Exception( "Keyword Value is required for Keyword Monitoring" );
+                    }
+                }
+
+                if ( interval.HasValue )
+                {
+                    queryString.Append( $"&interval={interval.Value}" );
+                }
+
+                if ( !CheckString( username ) && !CheckString( password ) )
+                {
+                    queryString.Append( $"&http_username={username}" );
+                    queryString.Append( $"&http_password={password}" );
+                }
+
+                throw new NotImplementedException( "This Method Isn't Implemented" );
+
+                //IRestResponse response = await GetRestResponseAsync( "newMonitor", queryString.ToString() );
+
+                //return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
             }
             catch ( Exception e )
             {
@@ -626,6 +693,239 @@ namespace SharpenUp
 
         #endregion
 
+        #region Maintenance Windows
+
+        /// <summary>
+        /// The list of maintenance windows can be called with this method.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<MaintenanceWindowsResult> GetMaintenanceWindowsAsync()
+        {
+            return await GetMaintenanceWindowsAsync( new MaintenanceWindowsRequest() );
+        }
+
+        /// <summary>
+        /// The list of maintenance windows can be called with this method.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<MaintenanceWindowsResult> GetMaintenanceWindowsAsync( int id )
+        {
+            return await GetMaintenanceWindowsAsync( new MaintenanceWindowsRequest { MaintenanceWindows = new List<int> { id } } );
+        }
+
+        /// <summary>
+        /// The list of maintenance windows can be called with this method.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<MaintenanceWindowsResult> GetMaintenanceWindowsAsync( MaintenanceWindowsRequest request )
+        {
+            try
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                if ( request.MaintenanceWindows?.Count > 0 )
+                {
+                    queryString.Append( "&alert_contacts=" );
+                    queryString.Append( string.Join( "-", request.MaintenanceWindows ) );
+                }
+
+                if ( request.Offset != 0 )
+                {
+                    queryString.Append( $"&offset={request.Offset}" );
+                }
+
+                if ( request.Limit != 50 )
+                {
+                    queryString.Append( $"&limit={request.Limit}" );
+                }
+
+                IRestResponse response = await GetRestResponseAsync( "getMWindows", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
+            }
+            catch ( Exception e )
+            {
+                return new MaintenanceWindowsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// New maintenance windows can be created using this method.
+        /// </summary>
+        /// <param name="friendlyName">Required</param>
+        /// <param name="maintenanceWindowType">Required</param>
+        /// <param name="value">Required (only needed for weekly and monthly maintenance windows and must be sent like 2-4-5 for Tuesday-Thursday-Friday or 10-17-26 for the days of the month)</param>
+        /// <param name="startTime">Required</param>
+        /// <param name="duration">Required (how many minutes the maintenance window will be active for)</param>
+        /// <returns></returns>
+        public async Task<MaintenanceWindowsResult> CreateMaintenanceWindowAsync( string friendlyName, MaintenanceWindowType maintenanceWindowType, string value, TimeSpan startTime, int duration )
+        {
+            try
+            {
+                if ( !CheckString( friendlyName ) )
+                {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+                    queryString.Append( $"&type={(int)maintenanceWindowType}" );
+
+                    if ( maintenanceWindowType == MaintenanceWindowType.Weekly || maintenanceWindowType == MaintenanceWindowType.Monthly )
+                    {
+                        if ( !CheckString( value ) )
+                        {
+                            queryString.Append( $"&value={HttpUtility.HtmlEncode( value )}" );
+                        }
+                        else
+                        {
+                            throw new Exception( "A value is required when the Window Type is Weekly or Monthly." );
+                        }
+                    }
+
+                    queryString.Append( $"&duration={duration}" );
+
+                    string startTimeString = $"{startTime.Hours}:{startTime.Minutes}";
+                    queryString.Append( $"&start_time={HttpUtility.HtmlEncode( startTimeString )}" );
+
+                    IRestResponse response = await GetRestResponseAsync( "newMWindow", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
+                }
+                else
+                {
+                    throw new Exception( "A Friendly Name is Required" );
+                }
+            }
+            catch ( Exception e )
+            {
+                return new MaintenanceWindowsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// Maintenance windows can be edited using this method.
+        /// </summary>
+        /// <param name="id">Required</param>
+        /// <param name="friendlyName">Optional</param>
+        /// <param name="value">Optional (only needed for weekly and monthly maintenance windows and must be sent like 2-4-5 for Tuesday-Thursday-Friday)</param>
+        /// <param name="startTime">Optional (required the start datetime)</param>
+        /// <param name="duration">Optional (required how many minutes the maintenance window will be active for)</param>
+        /// <returns></returns>
+        public async Task<MaintenanceWindowsResult> UpdateMaintenanceWindowAsync( int id, string friendlyName, string value, TimeSpan startTime, int duration )
+        {
+            try
+            {
+                MaintenanceWindowsResult existingMaintenanceWindow = await GetMaintenanceWindowsAsync( id );
+
+                if ( existingMaintenanceWindow.MaintenanceWindows?.Count > 0 )
+                {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                    queryString.Append( $"&id={id}" );
+
+                    if ( !existingMaintenanceWindow.MaintenanceWindows[ 0 ].FriendlyName.Equals( friendlyName ) )
+                    {
+                        queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+                    }
+
+                    if ( !existingMaintenanceWindow.MaintenanceWindows[ 0 ].Value.Equals( value ) )
+                    {
+                        queryString.Append( $"&value={HttpUtility.HtmlEncode( value )}" );
+                    }
+
+                    if ( existingMaintenanceWindow.MaintenanceWindows[ 0 ].StartTime != startTime )
+                    {
+                        string startTimeString = $"{startTime.Hours}:{startTime.Minutes}";
+                        queryString.Append( $"&start_time={HttpUtility.HtmlEncode( startTimeString )}" );
+                    }
+
+                    if ( existingMaintenanceWindow.MaintenanceWindows[ 0 ].Duration != duration )
+                    {
+                        queryString.Append( $"&duration={duration}" );
+                    }
+
+                    IRestResponse response = await GetRestResponseAsync( "editMWindow", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
+                }
+                else
+                {
+                    throw new Exception( "No Mainetance Window was found!" );
+                }
+            }
+            catch ( Exception e )
+            {
+                return new MaintenanceWindowsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// Maintenance windows can be deleted using this method.
+        /// </summary>
+        /// <param name="id">Required</param>
+        /// <returns></returns>
+        public async Task<MaintenanceWindowsResult> DeleteMaintenanceWindowAsync( int id )
+        {
+            try
+            {
+                MaintenanceWindowsResult existingMaintenanceWindow = await GetMaintenanceWindowsAsync( id );
+
+                if ( existingMaintenanceWindow.MaintenanceWindows?.Count > 0 )
+                {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                    queryString.Append( $"&id={id}" );
+
+                    IRestResponse response = await GetRestResponseAsync( "deleteMWindow", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
+                }
+                else
+                {
+                    throw new Exception( "No Mainetance Window was found!" );
+                }
+            }
+            catch ( Exception e )
+            {
+                return new MaintenanceWindowsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        #endregion
+
         #region Public Status Pages
 
         /// <summary>
@@ -913,6 +1213,11 @@ namespace SharpenUp
         {
             TimeSpan span = date.Subtract( new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc ) );
             return span.TotalSeconds;
+        }
+
+        private bool CheckString( string value )
+        {
+            return string.IsNullOrWhiteSpace( value );
         }
 
         #endregion

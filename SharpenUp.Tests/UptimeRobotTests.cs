@@ -190,6 +190,19 @@ namespace SharpenUp.Tests
 
         #region Maintenance Windows
 
+        [Fact]
+        public async Task GetMaintenanceWindows_NoRequest()
+        {
+            MaintenanceWindowsResult result = await _goodRobot.GetMaintenanceWindowsAsync();
+
+            Assert.Equal( Status.ok, result.Status );
+            Assert.Null( result.Error );
+            Assert.NotNull( result.MaintenanceWindows );
+            Assert.Equal( 0, result.Pagination.Offset );
+            Assert.Equal( 50, result.Pagination.Limit );
+            Assert.True( result.Pagination.Total > 0 );
+        }
+
         #endregion
 
         #region Public Status Pages
