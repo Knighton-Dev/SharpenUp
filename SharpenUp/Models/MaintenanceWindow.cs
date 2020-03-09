@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace SharpenUp.Models
@@ -33,7 +35,16 @@ namespace SharpenUp.Models
         /// Start time of the maintenance windows.
         /// </summary>
         [JsonProperty( PropertyName = "start_time" )]
-        public DateTime StartTime { get; set; }
+        private string StartTimeString { get; set; }
+
+        public TimeSpan StartTime
+        {
+            get
+            {
+                List<string> convertString = StartTimeString.Split( ':' ).ToList();
+                return new TimeSpan( Convert.ToInt32( convertString[ 0 ] ), Convert.ToInt32( convertString[ 1 ] ), 0 );
+            }
+        }
 
         /// <summary>
         /// Duration of the maintenance windows in minutes.

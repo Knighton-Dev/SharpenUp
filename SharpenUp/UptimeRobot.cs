@@ -690,6 +690,55 @@ namespace SharpenUp
 
         #endregion
 
+        #region Maintenance Windows
+
+        public async Task<MaintenanceWindowsResult> GetMaintenanceWindowsAsync()
+        {
+            return await GetMaintenanceWindowsAsync( new MaintenanceWindowsRequest() );
+        }
+
+        public async Task<MaintenanceWindowsResult> GetMaintenanceWindowsAsync( MaintenanceWindowsRequest request )
+        {
+            try
+            {
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                if ( request.MaintenanceWindows?.Count > 0 )
+                {
+                    queryString.Append( "&alert_contacts=" );
+                    queryString.Append( string.Join( "-", request.MaintenanceWindows ) );
+                }
+
+                if ( request.Offset != 0 )
+                {
+                    queryString.Append( $"&offset={request.Offset}" );
+                }
+
+                if ( request.Limit != 50 )
+                {
+                    queryString.Append( $"&limit={request.Limit}" );
+                }
+
+                IRestResponse response = await GetRestResponseAsync( "getMWindows", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
+            }
+            catch ( Exception e )
+            {
+                return new MaintenanceWindowsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        #endregion
+
         #region Public Status Pages
 
         /// <summary>
