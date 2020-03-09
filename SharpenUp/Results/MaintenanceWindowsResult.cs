@@ -15,6 +15,9 @@ namespace SharpenUp.Results
         [JsonProperty( PropertyName = "mwindows" )]
         public List<MaintenanceWindow> MaintenanceWindows { get; set; }
 
+        [JsonProperty( PropertyName = "mwindow" )]
+        public BaseMaintenanceWindow BaseMaintenanceWindow { get; set; }
+
         [JsonProperty( PropertyName = "error" )]
         public Error Error { get; set; }
     }

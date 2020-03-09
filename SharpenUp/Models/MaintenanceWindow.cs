@@ -5,14 +5,17 @@ using Newtonsoft.Json;
 
 namespace SharpenUp.Models
 {
-    public class MaintenanceWindow
+    public class BaseMaintenanceWindow
     {
         /// <summary>
         /// The ID of the maintenance window.
         /// </summary>
         [JsonProperty( PropertyName = "id" )]
         public int Id { get; set; }
+    }
 
+    public class MaintenanceWindow : BaseMaintenanceWindow
+    {
         /// <summary>
         /// The type of the maintenance window.
         /// </summary>
