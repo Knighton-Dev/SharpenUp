@@ -32,24 +32,24 @@ Obviously, the unit tests are written for a very specific use-case (*mine*), but
 
 ## Endpoints Exposed
 
-- `POST getAccountDetails` *Complete as of 1.0.0*
-- `POST getMonitors` *Mostly complete as 1.1.0*
-- ~~`POST newMonitor`~~ *Scaffolded, but not implemented*
-- ~~`POST editMonitor`~~ *Scaffolded, but not implemented*
-- `POST deleteMonitor` *Complete as of 1.3.0*
-- `POST resetMonitor` *Complete as of 1.3.0*
-- `POST getAlertContacts` *Complete as of 1.0.0*
-- `POST newAlertContact` *Complete as of 1.2.0*
-- `POST editAlertContact` *Complete as of 1.2.0*
-- `POST deleteAlertContact` *Complete as of 1.2.0*
-- ~~`POST getMWindows`~~
-- ~~`POST newMWindow`~~
-- ~~`POST editMWindow`~~
-- ~~`POST deleteMWindow`~~
-- `POST getPSPs` *Complete as of 1.0.0*
-- `POST newPSP` *Complete as of 1.2.0*
-- `POST editPSP` *Complete as of 1.2.0*
-- `POST deletePSP` *Complete as of 1.2.0*
+- `getAccountDetails` *Complete as of 1.0.0*
+- `getMonitors` *Mostly complete as 1.1.0*
+- ~~`newMonitor`~~ *Scaffolded, but not implemented*
+- ~~`editMonitor`~~ *Scaffolded, but not implemented*
+- `deleteMonitor` *Complete as of 1.3.0*
+- `resetMonitor` *Complete as of 1.3.0*
+- `getAlertContacts` *Complete as of 1.0.0*
+- `newAlertContact` *Complete as of 1.2.0*
+- `editAlertContact` *Complete as of 1.2.0*
+- `deleteAlertContact` *Complete as of 1.2.0*
+- `getMWindows` *Complete as of 1.4.0*
+- `newMWindow` *Complete as of 1.4.0*
+- `editMWindow` *Complete as of 1.4.0*
+- `deleteMWindow` *Complete as of 1.4.0*
+- `getPSPs` *Complete as of 1.0.0*
+- `newPSP` *Complete as of 1.2.0*
+- `editPSP` *Complete as of 1.2.0*
+- `deletePSP` *Complete as of 1.2.0*
 
 ## [Code of Conduct](CODE_OF_CONDUCT.md)
 

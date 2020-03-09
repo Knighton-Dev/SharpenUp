@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackOnBuild>true</PackOnBuild>
-    <PackageVersion>1.3.0</PackageVersion>
+    <PackageVersion>1.4.0</PackageVersion>
     <Authors>Ian Knighton</Authors>
     <Copyright>Knighton.dev</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
