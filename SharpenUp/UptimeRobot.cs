@@ -306,6 +306,7 @@ namespace SharpenUp
         {
             try
             {
+
                 StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
                 if ( !CheckString( friendlyName ) )
@@ -364,9 +365,11 @@ namespace SharpenUp
                     queryString.Append( $"&http_password={password}" );
                 }
 
-                IRestResponse response = await GetRestResponseAsync( "newMonitor", queryString.ToString() );
+                throw new NotImplementedException( "This Method Isn't Implemented" );
 
-                return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
+                //IRestResponse response = await GetRestResponseAsync( "newMonitor", queryString.ToString() );
+
+                //return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
             }
             catch ( Exception e )
             {

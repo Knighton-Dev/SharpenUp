@@ -12,12 +12,8 @@
     <Summary>A library for working with the Uptime Robot API</Summary>
     <Title>SharpenUp</Title>
     <Description>This is a library for working with the Uptime Robot API</Description>
-    <PackageReleaseNotes>- Updated Error Handling
-- Added Testing for Code Coverage
-- Added/Updated CRUD Operations
-- Finished MonitorRequest Options
-
-This release has most of the endpoints scaffolded, but not completely implemented. They will throw an error if used and I've made sure to point it out in the XML documentation. </PackageReleaseNotes>
+    <PackageReleaseNotes>- Added all Maintenance Window functionality. 
+- Started working on Create and Update functionality for Monitors</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
