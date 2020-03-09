@@ -692,16 +692,30 @@ namespace SharpenUp
 
         #region Maintenance Windows
 
+        /// <summary>
+        /// The list of maintenance windows can be called with this method.
+        /// </summary>
+        /// <returns></returns>
         public async Task<MaintenanceWindowsResult> GetMaintenanceWindowsAsync()
         {
             return await GetMaintenanceWindowsAsync( new MaintenanceWindowsRequest() );
         }
 
+        /// <summary>
+        /// The list of maintenance windows can be called with this method.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<MaintenanceWindowsResult> GetMaintenanceWindowsAsync( int id )
         {
             return await GetMaintenanceWindowsAsync( new MaintenanceWindowsRequest { MaintenanceWindows = new List<int> { id } } );
         }
 
+        /// <summary>
+        /// The list of maintenance windows can be called with this method.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task<MaintenanceWindowsResult> GetMaintenanceWindowsAsync( MaintenanceWindowsRequest request )
         {
             try
@@ -742,17 +756,38 @@ namespace SharpenUp
             }
         }
 
+        /// <summary>
+        /// New maintenance windows can be created using this method.
+        /// </summary>
+        /// <param name="friendlyName">Required</param>
+        /// <param name="maintenanceWindowType">Required</param>
+        /// <param name="value">Required (only needed for weekly and monthly maintenance windows and must be sent like 2-4-5 for Tuesday-Thursday-Friday or 10-17-26 for the days of the month)</param>
+        /// <param name="startTime">Required</param>
+        /// <param name="duration">Required (how many minutes the maintenance window will be active for)</param>
+        /// <returns></returns>
         public async Task<MaintenanceWindowsResult> CreateMaintenanceWindowAsync( string friendlyName, MaintenanceWindowType maintenanceWindowType, string value, TimeSpan startTime, int duration )
         {
             try
             {
-                if ( !CheckString( friendlyName ) && !CheckString( value ) )
+                if ( !CheckString( friendlyName ) )
                 {
                     StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
                     queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
                     queryString.Append( $"&type={(int)maintenanceWindowType}" );
-                    queryString.Append( $"&value={HttpUtility.HtmlEncode( value )}" );
+
+                    if ( maintenanceWindowType == MaintenanceWindowType.Weekly || maintenanceWindowType == MaintenanceWindowType.Monthly )
+                    {
+                        if ( !CheckString( value ) )
+                        {
+                            queryString.Append( $"&value={HttpUtility.HtmlEncode( value )}" );
+                        }
+                        else
+                        {
+                            throw new Exception( "A value is required when the Window Type is Weekly or Monthly." );
+                        }
+                    }
+
                     queryString.Append( $"&duration={duration}" );
 
                     string startTimeString = $"{startTime.Hours}:{startTime.Minutes}";
@@ -765,6 +800,111 @@ namespace SharpenUp
                 else
                 {
                     throw new Exception( "A Friendly Name is Required" );
+                }
+            }
+            catch ( Exception e )
+            {
+                return new MaintenanceWindowsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// Maintenance windows can be edited using this method.
+        /// </summary>
+        /// <param name="id">Required</param>
+        /// <param name="friendlyName">Optional</param>
+        /// <param name="value">Optional (only needed for weekly and monthly maintenance windows and must be sent like 2-4-5 for Tuesday-Thursday-Friday)</param>
+        /// <param name="startTime">Optional (required the start datetime)</param>
+        /// <param name="duration">Optional (required how many minutes the maintenance window will be active for)</param>
+        /// <returns></returns>
+        public async Task<MaintenanceWindowsResult> UpdateMaintenanceWindowAsync( int id, string friendlyName, string value, TimeSpan startTime, int duration )
+        {
+            try
+            {
+                MaintenanceWindowsResult existingMaintenanceWindow = await GetMaintenanceWindowsAsync( id );
+
+                if ( existingMaintenanceWindow.MaintenanceWindows?.Count > 0 )
+                {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                    queryString.Append( $"&id={id}" );
+
+                    if ( !existingMaintenanceWindow.MaintenanceWindows[ 0 ].FriendlyName.Equals( friendlyName ) )
+                    {
+                        queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+                    }
+
+                    if ( !existingMaintenanceWindow.MaintenanceWindows[ 0 ].Value.Equals( value ) )
+                    {
+                        queryString.Append( $"&value={HttpUtility.HtmlEncode( value )}" );
+                    }
+
+                    if ( existingMaintenanceWindow.MaintenanceWindows[ 0 ].StartTime != startTime )
+                    {
+                        string startTimeString = $"{startTime.Hours}:{startTime.Minutes}";
+                        queryString.Append( $"&start_time={HttpUtility.HtmlEncode( startTimeString )}" );
+                    }
+
+                    if ( existingMaintenanceWindow.MaintenanceWindows[ 0 ].Duration != duration )
+                    {
+                        queryString.Append( $"&duration={duration}" );
+                    }
+
+                    IRestResponse response = await GetRestResponseAsync( "editMWindow", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
+                }
+                else
+                {
+                    throw new Exception( "No Mainetance Window was found!" );
+                }
+            }
+            catch ( Exception e )
+            {
+                return new MaintenanceWindowsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Type = "Inner Exception",
+                        Message = e.Message
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// Maintenance windows can be deleted using this method.
+        /// </summary>
+        /// <param name="id">Required</param>
+        /// <returns></returns>
+        public async Task<MaintenanceWindowsResult> DeleteMaintenanceWindowAsync( int id )
+        {
+            try
+            {
+                MaintenanceWindowsResult existingMaintenanceWindow = await GetMaintenanceWindowsAsync( id );
+
+                if ( existingMaintenanceWindow.MaintenanceWindows?.Count > 0 )
+                {
+                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                    queryString.Append( $"&id={id}" );
+
+                    IRestResponse response = await GetRestResponseAsync( "deleteMWindow", queryString.ToString() );
+
+                    return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
+                }
+                else
+                {
+                    throw new Exception( "No Mainetance Window was found!" );
                 }
             }
             catch ( Exception e )
