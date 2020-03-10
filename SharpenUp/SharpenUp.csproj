@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackOnBuild>true</PackOnBuild>
-    <PackageVersion>1.4.0</PackageVersion>
+    <PackageVersion>1.4.1</PackageVersion>
     <Authors>Ian Knighton</Authors>
     <Copyright>Knighton.dev</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -12,8 +12,8 @@
     <Summary>A library for working with the Uptime Robot API</Summary>
     <Title>SharpenUp</Title>
     <Description>This is a library for working with the Uptime Robot API</Description>
-    <PackageReleaseNotes>- Added all Maintenance Window functionality. 
-- Started working on Create and Update functionality for Monitors</PackageReleaseNotes>
+    <PackageReleaseNotes>- Patch that fixes some of the NotImplemented exceptions for methods that aren't yet finished. 
+- Changed method type for methods that aren't implemented to prevent them from being exposed to the library. </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

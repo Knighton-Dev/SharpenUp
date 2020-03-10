@@ -241,12 +241,13 @@ namespace SharpenUp
                     queryString.Append( "&ssl=1" );
                 }
 
-                // TODO: Figure these out. I don't have a "pro" plan
+                // TODO: Implement
                 if ( request.CustomHttpHeaders )
                 {
                     throw new NotImplementedException( "Not currently implemented." );
                 }
 
+                // TODO: Implement
                 if ( request.CustomHttpStatuses )
                 {
                     throw new NotImplementedException( "Not currently implemented." );
@@ -306,7 +307,6 @@ namespace SharpenUp
         {
             try
             {
-
                 StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
                 if ( !CheckString( friendlyName ) )
@@ -365,11 +365,11 @@ namespace SharpenUp
                     queryString.Append( $"&http_password={password}" );
                 }
 
-                throw new NotImplementedException( "This Method Isn't Implemented" );
-
-                //IRestResponse response = await GetRestResponseAsync( "newMonitor", queryString.ToString() );
+                IRestResponse response = await GetRestResponseAsync( "newMonitor", queryString.ToString() );
 
                 //return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
+                // TODO: Implement
+                throw new NotImplementedException( "Not yet implemented." );
             }
             catch ( Exception e )
             {
@@ -392,11 +392,21 @@ namespace SharpenUp
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<MonitorsResult> EditMonitorAsync( int id )
+        private async Task<MonitorsResult> EditMonitorAsync( int id, string friendlyName, string Url,
+            MonitorType type, MonitorSubType subType, int? port, KeywordType keywordType, string keywordValue,
+            int? interval, string username, string password, string method, PostType postType,
+            string postValue, PostContentType postContentType, List<AlertContact> alertContacts,
+            List<MaintenanceWindow> maintenanceWindows, bool ignoreSSLErrors )
         {
             try
             {
-                throw new NotImplementedException( "Not yet implemented" );
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                IRestResponse response = await GetRestResponseAsync( "editMonitor", queryString.ToString() );
+
+                //return JsonConvert.DeserializeObject<MonitorsResult>( response.Content );
+                // TODO: Implement
+                throw new NotImplementedException( "Not yet implemented." );
             }
             catch ( Exception e )
             {
