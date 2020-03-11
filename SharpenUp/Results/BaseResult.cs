@@ -11,6 +11,9 @@ namespace SharpenUp.Results
         [JsonProperty( PropertyName = "error" )]
         public Error Error { get; set; }
 
+        [JsonProperty( PropertyName = "pagination" )]
+        public Pagination Pagination { get; set; }
+
         [JsonProperty( PropertyName = "limit" )]
         public int? Limit { get; set; }
 

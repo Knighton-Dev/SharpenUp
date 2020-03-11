@@ -33,6 +33,9 @@ namespace SharpenUp.Tests
             // Error
             Assert.Null( result.Error );
 
+            // Pagination
+            Assert.Null( result.Pagination );
+
             // Account
             Assert.True( !string.IsNullOrWhiteSpace( result.Account.Email ) );
             Assert.True( result.Account.MonitorLimit.HasValue );
@@ -55,6 +58,9 @@ namespace SharpenUp.Tests
             Assert.Equal( "api_key", result.Error.ParameterName );
             Assert.Equal( "badKey", result.Error.PassedValue );
             Assert.Equal( "api_key is invalid.", result.Error.Message );
+
+            // Pagination
+            Assert.Null( result.Pagination );
 
             // Account
             Assert.Null( result.Account );
@@ -98,6 +104,9 @@ namespace SharpenUp.Tests
 
             // Error
             Assert.Null( result.Error );
+
+            // Pagination
+            Assert.Null( result.Pagination );
         }
 
         [Fact]
@@ -135,6 +144,12 @@ namespace SharpenUp.Tests
             Assert.True( result.AlertContacts[ 0 ].ContactType.HasValue );
             Assert.True( !string.IsNullOrWhiteSpace( result.AlertContacts[ 0 ].FriendlyName ) );
             Assert.True( !string.IsNullOrWhiteSpace( result.AlertContacts[ 0 ].Value ) );
+
+            // Error
+            Assert.Null( result.Error );
+
+            // Pagination
+            Assert.Null( result.Pagination );
         }
 
         [Fact]
@@ -181,6 +196,108 @@ namespace SharpenUp.Tests
             Assert.True( result.AlertContacts[ 0 ].ContactType.HasValue );
             Assert.True( !string.IsNullOrWhiteSpace( result.AlertContacts[ 0 ].FriendlyName ) );
             Assert.True( !string.IsNullOrWhiteSpace( result.AlertContacts[ 0 ].Value ) );
+
+            // Error
+            Assert.Null( result.Error );
+
+            // Pagination
+            Assert.Null( result.Pagination );
+        }
+
+        [Fact]
+        public async Task CreateAlertContact_BadParameters()
+        {
+            AlertContactsResult result = await _goodRobot.CreateAlertContactAsync( ContactType.Email, "", "" );
+
+            // Status
+            Assert.Equal( Status.fail, result.Status );
+
+            // Limit
+            Assert.Null( result.Limit );
+
+            // Offset
+            Assert.Null( result.Offset );
+
+            // Total
+            Assert.Null( result.Total );
+
+            // Base Alert Contact
+            Assert.Null( result.BaseAlertContact );
+
+            // Alert Contacts
+            Assert.Null( result.AlertContacts );
+
+            // Error
+            Assert.NotNull( result.Error );
+            Assert.Equal( "Inner Exception", result.Error.Type );
+            Assert.Equal( "Incorrent Parameters", result.Error.Message );
+
+            // Pagination
+            Assert.Null( result.Pagination );
+        }
+
+        [Fact]
+        public async Task UpdateAlertContact_BadId()
+        {
+            AlertContactsResult result = await _goodRobot.UpdateAlertContactAsync( 12345, "", "" );
+
+            // Status
+            Assert.Equal( Status.fail, result.Status );
+
+            // Limit
+            Assert.Null( result.Limit );
+
+            // Offset
+            Assert.Null( result.Offset );
+
+            // Total
+            Assert.Null( result.Total );
+
+            // Base Alert Contact
+            Assert.Null( result.BaseAlertContact );
+
+            // Alert Contacts
+            Assert.Null( result.AlertContacts );
+
+            // Error
+            Assert.NotNull( result.Error );
+            Assert.Equal( "Inner Exception", result.Error.Type );
+            Assert.Equal( "Contact does not exist.", result.Error.Message );
+
+            // Pagination
+            Assert.Null( result.Pagination );
+        }
+
+        [Fact]
+        public async Task DeleteAlertContact_BadId()
+        {
+            AlertContactsResult result = await _goodRobot.DeleteAlertContactsAsync( 12345 );
+
+            // Status
+            Assert.Equal( Status.fail, result.Status );
+
+            // Limit
+            Assert.Null( result.Limit );
+
+            // Offset
+            Assert.Null( result.Offset );
+
+            // Total
+            Assert.Null( result.Total );
+
+            // Base Alert Contact
+            Assert.Null( result.BaseAlertContact );
+
+            // Alert Contacts
+            Assert.Null( result.AlertContacts );
+
+            // Error
+            Assert.NotNull( result.Error );
+            Assert.Equal( "Inner Exception", result.Error.Type );
+            Assert.Equal( "No Alert Contact Found", result.Error.Message );
+
+            // Pagination
+            Assert.Null( result.Pagination );
         }
 
         [Fact]
@@ -233,6 +350,12 @@ namespace SharpenUp.Tests
             Assert.Equal( "Fake Fakerson", result.AlertContacts[ 0 ].FriendlyName );
             Assert.Equal( "fake@fakest.org", result.AlertContacts[ 0 ].Value );
 
+            // Error
+            Assert.Null( result.Error );
+
+            // Pagination
+            Assert.Null( result.Pagination );
+
             // Update the Contact
             AlertContactsResult updatedAlertContact = await _goodRobot.UpdateAlertContactAsync( alertContact.BaseAlertContact.Id.Value, "Really Faking", "" );
 
@@ -280,6 +403,12 @@ namespace SharpenUp.Tests
             Assert.Equal( "Really Faking", updatedResult.AlertContacts[ 0 ].FriendlyName );
             Assert.Equal( "fake@fakest.org", updatedResult.AlertContacts[ 0 ].Value );
 
+            // Error
+            Assert.Null( result.Error );
+
+            // Pagination
+            Assert.Null( result.Pagination );
+
             // Delete the Contact
             AlertContactsResult deletedAlertContact = await _goodRobot.DeleteAlertContactsAsync( alertContact.BaseAlertContact.Id.Value );
 
@@ -305,6 +434,40 @@ namespace SharpenUp.Tests
         #endregion
 
         #region Maintenance Windows
+
+        [Fact]
+        public async Task GetMaintenanceWindows()
+        {
+            MaintenanceWindowsResult result = await _goodRobot.GetMaintenanceWindowsAsync();
+
+            // Status
+            Assert.Equal( Status.ok, result.Status );
+
+            // Limit
+            Assert.NotNull( result.Pagination.Limit );
+
+            // Offset
+            Assert.NotNull( result.Pagination.Offset );
+
+            // Total
+            Assert.NotNull( result.Pagination.Total );
+
+            // Base Maintenance Window
+            Assert.Null( result.BaseMaintenanceWindow );
+
+            // Maintenance Windows
+            Assert.NotNull( result.MaintenanceWindows );
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].Id );
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].MaintenanceWindowType );
+            Assert.True( !string.IsNullOrWhiteSpace( result.MaintenanceWindows[ 0 ].FriendlyName ) );
+            if ( result.MaintenanceWindows[ 0 ].MaintenanceWindowType == MaintenanceWindowType.Monthly || result.MaintenanceWindows[ 0 ].MaintenanceWindowType == MaintenanceWindowType.Weekly )
+            {
+                Assert.True( !string.IsNullOrWhiteSpace( result.MaintenanceWindows[ 0 ].Value ) );
+            }
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].StartTime );
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].Duration );
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].MaintenanceWindowStatus );
+        }
 
         #endregion
 

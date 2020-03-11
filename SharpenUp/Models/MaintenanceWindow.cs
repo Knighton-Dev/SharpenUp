@@ -11,7 +11,7 @@ namespace SharpenUp.Models
         /// The ID of the maintenance window.
         /// </summary>
         [JsonProperty( PropertyName = "id" )]
-        public int Id { get; set; }
+        public int? Id { get; set; }
     }
 
     public class MaintenanceWindow : BaseMaintenanceWindow
@@ -20,7 +20,7 @@ namespace SharpenUp.Models
         /// The type of the maintenance window.
         /// </summary>
         [JsonProperty( PropertyName = "type" )]
-        public MaintenanceWindowType MaintenanceWindowType { get; set; }
+        public MaintenanceWindowType? MaintenanceWindowType { get; set; }
 
         /// <summary>
         /// Friendly name of the maintenance window (for making it easier to distinguish from others).
@@ -40,12 +40,19 @@ namespace SharpenUp.Models
         [JsonProperty( PropertyName = "start_time" )]
         private string StartTimeString { get; set; }
 
-        public TimeSpan StartTime
+        public TimeSpan? StartTime
         {
             get
             {
-                List<string> convertString = StartTimeString.Split( ':' ).ToList();
-                return new TimeSpan( Convert.ToInt32( convertString[ 0 ] ), Convert.ToInt32( convertString[ 1 ] ), 0 );
+                if ( string.IsNullOrWhiteSpace( StartTimeString ) )
+                {
+                    return null;
+                }
+                else
+                {
+                    List<string> convertString = StartTimeString.Split( ':' ).ToList();
+                    return new TimeSpan( Convert.ToInt32( convertString[ 0 ] ), Convert.ToInt32( convertString[ 1 ] ), 0 );
+                }
             }
         }
 
@@ -53,13 +60,13 @@ namespace SharpenUp.Models
         /// Duration of the maintenance windows in minutes.
         /// </summary>
         [JsonProperty( PropertyName = "duration" )]
-        public int Duration { get; set; }
+        public int? Duration { get; set; }
 
         /// <summary>
         /// The status of the maintenance window.
         /// </summary>
         [JsonProperty( PropertyName = "status" )]
-        public MaintenanceWindowStatus MaintenanceWindowStatus { get; set; }
+        public MaintenanceWindowStatus? MaintenanceWindowStatus { get; set; }
     }
 
     public enum MaintenanceWindowType
