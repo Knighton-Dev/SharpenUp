@@ -518,13 +518,13 @@ namespace SharpenUp
         /// <summary>
         /// The list of alert contacts can be called with this method.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="alertContactId"></param>
         /// <returns></returns>
-        public async Task<AlertContactsResult> GetAlertContactsAsync( int id )
+        public async Task<AlertContactsResult> GetAlertContactsAsync( int alertContactId )
         {
             AlertContactsRequest alertContactsRequest = new AlertContactsRequest
             {
-                AlertContacts = new List<int> { id }
+                AlertContacts = new List<int> { alertContactId }
             };
 
             return await GetAlertContactsAsync( alertContactsRequest );
