@@ -77,13 +77,13 @@ namespace SharpenUp.Tests
             Assert.Equal( Status.ok, result.Status );
 
             // Limit
-            Assert.True( result.Limit.HasValue );
+            Assert.NotNull( result.Limit );
 
             // Offset
-            Assert.True( result.Offset.HasValue );
+            Assert.NotNull( result.Offset );
 
             // Total
-            Assert.True( result.Total.HasValue );
+            Assert.NotNull( result.Total );
 
             // Base Alert Contact
             Assert.Null( result.BaseAlertContact );
@@ -117,13 +117,13 @@ namespace SharpenUp.Tests
             Assert.Equal( Status.ok, result.Status );
 
             // Limit
-            Assert.True( result.Limit.HasValue );
+            Assert.NotNull( result.Limit );
 
             // Offset
-            Assert.True( result.Offset.HasValue );
+            Assert.NotNull( result.Offset );
 
             // Total
-            Assert.True( result.Total.HasValue );
+            Assert.NotNull( result.Total );
 
             // Base Alert Contact
             Assert.Null( result.BaseAlertContact );
@@ -181,6 +181,125 @@ namespace SharpenUp.Tests
             Assert.True( result.AlertContacts[ 0 ].ContactType.HasValue );
             Assert.True( !string.IsNullOrWhiteSpace( result.AlertContacts[ 0 ].FriendlyName ) );
             Assert.True( !string.IsNullOrWhiteSpace( result.AlertContacts[ 0 ].Value ) );
+        }
+
+        [Fact]
+        public async Task AlertContacts_CRUDOperations()
+        {
+            // Create the Contact
+            AlertContactsResult alertContact = await _goodRobot.CreateAlertContactAsync( ContactType.Email, "fake@fakest.org", "Fake Fakerson" );
+
+            // Status
+            Assert.Equal( Status.ok, alertContact.Status );
+
+            // Limit
+            Assert.Null( alertContact.Limit );
+
+            // Offset
+            Assert.Null( alertContact.Offset );
+
+            // Total
+            Assert.Null( alertContact.Total );
+
+            // Base Alert Contact
+            Assert.NotNull( alertContact.BaseAlertContact );
+
+            // Alert Contacts
+            Assert.Null( alertContact.AlertContacts );
+
+            // Validate the contact was fully created.
+            AlertContactsResult result = await _goodRobot.GetAlertContactsAsync( alertContact.BaseAlertContact.Id.Value );
+
+            // Status
+            Assert.Equal( Status.ok, result.Status );
+
+            // Limit
+            Assert.NotNull( result.Limit );
+
+            // Offset
+            Assert.NotNull( result.Offset );
+
+            // Total
+            Assert.NotNull( result.Total );
+
+            // Base Alert Contact
+            Assert.Null( result.BaseAlertContact );
+
+            // Alert Contacts
+            Assert.NotNull( result.AlertContacts );
+            Assert.Equal( alertContact.BaseAlertContact.Id.Value, result.AlertContacts[ 0 ].Id.Value );
+            Assert.Equal( ContactStatus.NotActivated, result.AlertContacts[ 0 ].ContactStatus );
+            Assert.Equal( ContactType.Email, result.AlertContacts[ 0 ].ContactType );
+            Assert.Equal( "Fake Fakerson", result.AlertContacts[ 0 ].FriendlyName );
+            Assert.Equal( "fake@fakest.org", result.AlertContacts[ 0 ].Value );
+
+            // Update the Contact
+            AlertContactsResult updatedAlertContact = await _goodRobot.UpdateAlertContactAsync( alertContact.BaseAlertContact.Id.Value, "Really Faking", "" );
+
+            // Status
+            Assert.Equal( Status.ok, updatedAlertContact.Status );
+
+            // Limit
+            Assert.Null( updatedAlertContact.Limit );
+
+            // Offset
+            Assert.Null( updatedAlertContact.Offset );
+
+            // Total
+            Assert.Null( updatedAlertContact.Total );
+
+            // Base Alert Contact
+            Assert.Null( updatedAlertContact.BaseAlertContact );
+
+            // Alert Contacts
+            Assert.Null( updatedAlertContact.AlertContacts );
+
+            // Pull back the whole result. 
+            AlertContactsResult updatedResult = await _goodRobot.GetAlertContactsAsync( alertContact.BaseAlertContact.Id.Value );
+
+            // Status
+            Assert.Equal( Status.ok, updatedResult.Status );
+
+            // Limit
+            Assert.NotNull( updatedResult.Limit );
+
+            // Offset
+            Assert.NotNull( updatedResult.Offset );
+
+            // Total
+            Assert.NotNull( updatedResult.Total );
+
+            // Base Alert Contact
+            Assert.Null( updatedResult.BaseAlertContact );
+
+            // Alert Contacts
+            Assert.NotNull( updatedResult.AlertContacts );
+            Assert.Equal( alertContact.BaseAlertContact.Id.Value, updatedResult.AlertContacts[ 0 ].Id.Value );
+            Assert.Equal( ContactStatus.NotActivated, updatedResult.AlertContacts[ 0 ].ContactStatus );
+            Assert.Equal( ContactType.Email, updatedResult.AlertContacts[ 0 ].ContactType );
+            Assert.Equal( "Really Faking", updatedResult.AlertContacts[ 0 ].FriendlyName );
+            Assert.Equal( "fake@fakest.org", updatedResult.AlertContacts[ 0 ].Value );
+
+            // Delete the Contact
+            AlertContactsResult deletedAlertContact = await _goodRobot.DeleteAlertContactsAsync( alertContact.BaseAlertContact.Id.Value );
+
+            // Status
+            Assert.Equal( Status.ok, deletedAlertContact.Status );
+
+            // Limit
+            Assert.Null( deletedAlertContact.Limit );
+
+            // Offset
+            Assert.Null( deletedAlertContact.Offset );
+
+            // Total
+            Assert.Null( deletedAlertContact.Total );
+
+            // Base Alert Contact
+            Assert.Null( deletedAlertContact.BaseAlertContact );
+
+            // Alert Contacts
+            Assert.Null( deletedAlertContact.AlertContacts );
         }
 
         #endregion
