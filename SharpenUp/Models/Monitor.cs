@@ -102,6 +102,11 @@ namespace SharpenUp.Models
         {
             get
             {
+                if ( string.IsNullOrWhiteSpace( AllTimeUptimeDurationsString ) )
+                {
+                    return new UptimeDurations();
+                }
+
                 List<string> brokenUp = AllTimeUptimeDurationsString.Split( '-' ).ToList();
 
                 return new UptimeDurations
@@ -129,6 +134,11 @@ namespace SharpenUp.Models
         {
             get
             {
+                if ( string.IsNullOrWhiteSpace( CustomDowntimeDurationsString ) )
+                {
+                    return null;
+                }
+
                 List<double> returnValues = new List<double>();
                 List<string> valuesAsStrings = CustomUptimeRangesString.Split( '-' ).ToList();
 
@@ -198,6 +208,10 @@ namespace SharpenUp.Models
         {
             get
             {
+                if ( string.IsNullOrWhiteSpace( CustomUptimeRatioString ) )
+                {
+                    return null;
+                }
                 return CustomUptimeRatioString.Split( '-' ).Select( double.Parse ).ToList();
             }
         }
@@ -212,6 +226,10 @@ namespace SharpenUp.Models
         {
             get
             {
+                if ( string.IsNullOrWhiteSpace( CustomDowntimeDurationsString ) )
+                {
+                    return null;
+                }
                 return CustomDowntimeDurationsString.Split( '-' ).Select( int.Parse ).ToList();
             }
         }
