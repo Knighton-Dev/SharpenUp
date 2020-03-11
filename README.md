@@ -9,7 +9,9 @@
 
 ## About
 
-This is a .Net Standard 2.1 library for working with the [Uptime Robot API](https://uptimerobot.com/api). I had looked into writing my own uptime monitoring tool, but I found this was an easier jumping off point. 
+This is a library for working with the [Uptime Robot API](https://uptimerobot.com/api). It allows you to easily integrate the metrics and tooling provided by Uptime Robot into your own applications.
+
+This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Usage
 
@@ -23,37 +25,16 @@ dotnet add package SharpenUp
 
 - [Checking Monitor Status](UsageExamples/CheckMonitorStatus.md)
 - [Checking SSL Expiration](UsageExamples/CheckSSL.md)
+- [Monthly Report](UsageExamples/ShareHolderReport.md)
 
 ## Development
 
-For information on the setting up the environemt, see the [Environment Setup](UsageExamples/EnvironmentSetup.md) document.
-
-Obviously, the unit tests are written for a very specific use-case (*mine*), but I think I've considered the potential impact for others that may be trying to use the library. 
-
-## Endpoints Exposed
-
-- `getAccountDetails` *Complete as of 1.0.0*
-- `getMonitors` *Mostly complete as 1.1.0*
-- ~~`newMonitor`~~ *Scaffolded, but not implemented*
-- ~~`editMonitor`~~ *Scaffolded, but not implemented*
-- `deleteMonitor` *Complete as of 1.3.0*
-- `resetMonitor` *Complete as of 1.3.0*
-- `getAlertContacts` *Complete as of 1.0.0*
-- `newAlertContact` *Complete as of 1.2.0*
-- `editAlertContact` *Complete as of 1.2.0*
-- `deleteAlertContact` *Complete as of 1.2.0*
-- `getMWindows` *Complete as of 1.4.0*
-- `newMWindow` *Complete as of 1.4.0*
-- `editMWindow` *Complete as of 1.4.0*
-- `deleteMWindow` *Complete as of 1.4.0*
-- `getPSPs` *Complete as of 1.0.0*
-- `newPSP` *Complete as of 1.2.0*
-- `editPSP` *Complete as of 1.2.0*
-- `deletePSP` *Complete as of 1.2.0*
-
-## [Code of Conduct](CODE_OF_CONDUCT.md)
+For information on the setting up the environment, see the [Environment Setup](UsageExamples/EnvironmentSetup.md) document.
 
 ## Acknowldegements 
 
 - [Uptime Robot](https://uptimerobot.com/) - Really, this library doesn't make sense without their service. 
+- [RestSharp](http://restsharp.org/) - Making REST calls isn't terribly difficult in C#, but RestSharp makes it even easier. Especially when you're trying to stuff queries into the request body.
 - [Shields.io](https://shields.io/) - Having matching badges that aren't a nightmare to work with is nice and I appreciate that there's a service to make it work. 
+- [Coveralls](https://coveralls.io/) - This is my first time really messing with code coverage. It was pretty easy to get my foot in the door with Coveralls. 
+- [CircleCI](https://circleci.com/) - Aside from dealing with .Net issues, CircleCI provides an easy way to get CI into your project. 
