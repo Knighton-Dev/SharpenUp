@@ -8,13 +8,13 @@ namespace SharpenUp.Models
         /// The ID of the alert contact.
         /// </summary>
         [JsonProperty( PropertyName = "id" )]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         /// <summary>
         /// The status of the alert contact.
         /// </summary>
         [JsonProperty( PropertyName = "status" )]
-        public ContactStatus ContactStatus { get; set; }
+        public ContactStatus? ContactStatus { get; set; }
     }
 
     public class AlertContact : BaseAlertConctact
@@ -23,7 +23,7 @@ namespace SharpenUp.Models
         /// The type of the alert contact notified (Zapier, HipChat and Slack are not supported in the newAlertContact method yet).
         /// </summary>
         [JsonProperty( PropertyName = "type" )]
-        public ContactType ContactType { get; set; }
+        public ContactType? ContactType { get; set; }
 
         /// <summary>
         /// Friendly name of the alert contact (for making it easier to distinguish from others).
@@ -41,13 +41,13 @@ namespace SharpenUp.Models
         /// The x value that is set to define "if down for x minutes, alert every y minutes.
         /// </summary>
         [JsonProperty( PropertyName = "threshold" )]
-        public int Threshold { get; set; }
+        public int? Threshold { get; set; }
 
         /// <summary>
         /// The y value that is set to define "if down for x minutes, alert every y minutes.
         /// </summary>
         [JsonProperty( PropertyName = "recurrence" )]
-        public int Recurrence { get; set; }
+        public int? Recurrence { get; set; }
     }
 
     public enum ContactType
