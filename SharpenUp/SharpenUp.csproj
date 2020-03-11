@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackOnBuild>true</PackOnBuild>
-    <PackageVersion>1.4.1</PackageVersion>
+    <PackageVersion>1.4.2</PackageVersion>
     <Authors>Ian Knighton</Authors>
     <Copyright>Knighton.dev</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -12,8 +12,7 @@
     <Summary>A library for working with the Uptime Robot API</Summary>
     <Title>SharpenUp</Title>
     <Description>This is a library for working with the Uptime Robot API</Description>
-    <PackageReleaseNotes>- Patch that fixes some of the NotImplemented exceptions for methods that aren't yet finished. 
-- Changed method type for methods that aren't implemented to prevent them from being exposed to the library. </PackageReleaseNotes>
+    <PackageReleaseNotes>- Removed all testing temporarily to reset and make sure I didn't accidentally mark methods incorrectly and validate that I'm testing the right classes the right way. No code changes, just no testing in the project. </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

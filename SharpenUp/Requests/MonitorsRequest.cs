@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using SharpenUp.Models;
 
 namespace SharpenUp.Requests
@@ -20,13 +19,11 @@ namespace SharpenUp.Requests
         /// <summary>
         /// Optional (if not used, will return all monitors statuses (up, down, paused) in an account. Else, it is possible to define any number of monitor statuses like: statuses=2-9).
         /// </summary>
-        [ExcludeFromCodeCoverage]
         public List<MonitorStatus> Statuses { get; set; } = null;
 
         /// <summary>
         /// Optional (defines the number of days to calculate the uptime ratio(s) for. Ex: custom_uptime_ratios=7-30-45 to get the uptime ratios for those periods).
         /// </summary>
-        [ExcludeFromCodeCoverage]
         public List<int> CustomUptimeRatios { get; set; } = null;
 
         /// <summary>
