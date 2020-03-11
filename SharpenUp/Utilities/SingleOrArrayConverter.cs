@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace SharpenUp.Utilities
 {
     // Sourced from: https://stackoverflow.com/questions/18994685/how-to-handle-both-a-single-item-and-an-array-for-the-same-property-using-json-n
-    [ExcludeFromCodeCoverage]
     public class SingleOrArrayConverter<T> : JsonConverter
     {
         public override bool CanConvert( Type objectType )
