@@ -1,9 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace SharpenUp.Models
 {
-    [ExcludeFromCodeCoverage]
     public class BaseAlertConctact
     {
         /// <summary>
@@ -19,7 +17,6 @@ namespace SharpenUp.Models
         public ContactStatus ContactStatus { get; set; }
     }
 
-    [ExcludeFromCodeCoverage]
     public class AlertContact : BaseAlertConctact
     {
         /// <summary>

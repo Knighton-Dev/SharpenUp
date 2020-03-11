@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SharpenUp.Requests
 {
@@ -8,7 +7,6 @@ namespace SharpenUp.Requests
         /// <summary>
         /// Optional (if not used, will return all public status pages in an account. Else, it is possible to define any number of public status pages with their IDs like: psps=236-1782-4790).
         /// </summary>
-        [ExcludeFromCodeCoverage]
         public List<int> PublicStatusPages { get; set; } = new List<int>();
 
         /// <summary>
