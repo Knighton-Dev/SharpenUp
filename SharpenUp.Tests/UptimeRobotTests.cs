@@ -469,6 +469,188 @@ namespace SharpenUp.Tests
             Assert.NotNull( result.MaintenanceWindows[ 0 ].MaintenanceWindowStatus );
         }
 
+        [Fact]
+        public async Task GetMaintenanceWindows_SingleWindow()
+        {
+            MaintenanceWindowsResult allMaintenanceWindows = await _goodRobot.GetMaintenanceWindowsAsync();
+
+            Assert.NotNull( allMaintenanceWindows.MaintenanceWindows );
+
+            MaintenanceWindow testWindow = allMaintenanceWindows.MaintenanceWindows.FirstOrDefault();
+
+            MaintenanceWindowsResult result = await _goodRobot.GetMaintenanceWindowsAsync( testWindow.Id.Value );
+
+            // Status
+            Assert.Equal( Status.ok, result.Status );
+
+            // Limit
+            Assert.NotNull( result.Pagination.Limit );
+
+            // Offset
+            Assert.NotNull( result.Pagination.Offset );
+
+            // Total
+            Assert.NotNull( result.Pagination.Total );
+
+            // Base Maintenance Window
+            Assert.Null( result.BaseMaintenanceWindow );
+
+            // Maintenance Windows
+            Assert.NotNull( result.MaintenanceWindows );
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].Id );
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].MaintenanceWindowType );
+            Assert.True( !string.IsNullOrWhiteSpace( result.MaintenanceWindows[ 0 ].FriendlyName ) );
+            if ( result.MaintenanceWindows[ 0 ].MaintenanceWindowType == MaintenanceWindowType.Monthly || result.MaintenanceWindows[ 0 ].MaintenanceWindowType == MaintenanceWindowType.Weekly )
+            {
+                Assert.True( !string.IsNullOrWhiteSpace( result.MaintenanceWindows[ 0 ].Value ) );
+            }
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].StartTime );
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].Duration );
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].MaintenanceWindowStatus );
+        }
+
+        [Fact]
+        public async Task GetMaintenanceWindows_WithRequest()
+        {
+            MaintenanceWindowsResult allMaintenanceWindows = await _goodRobot.GetMaintenanceWindowsAsync();
+
+            Assert.NotNull( allMaintenanceWindows.MaintenanceWindows );
+
+            List<int> maintenanceWindowIds = allMaintenanceWindows.MaintenanceWindows.Select( x => x.Id.Value ).ToList();
+
+            Assert.NotNull( maintenanceWindowIds );
+
+            MaintenanceWindowsRequest request = new MaintenanceWindowsRequest
+            {
+                MaintenanceWindows = maintenanceWindowIds,
+                Offset = 1,
+                Limit = 20
+            };
+
+            MaintenanceWindowsResult result = await _goodRobot.GetMaintenanceWindowsAsync( request );
+
+
+            // Status
+            Assert.Equal( Status.ok, result.Status );
+
+            // Limit
+            Assert.Equal( 20, result.Pagination.Limit.Value );
+
+            // Offset
+            Assert.Equal( 1, result.Pagination.Offset.Value );
+
+            // Total
+            Assert.NotNull( result.Pagination.Total );
+
+            // Base Maintenance Window
+            Assert.Null( result.BaseMaintenanceWindow );
+
+            // Maintenance Windows
+            Assert.NotNull( result.MaintenanceWindows );
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].Id );
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].MaintenanceWindowType );
+            Assert.True( !string.IsNullOrWhiteSpace( result.MaintenanceWindows[ 0 ].FriendlyName ) );
+            if ( result.MaintenanceWindows[ 0 ].MaintenanceWindowType == MaintenanceWindowType.Monthly || result.MaintenanceWindows[ 0 ].MaintenanceWindowType == MaintenanceWindowType.Weekly )
+            {
+                Assert.True( !string.IsNullOrWhiteSpace( result.MaintenanceWindows[ 0 ].Value ) );
+            }
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].StartTime );
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].Duration );
+            Assert.NotNull( result.MaintenanceWindows[ 0 ].MaintenanceWindowStatus );
+        }
+
+        [Fact]
+        public async Task CreateMaintenanceWindow_BadParameters_FriendlyName()
+        {
+            MaintenanceWindowsResult result = await _goodRobot.CreateMaintenanceWindowAsync( "", MaintenanceWindowType.Daily, "", new TimeSpan( 20, 0, 0 ), 60 );
+
+            // Status
+            Assert.Equal( Status.fail, result.Status );
+
+            // Pagination
+            Assert.Null( result.Pagination );
+
+            // Base Maintenance Window
+            Assert.Null( result.BaseMaintenanceWindow );
+
+            // Maintenance Windows
+            Assert.Null( result.MaintenanceWindows );
+
+            // Error
+            Assert.NotNull( result.Error );
+            Assert.Equal( "Inner Exception", result.Error.Type );
+            Assert.Equal( "A Friendly Name is Required", result.Error.Message );
+        }
+
+        [Fact]
+        public async Task CreateMaintenanceWindow_BadParameters_Value()
+        {
+            MaintenanceWindowsResult result = await _goodRobot.CreateMaintenanceWindowAsync( "Fake Name", MaintenanceWindowType.Weekly, "", new TimeSpan( 20, 0, 0 ), 60 );
+
+            // Status
+            Assert.Equal( Status.fail, result.Status );
+
+            // Pagination
+            Assert.Null( result.Pagination );
+
+            // Base Maintenance Window
+            Assert.Null( result.BaseMaintenanceWindow );
+
+            // Maintenance Windows
+            Assert.Null( result.MaintenanceWindows );
+
+            // Error
+            Assert.NotNull( result.Error );
+            Assert.Equal( "Inner Exception", result.Error.Type );
+            Assert.Equal( "A value is required when the Window Type is Weekly or Monthly.", result.Error.Message );
+        }
+
+        [Fact]
+        public async Task UpdateMaintenanceWindow_BadId()
+        {
+            MaintenanceWindowsResult result = await _goodRobot.UpdateMaintenanceWindowAsync( 45, "", "", new TimeSpan( 2, 2, 2 ), 60 );
+
+            // Status
+            Assert.Equal( Status.fail, result.Status );
+
+            // Pagination
+            Assert.Null( result.Pagination );
+
+            // Base Maintenance Window
+            Assert.Null( result.BaseMaintenanceWindow );
+
+            // Maintenance Windows
+            Assert.Null( result.MaintenanceWindows );
+
+            // Error
+            Assert.NotNull( result.Error );
+            Assert.Equal( "not_found", result.Error.Type );
+            Assert.Equal( "Maintenance Window not found.", result.Error.Message );
+        }
+
+        [Fact]
+        public async Task DeleteMaintenanceWindow_BadId()
+        {
+            MaintenanceWindowsResult result = await _goodRobot.DeleteMaintenanceWindowAsync( 1234 );
+
+            // Status
+            Assert.Equal( Status.fail, result.Status );
+
+            // Pagination
+            Assert.Null( result.Pagination );
+
+            // Base Maintenance Window
+            Assert.Null( result.BaseMaintenanceWindow );
+
+            // Maintenance Windows
+            Assert.Null( result.MaintenanceWindows );
+
+            // Error
+            Assert.NotNull( result.Error );
+            Assert.Equal( "not_found", result.Error.Type );
+            Assert.Equal( "Maintenance Window not found.", result.Error.Message );
+        }
+
         #endregion
 
         #region Public Status Pages
