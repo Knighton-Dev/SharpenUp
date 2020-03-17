@@ -655,6 +655,197 @@ namespace SharpenUp.Tests
 
         #region Public Status Pages
 
+        [Fact]
+        public async Task GetPublicStatusPages()
+        {
+            PublicStatusPageResult result = await _goodRobot.GetPublicStatusPagesAsync();
+
+            // Status
+            Assert.Equal( Status.ok, result.Status );
+
+            // Limit
+            Assert.NotNull( result.Pagination.Limit );
+
+            // Offset
+            Assert.NotNull( result.Pagination.Offset );
+
+            // Total
+            Assert.NotNull( result.Pagination.Total );
+
+            // Base Public Status Page
+            Assert.Null( result.BasePublicStatusPage );
+
+            // Public Status Pages
+            Assert.NotNull( result.PublicStatusPages );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].Id );
+            Assert.True( !string.IsNullOrWhiteSpace( result.PublicStatusPages[ 0 ].FriendlyName ) );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].Monitors );
+            Assert.True( !string.IsNullOrWhiteSpace( result.PublicStatusPages[ 0 ].StandardDomain ) );
+            Assert.True( string.IsNullOrEmpty( result.PublicStatusPages[ 0 ].CustomDomain ) );
+            Assert.True( string.IsNullOrEmpty( result.PublicStatusPages[ 0 ].Password ) );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].PublicStatusPageSort );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].PublicStatusPageStatus );
+
+            // Error
+            Assert.Null( result.Error );
+        }
+
+        [Fact]
+        public async Task GetPublicStatusPages_SinglePage()
+        {
+            PublicStatusPageResult allStatusPages = await _goodRobot.GetPublicStatusPagesAsync();
+
+            Assert.NotNull( allStatusPages.PublicStatusPages );
+
+            PublicStatusPageResult result = await _goodRobot.GetPublicStatusPagesAsync( allStatusPages.PublicStatusPages[ 0 ].Id.Value );
+
+            // Status
+            Assert.Equal( Status.ok, result.Status );
+
+            // Limit
+            Assert.NotNull( result.Pagination.Limit );
+
+            // Offset
+            Assert.NotNull( result.Pagination.Offset );
+
+            // Total
+            Assert.NotNull( result.Pagination.Total );
+
+            // Base Public Status Page
+            Assert.Null( result.BasePublicStatusPage );
+
+            // Public Status Pages
+            Assert.NotNull( result.PublicStatusPages );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].Id );
+            Assert.True( !string.IsNullOrWhiteSpace( result.PublicStatusPages[ 0 ].FriendlyName ) );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].Monitors );
+            Assert.True( !string.IsNullOrWhiteSpace( result.PublicStatusPages[ 0 ].StandardDomain ) );
+            Assert.True( string.IsNullOrEmpty( result.PublicStatusPages[ 0 ].CustomDomain ) );
+            Assert.True( string.IsNullOrEmpty( result.PublicStatusPages[ 0 ].Password ) );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].PublicStatusPageSort );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].PublicStatusPageStatus );
+
+            // Error
+            Assert.Null( result.Error );
+        }
+
+        [Fact]
+        public async Task GetPublicStatusPages_WithRequest()
+        {
+            PublicStatusPageResult allStatusPages = await _goodRobot.GetPublicStatusPagesAsync();
+
+            Assert.NotNull( allStatusPages.PublicStatusPages );
+
+            List<int> publicStatusPages = allStatusPages.PublicStatusPages.Select( x => x.Id.Value ).ToList();
+
+            PublicStatusPageRequest request = new PublicStatusPageRequest
+            {
+                PublicStatusPages = publicStatusPages,
+                Offset = 1,
+                Limit = 20
+            };
+
+            PublicStatusPageResult result = await _goodRobot.GetPublicStatusPagesAsync( request );
+
+            // Status
+            Assert.Equal( Status.ok, result.Status );
+
+            // Limit
+            Assert.Equal( 20, result.Pagination.Limit );
+
+            // Offset
+            Assert.Equal( 1, result.Pagination.Offset );
+
+            // Total
+            Assert.NotNull( result.Pagination.Total );
+
+            // Base Public Status Page
+            Assert.Null( result.BasePublicStatusPage );
+
+            // Public Status Pages
+            Assert.NotNull( result.PublicStatusPages );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].Id );
+            Assert.True( !string.IsNullOrWhiteSpace( result.PublicStatusPages[ 0 ].FriendlyName ) );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].Monitors );
+            Assert.True( !string.IsNullOrWhiteSpace( result.PublicStatusPages[ 0 ].StandardDomain ) );
+            Assert.True( string.IsNullOrEmpty( result.PublicStatusPages[ 0 ].CustomDomain ) );
+            Assert.True( string.IsNullOrEmpty( result.PublicStatusPages[ 0 ].Password ) );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].PublicStatusPageSort );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].PublicStatusPageStatus );
+
+            // Error
+            Assert.Null( result.Error );
+        }
+
+        [Fact]
+        public async Task CreatePublicStatusPage_BadRequest_FriendlyName()
+        {
+            PublicStatusPageResult result = await _goodRobot.CreatePublicStatusPageAsync( "", new List<int>() );
+
+            // Status
+            Assert.Equal( Status.fail, result.Status );
+
+            // Pagination
+            Assert.Null( result.Pagination );
+
+            // Base Public Status Page
+            Assert.Null( result.BasePublicStatusPage );
+
+            // Public Status Pages
+            Assert.Null( result.PublicStatusPages );
+
+            // Error
+            Assert.NotNull( result.Error );
+            Assert.Equal( "Inner Exception", result.Error.Type );
+            Assert.Equal( "A Friendly Name is Required", result.Error.Message );
+        }
+
+        [Fact]
+        public async Task UpdatePublicStatusPage_BadId()
+        {
+            PublicStatusPageResult result = await _goodRobot.UpdatePublicStatusPageAsync( 1234, "", null, "", "", PublicStatusPageSort.FriendlyNameAscending );
+
+            // Status
+            Assert.Equal( Status.fail, result.Status );
+
+            // Pagination
+            Assert.Null( result.Pagination );
+
+            // Base Public Status Page
+            Assert.Null( result.BasePublicStatusPage );
+
+            // Public Status Pages
+            Assert.Null( result.PublicStatusPages );
+
+            // Error
+            Assert.NotNull( result.Error );
+            Assert.Equal( "Inner Exception", result.Error.Type );
+            Assert.Equal( "No Public Status Page was found!", result.Error.Message );
+        }
+
+        [Fact]
+        public async Task DeletePublicStatusPage_BadId()
+        {
+            PublicStatusPageResult result = await _goodRobot.DeletePublicStatusPageAsync( 1234 );
+
+            // Status
+            Assert.Equal( Status.fail, result.Status );
+
+            // Pagination
+            Assert.Null( result.Pagination );
+
+            // Base Public Status Page
+            Assert.Null( result.BasePublicStatusPage );
+
+            // Public Status Pages
+            Assert.Null( result.PublicStatusPages );
+
+            // Error
+            Assert.NotNull( result.Error );
+            Assert.Equal( "Inner Exception", result.Error.Type );
+            Assert.Equal( "No Public Status Page was found!", result.Error.Message );
+        }
+
         #endregion
     }
 }

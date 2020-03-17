@@ -10,7 +10,7 @@ namespace SharpenUp.Models
         /// The ID of the status page.
         /// </summary>
         [JsonProperty( PropertyName = "id" )]
-        public int Id { get; set; }
+        public int? Id { get; set; }
     }
 
     public class PublicStatusPage : BasePublicStatusPage
@@ -50,13 +50,13 @@ namespace SharpenUp.Models
         /// The sorting of the status page.
         /// </summary>
         [JsonProperty( PropertyName = "sort" )]
-        public PublicStatusPageSort PublicStatusPageSort { get; set; }
+        public PublicStatusPageSort? PublicStatusPageSort { get; set; }
 
         /// <summary>
         /// The status of the status page.
         /// </summary>
         [JsonProperty( PropertyName = "status" )]
-        public PublicStatusPageStatus PublicStatusPageStatus { get; set; }
+        public PublicStatusPageStatus? PublicStatusPageStatus { get; set; }
     }
 
     public enum PublicStatusPageSort
