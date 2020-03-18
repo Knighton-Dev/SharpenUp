@@ -227,7 +227,8 @@ namespace SharpenUp.Tests
                 IncludeSSL = true,
                 Timezone = true,
                 Offset = 1,
-                Limit = 3
+                Limit = 3,
+                Search = "Home"
             };
 
             MonitorsResult result = await _goodRobot.GetMonitorsAsync( request );
@@ -273,15 +274,30 @@ namespace SharpenUp.Tests
             Assert.Null( sampleMonitor.PostContentType );
             Assert.NotNull( sampleMonitor.CustomUptimeRatio );
             Assert.NotNull( sampleMonitor.CustomDowntimeDurations );
+
+            // Logs
             Assert.NotNull( sampleMonitor.Logs );
             Assert.True( sampleMonitor.Logs.Count <= 5 );
+            Assert.NotNull( sampleMonitor.Logs[ 0 ].LogType );
+            Assert.NotNull( sampleMonitor.Logs[ 0 ].DateTime );
+            Assert.NotNull( sampleMonitor.Logs[ 0 ].Duration );
+            Assert.NotNull( sampleMonitor.Logs[ 0 ].Reason.Code );
+            Assert.False( string.IsNullOrWhiteSpace( sampleMonitor.Logs[ 0 ].Reason.Detail ) );
+
             Assert.NotNull( sampleMonitor.ResponseTimes );
             Assert.True( sampleMonitor.ResponseTimes.Count <= 5 );
             Assert.NotNull( sampleMonitor.AlertContacts );
             Assert.NotNull( sampleMonitor.AlertContacts[ 0 ].Threshold );
             Assert.NotNull( sampleMonitor.AlertContacts[ 0 ].Recurrence );
             Assert.NotNull( sampleMonitor.MaintenanceWindows );
+
+            // SSL
             Assert.NotNull( sampleMonitor.SSL );
+            Assert.False( string.IsNullOrWhiteSpace( sampleMonitor.SSL.Brand ) );
+            Assert.False( string.IsNullOrWhiteSpace( sampleMonitor.SSL.Product ) );
+            Assert.NotNull( sampleMonitor.SSL.Expires );
+            Assert.NotNull( sampleMonitor.SSL.IgnoreErrors );
+            Assert.NotNull( sampleMonitor.SSL.DisableNotifications );
 
             // Timezone
             Assert.NotNull( result.Timezone );
