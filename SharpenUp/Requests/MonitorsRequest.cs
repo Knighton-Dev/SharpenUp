@@ -49,12 +49,12 @@ namespace SharpenUp.Requests
         /// <summary>
         /// Optional (works only for the Pro Plan as 24 hour+ logs are kept only in the Pro Plan, formatted as Unix time and must be used with logs_end_date).
         /// </summary>
-        public DateTime LogsStartDate { get; set; } = DateTime.MinValue;
+        public DateTime? LogsStartDate { get; set; } = null;
 
         /// <summary>
         /// Optional (works only for the Pro Plan as 24 hour+ logs are kept only in the Pro Plan, formatted as Unix time and must be used with logs_start_date).
         /// </summary>
-        public DateTime LogsEndDate { get; set; } = DateTime.MaxValue;
+        public DateTime? LogsEndDate { get; set; } = null;
 
         /// <summary>
         /// Optional (the types of logs to be returned with a usage like: log_types=1-2-98). If empty, all log types are returned.
