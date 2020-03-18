@@ -750,7 +750,7 @@ namespace SharpenUp
                     }
                     else
                     {
-                        return MaintenanceWindowsError( ErrorType.MaintenanceWindow_WindowTypeRequired );
+                        return MaintenanceWindowsError( ErrorType.MaintenanceWindow_WindowTypeRequiresValue );
                     }
                 }
 
@@ -1108,7 +1108,7 @@ namespace SharpenUp
                 };
             }
 
-            if ( errorType == ErrorType.MaintenanceWindow_WindowTypeRequired )
+            if ( errorType == ErrorType.MaintenanceWindow_WindowTypeRequiresValue )
             {
                 return new MaintenanceWindowsResult
                 {

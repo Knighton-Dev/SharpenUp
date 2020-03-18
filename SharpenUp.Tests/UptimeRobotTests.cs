@@ -880,7 +880,7 @@ namespace SharpenUp.Tests
             Assert.NotNull( result.Error );
             Assert.Equal( _defaultExplanation, result.Error.Explanation );
             Assert.Equal( "A Value must be provided when using the Weekly or Monthly monitor type.", result.Error.Message );
-            Assert.Equal( ErrorType.MaintenanceWindow_WindowTypeRequired, result.Error.ErrorType );
+            Assert.Equal( ErrorType.MaintenanceWindow_WindowTypeRequiresValue, result.Error.ErrorType );
         }
 
         [Fact]

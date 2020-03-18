@@ -23,7 +23,7 @@ namespace SharpenUp.Models
     {
         System,
         NoFriendlyName,
-        MaintenanceWindow_WindowTypeRequired,
+        MaintenanceWindow_WindowTypeRequiresValue,
         PublicStatusPage_NoPageFound
     }
 }
