@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackOnBuild>true</PackOnBuild>
-    <PackageVersion>1.4.4</PackageVersion>
+    <PackageVersion>1.4.5</PackageVersion>
     <Authors>Ian Knighton</Authors>
     <Copyright>Knighton.dev</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -12,7 +12,7 @@
     <Summary>A library for working with the Uptime Robot API</Summary>
     <Title>SharpenUp</Title>
     <Description>This is a library for working with the Uptime Robot API</Description>
-    <PackageReleaseNotes>- Reworked some of the types as I started really working through testing and code coverage. </PackageReleaseNotes>
+    <PackageReleaseNotes>- More minor changes as I work through testing.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
