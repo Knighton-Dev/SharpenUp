@@ -28,24 +28,9 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<AccountDetailsResult> GetAccountDetailsAsync()
         {
-            try
-            {
-                IRestResponse response = await GetRestResponseAsync( "getAccountDetails", $"api_key={_apiKey}&format=json" );
+            IRestResponse response = await GetRestResponseAsync( "getAccountDetails", $"api_key={_apiKey}&format=json" );
 
-                return JsonConvert.DeserializeObject<AccountDetailsResult>( response.Content );
-            }
-            catch ( Exception e )
-            {
-                return new AccountDetailsResult
-                {
-                    Status = Status.fail,
-                    Error = new Error
-                    {
-                        Type = "Internal Exception",
-                        Message = e.Message
-                    }
-                };
-            }
+            return JsonConvert.DeserializeObject<AccountDetailsResult>( response.Content );
         }
 
         #endregion
@@ -537,42 +522,27 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<AlertContactsResult> GetAlertContactsAsync( AlertContactsRequest request )
         {
-            try
+            StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+            if ( request.AlertContacts?.Count > 0 )
             {
-                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
-
-                if ( request.AlertContacts?.Count > 0 )
-                {
-                    queryString.Append( "&alert_contacts=" );
-                    queryString.Append( string.Join( "-", request.AlertContacts ) );
-                }
-
-                if ( request.Offset != 0 )
-                {
-                    queryString.Append( $"&offset={request.Offset}" );
-                }
-
-                if ( request.Limit != 50 )
-                {
-                    queryString.Append( $"&limit={request.Limit}" );
-                }
-
-                IRestResponse response = await GetRestResponseAsync( "getAlertContacts", queryString.ToString() );
-
-                return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
+                queryString.Append( "&alert_contacts=" );
+                queryString.Append( string.Join( "-", request.AlertContacts ) );
             }
-            catch ( Exception e )
+
+            if ( request.Offset != 0 )
             {
-                return new AlertContactsResult
-                {
-                    Status = Status.fail,
-                    Error = new Error
-                    {
-                        Type = "Inner Exception",
-                        Message = e.Message
-                    }
-                };
+                queryString.Append( $"&offset={request.Offset}" );
             }
+
+            if ( request.Limit != 50 )
+            {
+                queryString.Append( $"&limit={request.Limit}" );
+            }
+
+            IRestResponse response = await GetRestResponseAsync( "getAlertContacts", queryString.ToString() );
+
+            return JsonConvert.DeserializeObject<AlertContactsResult>( response.Content );
         }
 
         /// <summary>
@@ -731,42 +701,27 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<MaintenanceWindowsResult> GetMaintenanceWindowsAsync( MaintenanceWindowsRequest request )
         {
-            try
+            StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+            if ( request.MaintenanceWindows?.Count > 0 )
             {
-                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
-
-                if ( request.MaintenanceWindows?.Count > 0 )
-                {
-                    queryString.Append( "&alert_contacts=" );
-                    queryString.Append( string.Join( "-", request.MaintenanceWindows ) );
-                }
-
-                if ( request.Offset != 0 )
-                {
-                    queryString.Append( $"&offset={request.Offset}" );
-                }
-
-                if ( request.Limit != 50 )
-                {
-                    queryString.Append( $"&limit={request.Limit}" );
-                }
-
-                IRestResponse response = await GetRestResponseAsync( "getMWindows", queryString.ToString() );
-
-                return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
+                queryString.Append( "&alert_contacts=" );
+                queryString.Append( string.Join( "-", request.MaintenanceWindows ) );
             }
-            catch ( Exception e )
+
+            if ( request.Offset != 0 )
             {
-                return new MaintenanceWindowsResult
-                {
-                    Status = Status.fail,
-                    Error = new Error
-                    {
-                        Type = "Inner Exception",
-                        Message = e.Message
-                    }
-                };
+                queryString.Append( $"&offset={request.Offset}" );
             }
+
+            if ( request.Limit != 50 )
+            {
+                queryString.Append( $"&limit={request.Limit}" );
+            }
+
+            IRestResponse response = await GetRestResponseAsync( "getMWindows", queryString.ToString() );
+
+            return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
         }
 
         /// <summary>
@@ -840,57 +795,42 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<MaintenanceWindowsResult> UpdateMaintenanceWindowAsync( int id, string friendlyName, string value, TimeSpan startTime, int duration )
         {
-            try
+            MaintenanceWindowsResult existingMaintenanceWindow = await GetMaintenanceWindowsAsync( id );
+
+            if ( existingMaintenanceWindow.MaintenanceWindows?.Count > 0 )
             {
-                MaintenanceWindowsResult existingMaintenanceWindow = await GetMaintenanceWindowsAsync( id );
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
-                if ( existingMaintenanceWindow.MaintenanceWindows?.Count > 0 )
+                queryString.Append( $"&id={id}" );
+
+                if ( !existingMaintenanceWindow.MaintenanceWindows[ 0 ].FriendlyName.Equals( friendlyName ) )
                 {
-                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
-
-                    queryString.Append( $"&id={id}" );
-
-                    if ( !existingMaintenanceWindow.MaintenanceWindows[ 0 ].FriendlyName.Equals( friendlyName ) )
-                    {
-                        queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
-                    }
-
-                    if ( !existingMaintenanceWindow.MaintenanceWindows[ 0 ].Value.Equals( value ) )
-                    {
-                        queryString.Append( $"&value={HttpUtility.HtmlEncode( value )}" );
-                    }
-
-                    if ( existingMaintenanceWindow.MaintenanceWindows[ 0 ].StartTime != startTime )
-                    {
-                        string startTimeString = $"{startTime.Hours}:{startTime.Minutes}";
-                        queryString.Append( $"&start_time={HttpUtility.HtmlEncode( startTimeString )}" );
-                    }
-
-                    if ( existingMaintenanceWindow.MaintenanceWindows[ 0 ].Duration != duration )
-                    {
-                        queryString.Append( $"&duration={duration}" );
-                    }
-
-                    IRestResponse response = await GetRestResponseAsync( "editMWindow", queryString.ToString() );
-
-                    return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
+                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
                 }
-                else
+
+                if ( !existingMaintenanceWindow.MaintenanceWindows[ 0 ].Value.Equals( value ) )
                 {
-                    throw new Exception( "No Mainetance Window was found!" );
+                    queryString.Append( $"&value={HttpUtility.HtmlEncode( value )}" );
                 }
+
+                if ( existingMaintenanceWindow.MaintenanceWindows[ 0 ].StartTime != startTime )
+                {
+                    string startTimeString = $"{startTime.Hours}:{startTime.Minutes}";
+                    queryString.Append( $"&start_time={HttpUtility.HtmlEncode( startTimeString )}" );
+                }
+
+                if ( existingMaintenanceWindow.MaintenanceWindows[ 0 ].Duration != duration )
+                {
+                    queryString.Append( $"&duration={duration}" );
+                }
+
+                IRestResponse response = await GetRestResponseAsync( "editMWindow", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
             }
-            catch ( Exception e )
+            else
             {
-                return new MaintenanceWindowsResult
-                {
-                    Status = Status.fail,
-                    Error = new Error
-                    {
-                        Type = "Inner Exception",
-                        Message = e.Message
-                    }
-                };
+                return existingMaintenanceWindow;
             }
         }
 
@@ -901,36 +841,21 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<MaintenanceWindowsResult> DeleteMaintenanceWindowAsync( int id )
         {
-            try
+            MaintenanceWindowsResult existingMaintenanceWindow = await GetMaintenanceWindowsAsync( id );
+
+            if ( existingMaintenanceWindow.MaintenanceWindows?.Count > 0 )
             {
-                MaintenanceWindowsResult existingMaintenanceWindow = await GetMaintenanceWindowsAsync( id );
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
-                if ( existingMaintenanceWindow.MaintenanceWindows?.Count > 0 )
-                {
-                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+                queryString.Append( $"&id={id}" );
 
-                    queryString.Append( $"&id={id}" );
+                IRestResponse response = await GetRestResponseAsync( "deleteMWindow", queryString.ToString() );
 
-                    IRestResponse response = await GetRestResponseAsync( "deleteMWindow", queryString.ToString() );
-
-                    return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
-                }
-                else
-                {
-                    throw new Exception( "No Mainetance Window was found!" );
-                }
+                return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
             }
-            catch ( Exception e )
+            else
             {
-                return new MaintenanceWindowsResult
-                {
-                    Status = Status.fail,
-                    Error = new Error
-                    {
-                        Type = "Inner Exception",
-                        Message = e.Message
-                    }
-                };
+                return existingMaintenanceWindow;
             }
         }
 
@@ -966,42 +891,27 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<PublicStatusPageResult> GetPublicStatusPagesAsync( PublicStatusPageRequest request )
         {
-            try
+            StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+            if ( request.PublicStatusPages?.Count > 0 )
             {
-                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
-
-                if ( request.PublicStatusPages?.Count > 0 )
-                {
-                    queryString.Append( "&psps=" );
-                    queryString.Append( string.Join( "-", request.PublicStatusPages ) );
-                }
-
-                if ( request.Offset != 0 )
-                {
-                    queryString.Append( $"&offset={request.Offset}" );
-                }
-
-                if ( request.Limit != 50 )
-                {
-                    queryString.Append( $"&limit={request.Limit}" );
-                }
-
-                IRestResponse response = await GetRestResponseAsync( "getPSPs", queryString.ToString() );
-
-                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+                queryString.Append( "&psps=" );
+                queryString.Append( string.Join( "-", request.PublicStatusPages ) );
             }
-            catch ( Exception e )
+
+            if ( request.Offset != 0 )
             {
-                return new PublicStatusPageResult
-                {
-                    Status = Status.fail,
-                    Error = new Error
-                    {
-                        Type = "Inner Exception",
-                        Message = e.Message
-                    }
-                };
+                queryString.Append( $"&offset={request.Offset}" );
             }
+
+            if ( request.Limit != 50 )
+            {
+                queryString.Append( $"&limit={request.Limit}" );
+            }
+
+            IRestResponse response = await GetRestResponseAsync( "getPSPs", queryString.ToString() );
+
+            return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
         }
 
         /// <summary>
