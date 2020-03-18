@@ -14,6 +14,7 @@ namespace SharpenUp
     public class UptimeRobot
     {
         private readonly string _apiKey;
+        private readonly string _defaultExplanation = "There was an error in processing your request. Please see the message.";
 
         public UptimeRobot( string apiKey )
         {
@@ -268,7 +269,7 @@ namespace SharpenUp
                     Status = Status.fail,
                     Error = new Error
                     {
-                        Type = "Internal Exception",
+                        Explanation = "Internal Exception",
                         Message = e.Message
                     }
                 };
@@ -362,7 +363,7 @@ namespace SharpenUp
                     Status = Status.fail,
                     Error = new Error
                     {
-                        Type = "Inner Exception",
+                        Explanation = "Inner Exception",
                         Message = e.Message
                     }
                 };
@@ -399,7 +400,7 @@ namespace SharpenUp
                     Status = Status.fail,
                     Error = new Error
                     {
-                        Type = "Inner Exception",
+                        Explanation = "Inner Exception",
                         Message = e.Message
                     }
                 };
@@ -439,7 +440,7 @@ namespace SharpenUp
                     Status = Status.fail,
                     Error = new Error
                     {
-                        Type = "Inner Exception",
+                        Explanation = "Inner Exception",
                         Message = e.Message
                     }
                 };
@@ -479,7 +480,7 @@ namespace SharpenUp
                     Status = Status.fail,
                     Error = new Error
                     {
-                        Type = "Inner Exception",
+                        Explanation = "Inner Exception",
                         Message = e.Message
                     }
                 };
@@ -578,7 +579,7 @@ namespace SharpenUp
                     Status = Status.fail,
                     Error = new Error
                     {
-                        Type = "Inner Exception",
+                        Explanation = "Inner Exception",
                         Message = e.Message
                     }
                 };
@@ -623,7 +624,7 @@ namespace SharpenUp
                     Status = Status.fail,
                     Error = new Error
                     {
-                        Type = "Inner Exception",
+                        Explanation = "Inner Exception",
                         Message = e.Message
                     }
                 };
@@ -663,7 +664,7 @@ namespace SharpenUp
                     Status = Status.fail,
                     Error = new Error
                     {
-                        Type = "Inner Exception",
+                        Explanation = "Inner Exception",
                         Message = e.Message
                     }
                 };
@@ -734,52 +735,37 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<MaintenanceWindowsResult> CreateMaintenanceWindowAsync( string friendlyName, MaintenanceWindowType maintenanceWindowType, string value, TimeSpan startTime, int duration )
         {
-            try
+            if ( !CheckString( friendlyName ) )
             {
-                if ( !CheckString( friendlyName ) )
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+                queryString.Append( $"&type={(int)maintenanceWindowType}" );
+
+                if ( maintenanceWindowType == MaintenanceWindowType.Weekly || maintenanceWindowType == MaintenanceWindowType.Monthly )
                 {
-                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
-
-                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
-                    queryString.Append( $"&type={(int)maintenanceWindowType}" );
-
-                    if ( maintenanceWindowType == MaintenanceWindowType.Weekly || maintenanceWindowType == MaintenanceWindowType.Monthly )
+                    if ( !CheckString( value ) )
                     {
-                        if ( !CheckString( value ) )
-                        {
-                            queryString.Append( $"&value={HttpUtility.HtmlEncode( value )}" );
-                        }
-                        else
-                        {
-                            throw new Exception( "A value is required when the Window Type is Weekly or Monthly." );
-                        }
+                        queryString.Append( $"&value={HttpUtility.HtmlEncode( value )}" );
                     }
-
-                    queryString.Append( $"&duration={duration}" );
-
-                    string startTimeString = $"{startTime.Hours}:{startTime.Minutes}";
-                    queryString.Append( $"&start_time={HttpUtility.HtmlEncode( startTimeString )}" );
-
-                    IRestResponse response = await GetRestResponseAsync( "newMWindow", queryString.ToString() );
-
-                    return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
+                    else
+                    {
+                        return MaintenanceWindowsError( ErrorType.MaintenanceWindow_WindowTypeRequired );
+                    }
                 }
-                else
-                {
-                    throw new Exception( "A Friendly Name is Required" );
-                }
+
+                queryString.Append( $"&duration={duration}" );
+
+                string startTimeString = $"{startTime.Hours}:{startTime.Minutes}";
+                queryString.Append( $"&start_time={HttpUtility.HtmlEncode( startTimeString )}" );
+
+                IRestResponse response = await GetRestResponseAsync( "newMWindow", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<MaintenanceWindowsResult>( response.Content );
             }
-            catch ( Exception e )
+            else
             {
-                return new MaintenanceWindowsResult
-                {
-                    Status = Status.fail,
-                    Error = new Error
-                    {
-                        Type = "Inner Exception",
-                        Message = e.Message
-                    }
-                };
+                return MaintenanceWindowsError( ErrorType.NoFriendlyName );
             }
         }
 
@@ -935,56 +921,41 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<PublicStatusPageResult> CreatePublicStatusPageAsync( string friendlyName, List<int> monitors, string customDomain, string password, PublicStatusPageSort sort )
         {
-            try
+            if ( !string.IsNullOrWhiteSpace( friendlyName ) )
             {
-                if ( !string.IsNullOrWhiteSpace( friendlyName ) )
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+
+                queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+
+                if ( monitors?.Count > 0 )
                 {
-                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
-
-                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
-
-                    if ( monitors?.Count > 0 )
-                    {
-                        queryString.Append( "&monitors=" );
-                        queryString.Append( string.Join( "-", monitors ) );
-                    }
-                    else
-                    {
-                        queryString.Append( "&monitors=0" );
-                    }
-
-                    if ( !string.IsNullOrWhiteSpace( customDomain ) )
-                    {
-                        queryString.Append( $"&custom_domain={HttpUtility.HtmlEncode( customDomain )}" );
-                    }
-
-                    if ( !string.IsNullOrWhiteSpace( password ) )
-                    {
-                        queryString.Append( $"&password={HttpUtility.HtmlEncode( password )}" );
-                    }
-
-                    queryString.Append( $"&sort={(int)sort}" );
-
-                    IRestResponse response = await GetRestResponseAsync( "newPSP", queryString.ToString() );
-
-                    return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+                    queryString.Append( "&monitors=" );
+                    queryString.Append( string.Join( "-", monitors ) );
                 }
                 else
                 {
-                    throw new Exception( "A Friendly Name is Required" );
+                    queryString.Append( "&monitors=0" );
                 }
-            }
-            catch ( Exception e )
-            {
-                return new PublicStatusPageResult
+
+                if ( !string.IsNullOrWhiteSpace( customDomain ) )
                 {
-                    Status = Status.fail,
-                    Error = new Error
-                    {
-                        Type = "Inner Exception",
-                        Message = e.Message
-                    }
-                };
+                    queryString.Append( $"&custom_domain={HttpUtility.HtmlEncode( customDomain )}" );
+                }
+
+                if ( !string.IsNullOrWhiteSpace( password ) )
+                {
+                    queryString.Append( $"&password={HttpUtility.HtmlEncode( password )}" );
+                }
+
+                queryString.Append( $"&sort={(int)sort}" );
+
+                IRestResponse response = await GetRestResponseAsync( "newPSP", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+            }
+            else
+            {
+                return PublicStatusPageError( ErrorType.NoFriendlyName );
             }
         }
 
@@ -1000,63 +971,48 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<PublicStatusPageResult> UpdatePublicStatusPageAsync( int id, string friendlyName, List<int> monitors, string customDomain, string password, PublicStatusPageSort sort )
         {
-            try
+            PublicStatusPageResult existingPublicPage = await GetPublicStatusPagesAsync( id );
+
+            if ( existingPublicPage.PublicStatusPages?.Count > 0 )
             {
-                PublicStatusPageResult existingPublicPage = await GetPublicStatusPagesAsync( id );
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
-                if ( existingPublicPage.PublicStatusPages?.Count > 0 )
+                queryString.Append( $"&id={id}" );
+
+                if ( !existingPublicPage.PublicStatusPages[ 0 ].FriendlyName.Equals( friendlyName ) )
                 {
-                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+                    queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
+                }
 
-                    queryString.Append( $"&id={id}" );
-
-                    if ( !existingPublicPage.PublicStatusPages[ 0 ].FriendlyName.Equals( friendlyName ) )
-                    {
-                        queryString.Append( $"&friendly_name={HttpUtility.HtmlEncode( friendlyName )}" );
-                    }
-
-                    if ( monitors?.Count > 0 )
-                    {
-                        queryString.Append( "&monitors=" );
-                        queryString.Append( string.Join( "-", monitors ) );
-                    }
-                    else
-                    {
-                        queryString.Append( "&monitors=0" );
-                    }
-
-                    if ( !existingPublicPage.PublicStatusPages[ 0 ].CustomDomain.Equals( customDomain ) )
-                    {
-                        queryString.Append( $"&custom_domain={HttpUtility.HtmlEncode( customDomain )}" );
-                    }
-
-                    if ( !string.IsNullOrWhiteSpace( existingPublicPage.PublicStatusPages[ 0 ].Password ) && !existingPublicPage.PublicStatusPages[ 0 ].Password.Equals( password ) )
-                    {
-                        queryString.Append( $"&password={HttpUtility.HtmlEncode( password )}" );
-                    }
-
-                    queryString.Append( $"&sort={(int)sort}" );
-
-                    IRestResponse response = await GetRestResponseAsync( "editPSP", queryString.ToString() );
-
-                    return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+                if ( monitors?.Count > 0 )
+                {
+                    queryString.Append( "&monitors=" );
+                    queryString.Append( string.Join( "-", monitors ) );
                 }
                 else
                 {
-                    throw new Exception( "No Public Status Page was found!" );
+                    queryString.Append( "&monitors=0" );
                 }
-            }
-            catch ( Exception e )
-            {
-                return new PublicStatusPageResult
+
+                if ( !existingPublicPage.PublicStatusPages[ 0 ].CustomDomain.Equals( customDomain ) )
                 {
-                    Status = Status.fail,
-                    Error = new Error
-                    {
-                        Type = "Inner Exception",
-                        Message = e.Message
-                    }
-                };
+                    queryString.Append( $"&custom_domain={HttpUtility.HtmlEncode( customDomain )}" );
+                }
+
+                if ( !string.IsNullOrWhiteSpace( existingPublicPage.PublicStatusPages[ 0 ].Password ) && !existingPublicPage.PublicStatusPages[ 0 ].Password.Equals( password ) )
+                {
+                    queryString.Append( $"&password={HttpUtility.HtmlEncode( password )}" );
+                }
+
+                queryString.Append( $"&sort={(int)sort}" );
+
+                IRestResponse response = await GetRestResponseAsync( "editPSP", queryString.ToString() );
+
+                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
+            }
+            else
+            {
+                return PublicStatusPageError( ErrorType.PublicStatusPage_NoPageFound );
             }
         }
 
@@ -1067,36 +1023,21 @@ namespace SharpenUp
         /// <returns></returns>
         public async Task<PublicStatusPageResult> DeletePublicStatusPageAsync( int publicStatusPageId )
         {
-            try
+            PublicStatusPageResult existingPublicPage = await GetPublicStatusPagesAsync( publicStatusPageId );
+
+            if ( existingPublicPage.PublicStatusPages?.Count > 0 )
             {
-                PublicStatusPageResult existingPublicPage = await GetPublicStatusPagesAsync( publicStatusPageId );
+                StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
 
-                if ( existingPublicPage.PublicStatusPages?.Count > 0 )
-                {
-                    StringBuilder queryString = new StringBuilder( $"api_key={_apiKey}&format=json" );
+                queryString.Append( $"&id={publicStatusPageId}" );
 
-                    queryString.Append( $"&id={publicStatusPageId}" );
+                IRestResponse response = await GetRestResponseAsync( "deletePSP", queryString.ToString() );
 
-                    IRestResponse response = await GetRestResponseAsync( "deletePSP", queryString.ToString() );
-
-                    return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
-                }
-                else
-                {
-                    throw new Exception( "No Public Status Page was found!" );
-                }
+                return JsonConvert.DeserializeObject<PublicStatusPageResult>( response.Content );
             }
-            catch ( Exception e )
+            else
             {
-                return new PublicStatusPageResult
-                {
-                    Status = Status.fail,
-                    Error = new Error
-                    {
-                        Type = "Inner Exception",
-                        Message = e.Message
-                    }
-                };
+                return PublicStatusPageError( ErrorType.PublicStatusPage_NoPageFound );
             }
         }
 
@@ -1134,9 +1075,92 @@ namespace SharpenUp
             return span.TotalSeconds;
         }
 
+        /// <summary>
+        /// I got tired of using the same logic, especially since I didn't always know or get it right.
+        /// There is a difference between IsNullOrEmpty and IsNullOrWhiteSpace.
+        /// This makes it easier to change everything if I need to. 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private bool CheckString( string value )
         {
             return string.IsNullOrWhiteSpace( value );
+        }
+
+        /// <summary>
+        /// Maintenance Window Canned Errors 
+        /// </summary>
+        /// <param name="errorType"></param>
+        /// <returns></returns>
+        private MaintenanceWindowsResult MaintenanceWindowsError( ErrorType errorType )
+        {
+            if ( errorType == ErrorType.NoFriendlyName )
+            {
+                return new MaintenanceWindowsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Explanation = _defaultExplanation,
+                        Message = "No Friendly Name Was Provided",
+                        ErrorType = errorType
+                    }
+                };
+            }
+
+            if ( errorType == ErrorType.MaintenanceWindow_WindowTypeRequired )
+            {
+                return new MaintenanceWindowsResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Explanation = _defaultExplanation,
+                        Message = "A Value must be provided when using the Weekly or Monthly monitor type.",
+                        ErrorType = errorType
+                    }
+                };
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Public Status Page Canned Errors 
+        /// </summary>
+        /// <param name="errorType"></param>
+        /// <returns></returns>
+        private PublicStatusPageResult PublicStatusPageError( ErrorType errorType )
+        {
+            if ( errorType == ErrorType.NoFriendlyName )
+            {
+                return new PublicStatusPageResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Explanation = _defaultExplanation,
+                        Message = "No Friendly Name Was Provided",
+                        ErrorType = errorType
+                    }
+                };
+            }
+
+            if ( errorType == ErrorType.PublicStatusPage_NoPageFound )
+            {
+                return new PublicStatusPageResult
+                {
+                    Status = Status.fail,
+                    Error = new Error
+                    {
+                        Explanation = _defaultExplanation,
+                        Message = "No Public Status Page Was Found",
+                        ErrorType = errorType
+                    }
+                };
+            }
+
+            return null;
         }
 
         #endregion
