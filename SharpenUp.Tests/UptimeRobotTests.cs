@@ -70,6 +70,66 @@ namespace SharpenUp.Tests
 
         #region Monitors
 
+        [Fact]
+        public async Task GetMonitors()
+        {
+            MonitorsResult result = await _goodRobot.GetMonitorsAsync();
+
+            // Status
+            Assert.Equal( Status.ok, result.Status );
+
+            // Limit
+            Assert.NotNull( result.Pagination.Limit );
+
+            // Offset
+            Assert.NotNull( result.Pagination.Offset );
+
+            // Total
+            Assert.NotNull( result.Pagination.Total );
+
+            // Base Monitor
+            Assert.Null( result.BaseMonitor );
+
+            // Monitors
+            Monitor sampleMonitor = result.Monitors.FirstOrDefault();
+
+            Assert.NotNull( sampleMonitor.Id );
+            Assert.False( string.IsNullOrWhiteSpace( sampleMonitor.FriendlyName ) );
+            Assert.False( string.IsNullOrWhiteSpace( sampleMonitor.URL ) );
+            Assert.NotNull( sampleMonitor.MonitorType );
+            if ( sampleMonitor.MonitorType == MonitorType.Keyword )
+            {
+                Assert.False( string.IsNullOrWhiteSpace( sampleMonitor.KeywordValue ) );
+            }
+            Assert.True( string.IsNullOrWhiteSpace( sampleMonitor.HttpUsername ) );
+            Assert.True( string.IsNullOrWhiteSpace( sampleMonitor.HttpPassword ) );
+            Assert.NotNull( sampleMonitor.Interval );
+            Assert.NotNull( sampleMonitor.Status );
+            Assert.Null( sampleMonitor.AllTimeUptimeRatio );
+            Assert.Null( sampleMonitor.CustomUptimeRatios );
+            Assert.Null( sampleMonitor.CustomUptimeRanges );
+            Assert.Null( sampleMonitor.AverageResponseTime );
+            Assert.Null( sampleMonitor.CustomHttpHeaders );
+            Assert.Null( sampleMonitor.CustomHttpStatuses );
+            Assert.Null( sampleMonitor.HttpMethod );
+            Assert.Null( sampleMonitor.PostType );
+            Assert.True( string.IsNullOrWhiteSpace( sampleMonitor.PostValue ) );
+            Assert.Null( sampleMonitor.PostContentType );
+            Assert.Null( sampleMonitor.CustomUptimeRatio );
+            Assert.Null( sampleMonitor.CustomDowntimeDurations );
+            Assert.Null( sampleMonitor.Logs );
+            Assert.Null( sampleMonitor.ResponseTimes );
+            Assert.Null( sampleMonitor.AlertContacts );
+            Assert.Null( sampleMonitor.MaintenanceWindows );
+            Assert.Null( sampleMonitor.SSL );
+
+            // Timezone
+            Assert.Null( result.Timezone );
+
+            // Error
+            Assert.Null( result.Error );
+        }
+
         #endregion
 
         #region Alert Contacts

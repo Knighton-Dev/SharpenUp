@@ -11,7 +11,7 @@ namespace SharpenUp.Models
         /// The ID of the monitor (can be used for monitor-specific requests).
         /// </summary>
         [JsonProperty( PropertyName = "id" )]
-        public int Id { get; set; }
+        public int? Id { get; set; }
     }
 
     public class Monitor : BaseMonitor
@@ -32,7 +32,7 @@ namespace SharpenUp.Models
         /// The type of the monitor.
         /// </summary>
         [JsonProperty( PropertyName = "type" )]
-        public MonitorType MonitorType { get; set; }
+        public MonitorType? MonitorType { get; set; }
 
         // TODO: Come back and figure out how to parse this.
         /// <summary>
@@ -77,20 +77,19 @@ namespace SharpenUp.Models
         /// The interval for the monitoring check (300 seconds by default).
         /// </summary>
         [JsonProperty( PropertyName = "interval" )]
-        public int Interval { get; set; }
+        public int? Interval { get; set; }
 
         /// <summary>
         /// The status of the monitor. When used with the editMonitor method 0 (to pause) or 1 (to start) can be sent.
         /// </summary>
         [JsonProperty( PropertyName = "status" )]
-        public MonitorStatus Status { get; set; }
+        public MonitorStatus? Status { get; set; }
 
         /// <summary>
         /// The uptime ratio of the monitor calculated since the monitor is created.
         /// </summary>
         [JsonProperty( PropertyName = "all_time_uptime_ratio" )]
-
-        public double AllTimeUptimeRatio { get; set; }
+        public double? AllTimeUptimeRatio { get; set; }
 
         /// <summary>
         /// The durations of all time up-down-paused events in seconds.
@@ -155,7 +154,7 @@ namespace SharpenUp.Models
         /// The average value of the response times (requires response_times=1).
         /// </summary>
         [JsonProperty( PropertyName = "average_response_time" )]
-        public double AverageResponseTime { get; set; }
+        public double? AverageResponseTime { get; set; }
 
         /// <summary>
         /// Used for setting custom HTTP headers for the monitor.
@@ -173,13 +172,13 @@ namespace SharpenUp.Models
         /// The HTTP method to be used.
         /// </summary>
         [JsonProperty( PropertyName = "http_method" )]
-        public HttpMethod HttpMethod { get; set; }
+        public HttpMethod? HttpMethod { get; set; }
 
         /// <summary>
         /// The format of data to be sent with POST, PUT, PATCH, DELETE, OPTIONS HTTP methods.
         /// </summary>
         [JsonProperty( PropertyName = "post_type" )]
-        public PostType PostType { get; set; }
+        public PostType? PostType { get; set; }
 
         /// <summary>
         /// The data to be sent with POST, PUT, PATCH, DELETE, OPTIONS HTTP methods.
@@ -191,7 +190,7 @@ namespace SharpenUp.Models
         /// Sets the Content-Type for POST, PUT, PATCH, DELETE, OPTIONS HTTP methods.
         /// </summary>
         [JsonProperty( PropertyName = "post_content_type" )]
-        public PostContentType PostContentType { get; set; }
+        public PostContentType? PostContentType { get; set; }
 
         #region Undocumented Properties
 
