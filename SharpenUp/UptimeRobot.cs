@@ -151,14 +151,13 @@ namespace SharpenUp
                 {
                     queryString.Append( "&logs=1" );
 
-                    if ( request.LogsStartDate != DateTime.MinValue )
+                    if ( request.LogsStartDate.HasValue && request.LogsEndDate.HasValue )
                     {
-                        queryString.Append( $"&logs_start_date={ConvertDateTimeToSeconds( request.LogsStartDate )}" );
+                        queryString.Append( $"&logs_start_date={(int)ConvertDateTimeToSeconds( request.LogsStartDate.Value )}&logs_end_date={(int)ConvertDateTimeToSeconds( request.LogsEndDate.Value )}" );
                     }
-
-                    if ( request.LogsEndDate != DateTime.MaxValue )
+                    else
                     {
-                        queryString.Append( $"&logs_end_date={ConvertDateTimeToSeconds( request.LogsEndDate )}" );
+                        throw new Exception( "Both the Start and End date must be provided for Logs" );
                     }
 
                     if ( request.LogTypes?.Count > 0 )

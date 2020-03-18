@@ -120,9 +120,20 @@ namespace SharpenUp.Models
         /// <summary>
         /// The uptime ratio of the monitor for the given periods (if there is more than 1 period, then the values are seperated with "-").
         /// </summary>
-        [JsonProperty( PropertyName = "custom_uptime_ratios" )]
-        public List<double> CustomUptimeRatios { get; set; }
+        [JsonProperty( PropertyName = "custom_uptime_ratio" )]
+        private string CustomUptimeRatioString { get; set; }
 
+        public List<double> CustomUptimeRatio
+        {
+            get
+            {
+                if ( string.IsNullOrWhiteSpace( CustomUptimeRatioString ) )
+                {
+                    return null;
+                }
+                return CustomUptimeRatioString.Split( '-' ).Select( double.Parse ).ToList();
+            }
+        }
         /// <summary>
         /// The uptime ratio of the monitor for the given ranges (if there is more than 1 range, then the values are seperated with "-").
         /// </summary>
@@ -133,7 +144,7 @@ namespace SharpenUp.Models
         {
             get
             {
-                if ( string.IsNullOrWhiteSpace( CustomDowntimeDurationsString ) )
+                if ( string.IsNullOrWhiteSpace( CustomUptimeRangesString ) )
                 {
                     return null;
                 }
@@ -196,24 +207,6 @@ namespace SharpenUp.Models
 
         // These are all properties that are returned in the JSON, but aren't but aren't defined in the API documentation.
         // I'm really just guessing at these.
-
-        /// <summary>
-        /// A list of ratios that match to the values of the CustomUptimeRatios in the request.
-        /// </summary>
-        [JsonProperty( PropertyName = "custom_uptime_ratio" )]
-        private string CustomUptimeRatioString { get; set; }
-
-        public List<double> CustomUptimeRatio
-        {
-            get
-            {
-                if ( string.IsNullOrWhiteSpace( CustomUptimeRatioString ) )
-                {
-                    return null;
-                }
-                return CustomUptimeRatioString.Split( '-' ).Select( double.Parse ).ToList();
-            }
-        }
 
         /// <summary>
         /// A list of durations that match to the values of the CustomUptimeRatios in the request.

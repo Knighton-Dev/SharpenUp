@@ -106,7 +106,6 @@ namespace SharpenUp.Tests
             Assert.NotNull( sampleMonitor.Interval );
             Assert.NotNull( sampleMonitor.Status );
             Assert.Null( sampleMonitor.AllTimeUptimeRatio );
-            Assert.Null( sampleMonitor.CustomUptimeRatios );
             Assert.Null( sampleMonitor.CustomUptimeRanges );
             Assert.Null( sampleMonitor.AverageResponseTime );
             Assert.Null( sampleMonitor.CustomHttpHeaders );
@@ -172,7 +171,6 @@ namespace SharpenUp.Tests
             Assert.NotNull( sampleMonitor.Interval );
             Assert.NotNull( sampleMonitor.Status );
             Assert.Null( sampleMonitor.AllTimeUptimeRatio );
-            Assert.Null( sampleMonitor.CustomUptimeRatios );
             Assert.Null( sampleMonitor.CustomUptimeRanges );
             Assert.Null( sampleMonitor.AverageResponseTime );
             Assert.Null( sampleMonitor.CustomHttpHeaders );
@@ -194,6 +192,141 @@ namespace SharpenUp.Tests
 
             // Error
             Assert.Null( result.Error );
+        }
+
+        [Fact]
+        public async Task GetMonitors_WithRequest()
+        {
+            MonitorsResult allMonitors = await _goodRobot.GetMonitorsAsync();
+
+            Assert.NotNull( allMonitors.Monitors );
+            DateTime currentDate = DateTime.UtcNow;
+
+            List<int> monitorIds = allMonitors.Monitors.Select( x => x.Id.Value ).ToList();
+
+            MonitorsRequest request = new MonitorsRequest
+            {
+                Monitors = monitorIds,
+                MonitorTypes = new List<MonitorType> { MonitorType.Keyword, MonitorType.HTTP },
+                Statuses = new List<MonitorStatus> { MonitorStatus.Up, MonitorStatus.Down },
+                CustomUptimeRatios = new List<int> { 7, 30, 45 },
+                CustomUptimeRanges = new List<Tuple<DateTime, DateTime>> { new Tuple<DateTime, DateTime>( currentDate.AddDays( -7 ), currentDate.AddDays( -3 ) ), new Tuple<DateTime, DateTime>( currentDate.AddDays( -10 ), currentDate.AddDays( -8 ) ) },
+                AllTimeUptimeRatio = true,
+                AllTimeUptimeDurations = true,
+                IncludeLogs = true,
+                LogsStartDate = currentDate.AddDays( -150 ),
+                LogsEndDate = currentDate,
+                LogTypes = new List<LogType> { LogType.Down, LogType.Paused, LogType.Up },
+                LogsLimit = 5,
+                ResponseTimes = true,
+                ResponseTimesLimit = 5,
+                ResponseTimesAverage = 30,
+                // Missing Response Times Start and End Date
+                AlertContacts = true,
+                MaintenanceWindows = true,
+                IncludeSSL = true,
+                Timezone = true,
+                Offset = 1,
+                Limit = 3
+            };
+
+            MonitorsResult result = await _goodRobot.GetMonitorsAsync( request );
+
+            // Status
+            Assert.Equal( Status.ok, result.Status );
+
+            // Limit
+            Assert.Equal( 3, result.Pagination.Limit );
+
+            // Offset
+            Assert.Equal( 1, result.Pagination.Offset );
+
+            // Total
+            Assert.NotNull( result.Pagination.Total );
+
+            // Base Monitor
+            Assert.Null( result.BaseMonitor );
+
+            // Monitors
+            Monitor sampleMonitor = result.Monitors.FirstOrDefault();
+
+            Assert.NotNull( sampleMonitor.Id );
+            Assert.False( string.IsNullOrWhiteSpace( sampleMonitor.FriendlyName ) );
+            Assert.False( string.IsNullOrWhiteSpace( sampleMonitor.URL ) );
+            Assert.NotNull( sampleMonitor.MonitorType );
+            if ( sampleMonitor.MonitorType == MonitorType.Keyword )
+            {
+                Assert.False( string.IsNullOrWhiteSpace( sampleMonitor.KeywordValue ) );
+            }
+            Assert.True( string.IsNullOrWhiteSpace( sampleMonitor.HttpUsername ) );
+            Assert.True( string.IsNullOrWhiteSpace( sampleMonitor.HttpPassword ) );
+            Assert.NotNull( sampleMonitor.Interval );
+            Assert.NotNull( sampleMonitor.Status );
+            Assert.NotNull( sampleMonitor.AllTimeUptimeRatio );
+            Assert.NotNull( sampleMonitor.CustomUptimeRanges );
+            Assert.NotNull( sampleMonitor.AverageResponseTime );
+            Assert.Null( sampleMonitor.CustomHttpHeaders );
+            Assert.Null( sampleMonitor.CustomHttpStatuses );
+            Assert.Null( sampleMonitor.HttpMethod );
+            Assert.Null( sampleMonitor.PostType );
+            Assert.True( string.IsNullOrWhiteSpace( sampleMonitor.PostValue ) );
+            Assert.Null( sampleMonitor.PostContentType );
+            Assert.NotNull( sampleMonitor.CustomUptimeRatio );
+            Assert.NotNull( sampleMonitor.CustomDowntimeDurations );
+            Assert.NotNull( sampleMonitor.Logs );
+            Assert.True( sampleMonitor.Logs.Count <= 5 );
+            Assert.NotNull( sampleMonitor.ResponseTimes );
+            Assert.True( sampleMonitor.ResponseTimes.Count <= 5 );
+            Assert.NotNull( sampleMonitor.AlertContacts );
+            Assert.NotNull( sampleMonitor.AlertContacts[ 0 ].Threshold );
+            Assert.NotNull( sampleMonitor.AlertContacts[ 0 ].Recurrence );
+            Assert.NotNull( sampleMonitor.MaintenanceWindows );
+            Assert.NotNull( sampleMonitor.SSL );
+
+            // Timezone
+            Assert.NotNull( result.Timezone );
+
+            // Error
+            Assert.Null( result.Error );
+        }
+
+        [Fact]
+        public async Task GetMonitors_WithRequest_BadLogDates()
+        {
+            MonitorsResult allMonitors = await _goodRobot.GetMonitorsAsync();
+
+            Assert.NotNull( allMonitors.Monitors );
+            DateTime currentDate = DateTime.UtcNow;
+
+            List<int> monitorIds = allMonitors.Monitors.Select( x => x.Id.Value ).ToList();
+
+            MonitorsRequest request = new MonitorsRequest
+            {
+                IncludeLogs = true,
+                LogsStartDate = currentDate.AddDays( -150 )
+            };
+
+            MonitorsResult result = await _goodRobot.GetMonitorsAsync( request );
+
+            // Status
+            Assert.Equal( Status.fail, result.Status );
+
+            // Pagination
+            Assert.Null( result.Pagination );
+
+            // Base Monitor
+            Assert.Null( result.BaseMonitor );
+
+            // Monitors
+            Assert.Null( result.Monitors );
+
+            // Timezone
+            Assert.Null( result.Timezone );
+
+            // Error
+            Assert.NotNull( result.Error );
+            Assert.Equal( "Internal Exception", result.Error.Type );
+            Assert.Equal( "Both the Start and End date must be provided for Logs", result.Error.Message );
         }
 
         #endregion
