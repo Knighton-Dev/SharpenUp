@@ -965,6 +965,124 @@ namespace SharpenUp.Tests
             Assert.Equal( "No Public Status Page was found!", result.Error.Message );
         }
 
+        [Fact]
+        public async Task PublicStatusPages_CRUDOperations()
+        {
+            PublicStatusPageResult publicStatusPage = await _goodRobot.CreatePublicStatusPageAsync( "Fake Page", null, "fekr.org", "pas$w0Rd", PublicStatusPageSort.FriendlyNameAscending );
+
+            // Status
+            Assert.Equal( Status.ok, publicStatusPage.Status );
+
+            // Pagination
+            Assert.Null( publicStatusPage.Pagination );
+
+            // Base Public Status Page
+            Assert.NotNull( publicStatusPage.BasePublicStatusPage );
+
+            // Public Status Pages
+            Assert.Null( publicStatusPage.PublicStatusPages );
+
+            // Error
+            Assert.Null( publicStatusPage.Error );
+
+            // Pull back full result
+            PublicStatusPageResult result = await _goodRobot.GetPublicStatusPagesAsync( publicStatusPage.BasePublicStatusPage.Id.Value );
+
+            // Status
+            Assert.Equal( Status.ok, result.Status );
+
+            // Limit
+            Assert.NotNull( result.Pagination.Limit );
+
+            // Offset
+            Assert.NotNull( result.Pagination.Offset );
+
+            // Total
+            Assert.NotNull( result.Pagination.Total );
+
+            // Base Public Status Page
+            Assert.Null( result.BasePublicStatusPage );
+
+            // Public Status Pages
+            Assert.NotNull( result.PublicStatusPages );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].Id );
+            Assert.Equal( "Fake Page", result.PublicStatusPages[ 0 ].FriendlyName );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].Monitors );
+            Assert.True( !string.IsNullOrWhiteSpace( result.PublicStatusPages[ 0 ].StandardDomain ) );
+            Assert.Equal( "https://fekr.org", result.PublicStatusPages[ 0 ].CustomDomain );
+            Assert.Null( result.PublicStatusPages[ 0 ].Password );
+            Assert.Equal( PublicStatusPageSort.FriendlyNameAscending, result.PublicStatusPages[ 0 ].PublicStatusPageSort );
+            Assert.NotNull( result.PublicStatusPages[ 0 ].PublicStatusPageStatus );
+
+            // Error
+            Assert.Null( result.Error );
+
+            // Update the Public Status Page
+            PublicStatusPageResult updatedPublicStatusPage = await _goodRobot.UpdatePublicStatusPageAsync( publicStatusPage.BasePublicStatusPage.Id.Value, "Still Fake", null, "rejc.net", "", PublicStatusPageSort.FriendlyNameDescending );
+
+            // Status
+            Assert.Equal( Status.ok, updatedPublicStatusPage.Status );
+
+            // Pagination
+            Assert.Null( updatedPublicStatusPage.Pagination );
+
+            // Base Public Status Page
+            Assert.NotNull( updatedPublicStatusPage.BasePublicStatusPage );
+
+            // Public Status Pages
+            Assert.Null( updatedPublicStatusPage.PublicStatusPages );
+
+            // Error
+            Assert.Null( updatedPublicStatusPage.Error );
+
+            // Pull back the updated result.
+            PublicStatusPageResult updatedResult = await _goodRobot.GetPublicStatusPagesAsync( publicStatusPage.BasePublicStatusPage.Id.Value );
+
+            // Status
+            Assert.Equal( Status.ok, updatedResult.Status );
+
+            // Limit
+            Assert.NotNull( updatedResult.Pagination.Limit );
+
+            // Offset
+            Assert.NotNull( updatedResult.Pagination.Offset );
+
+            // Total
+            Assert.NotNull( updatedResult.Pagination.Total );
+
+            // Base Public Status Page
+            Assert.Null( updatedResult.BasePublicStatusPage );
+
+            // Public Status Pages
+            Assert.NotNull( updatedResult.PublicStatusPages );
+            Assert.NotNull( updatedResult.PublicStatusPages[ 0 ].Id );
+            Assert.Equal( "Still Fake", updatedResult.PublicStatusPages[ 0 ].FriendlyName );
+            Assert.NotNull( updatedResult.PublicStatusPages[ 0 ].Monitors );
+            Assert.True( !string.IsNullOrWhiteSpace( updatedResult.PublicStatusPages[ 0 ].StandardDomain ) );
+            Assert.Equal( "https://rejc.net", updatedResult.PublicStatusPages[ 0 ].CustomDomain );
+            Assert.Null( updatedResult.PublicStatusPages[ 0 ].Password );
+            Assert.Equal( PublicStatusPageSort.FriendlyNameDescending, updatedResult.PublicStatusPages[ 0 ].PublicStatusPageSort );
+            Assert.NotNull( updatedResult.PublicStatusPages[ 0 ].PublicStatusPageStatus );
+
+            // Delete the Public Status Page
+            PublicStatusPageResult deletedPublicStatusPage = await _goodRobot.DeletePublicStatusPageAsync( publicStatusPage.BasePublicStatusPage.Id.Value );
+
+            // Status
+            Assert.Equal( Status.ok, deletedPublicStatusPage.Status );
+
+            // Pagination
+            Assert.Null( deletedPublicStatusPage.Pagination );
+
+            // Base Public Status Page
+            Assert.Equal( publicStatusPage.BasePublicStatusPage.Id.Value, deletedPublicStatusPage.BasePublicStatusPage.Id.Value );
+
+            // Public Status Pages
+            Assert.Null( deletedPublicStatusPage.PublicStatusPages );
+
+            // Error
+            Assert.Null( deletedPublicStatusPage.Error );
+        }
+
         #endregion
     }
 }
