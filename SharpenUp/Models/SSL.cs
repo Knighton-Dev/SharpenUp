@@ -12,21 +12,25 @@ namespace SharpenUp.Models
         public string Product { get; set; }
 
         [JsonProperty( PropertyName = "expires" )]
-        private int ExpiresInt { get; set; }
+        private int? ExpiresInt { get; set; }
 
-        public DateTime Expires
+        public DateTime? Expires
         {
             get
             {
-                DateTimeOffset offset = DateTimeOffset.FromUnixTimeSeconds( ExpiresInt );
-                return offset.UtcDateTime;
+                if ( ExpiresInt.HasValue )
+                {
+                    DateTimeOffset offset = DateTimeOffset.FromUnixTimeSeconds( ExpiresInt.Value );
+                    return offset.UtcDateTime;
+                }
+                return null;
             }
         }
 
         [JsonProperty( PropertyName = "ignore_errors" )]
-        public bool IgnoreErrors { get; set; }
+        public bool? IgnoreErrors { get; set; }
 
         [JsonProperty( PropertyName = "disable_notifications" )]
-        public bool DisableNotifications { get; set; }
+        public bool? DisableNotifications { get; set; }
     }
 }

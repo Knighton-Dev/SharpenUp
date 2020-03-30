@@ -13,6 +13,7 @@ namespace SharpenUp.Tests
     {
         private readonly UptimeRobot _goodRobot;
         private readonly UptimeRobot _badRobot;
+        private readonly string _defaultExplanation = "There was an error in processing your request. Please see the message.";
 
         public UptimeRobotTests()
         {
@@ -54,7 +55,7 @@ namespace SharpenUp.Tests
             Assert.Equal( Status.fail, result.Status );
 
             // Error
-            Assert.Equal( "invalid_parameter", result.Error.Type );
+            Assert.Equal( "invalid_parameter", result.Error.Explanation );
             Assert.Equal( "api_key", result.Error.ParameterName );
             Assert.Equal( "badKey", result.Error.PassedValue );
             Assert.Equal( "api_key is invalid.", result.Error.Message );
@@ -227,7 +228,8 @@ namespace SharpenUp.Tests
                 IncludeSSL = true,
                 Timezone = true,
                 Offset = 1,
-                Limit = 3
+                Limit = 3,
+                Search = "Home"
             };
 
             MonitorsResult result = await _goodRobot.GetMonitorsAsync( request );
@@ -273,15 +275,30 @@ namespace SharpenUp.Tests
             Assert.Null( sampleMonitor.PostContentType );
             Assert.NotNull( sampleMonitor.CustomUptimeRatio );
             Assert.NotNull( sampleMonitor.CustomDowntimeDurations );
+
+            // Logs
             Assert.NotNull( sampleMonitor.Logs );
             Assert.True( sampleMonitor.Logs.Count <= 5 );
+            Assert.NotNull( sampleMonitor.Logs[ 0 ].LogType );
+            Assert.NotNull( sampleMonitor.Logs[ 0 ].DateTime );
+            Assert.NotNull( sampleMonitor.Logs[ 0 ].Duration );
+            Assert.NotNull( sampleMonitor.Logs[ 0 ].Reason.Code );
+            Assert.False( string.IsNullOrWhiteSpace( sampleMonitor.Logs[ 0 ].Reason.Detail ) );
+
             Assert.NotNull( sampleMonitor.ResponseTimes );
             Assert.True( sampleMonitor.ResponseTimes.Count <= 5 );
             Assert.NotNull( sampleMonitor.AlertContacts );
             Assert.NotNull( sampleMonitor.AlertContacts[ 0 ].Threshold );
             Assert.NotNull( sampleMonitor.AlertContacts[ 0 ].Recurrence );
             Assert.NotNull( sampleMonitor.MaintenanceWindows );
+
+            // SSL
             Assert.NotNull( sampleMonitor.SSL );
+            Assert.False( string.IsNullOrWhiteSpace( sampleMonitor.SSL.Brand ) );
+            Assert.False( string.IsNullOrWhiteSpace( sampleMonitor.SSL.Product ) );
+            Assert.NotNull( sampleMonitor.SSL.Expires );
+            Assert.NotNull( sampleMonitor.SSL.IgnoreErrors );
+            Assert.NotNull( sampleMonitor.SSL.DisableNotifications );
 
             // Timezone
             Assert.NotNull( result.Timezone );
@@ -325,7 +342,7 @@ namespace SharpenUp.Tests
 
             // Error
             Assert.NotNull( result.Error );
-            Assert.Equal( "Internal Exception", result.Error.Type );
+            Assert.Equal( "Internal Exception", result.Error.Explanation );
             Assert.Equal( "Both the Start and End date must be provided for Logs", result.Error.Message );
         }
 
@@ -488,7 +505,7 @@ namespace SharpenUp.Tests
 
             // Error
             Assert.NotNull( result.Error );
-            Assert.Equal( "Inner Exception", result.Error.Type );
+            Assert.Equal( "Inner Exception", result.Error.Explanation );
             Assert.Equal( "Incorrent Parameters", result.Error.Message );
 
             // Pagination
@@ -520,7 +537,7 @@ namespace SharpenUp.Tests
 
             // Error
             Assert.NotNull( result.Error );
-            Assert.Equal( "Inner Exception", result.Error.Type );
+            Assert.Equal( "Inner Exception", result.Error.Explanation );
             Assert.Equal( "Contact does not exist.", result.Error.Message );
 
             // Pagination
@@ -552,7 +569,7 @@ namespace SharpenUp.Tests
 
             // Error
             Assert.NotNull( result.Error );
-            Assert.Equal( "Inner Exception", result.Error.Type );
+            Assert.Equal( "Inner Exception", result.Error.Explanation );
             Assert.Equal( "No Alert Contact Found", result.Error.Message );
 
             // Pagination
@@ -837,8 +854,9 @@ namespace SharpenUp.Tests
 
             // Error
             Assert.NotNull( result.Error );
-            Assert.Equal( "Inner Exception", result.Error.Type );
-            Assert.Equal( "A Friendly Name is Required", result.Error.Message );
+            Assert.Equal( _defaultExplanation, result.Error.Explanation );
+            Assert.Equal( "No Friendly Name Was Provided", result.Error.Message );
+            Assert.Equal( ErrorType.NoFriendlyName, result.Error.ErrorType );
         }
 
         [Fact]
@@ -860,8 +878,9 @@ namespace SharpenUp.Tests
 
             // Error
             Assert.NotNull( result.Error );
-            Assert.Equal( "Inner Exception", result.Error.Type );
-            Assert.Equal( "A value is required when the Window Type is Weekly or Monthly.", result.Error.Message );
+            Assert.Equal( _defaultExplanation, result.Error.Explanation );
+            Assert.Equal( "A Value must be provided when using the Weekly or Monthly monitor type.", result.Error.Message );
+            Assert.Equal( ErrorType.MaintenanceWindow_WindowTypeRequiresValue, result.Error.ErrorType );
         }
 
         [Fact]
@@ -883,7 +902,7 @@ namespace SharpenUp.Tests
 
             // Error
             Assert.NotNull( result.Error );
-            Assert.Equal( "not_found", result.Error.Type );
+            Assert.Equal( "not_found", result.Error.Explanation );
             Assert.Equal( "Maintenance Window not found.", result.Error.Message );
         }
 
@@ -906,7 +925,7 @@ namespace SharpenUp.Tests
 
             // Error
             Assert.NotNull( result.Error );
-            Assert.Equal( "not_found", result.Error.Type );
+            Assert.Equal( "not_found", result.Error.Explanation );
             Assert.Equal( "Maintenance Window not found.", result.Error.Message );
         }
 
@@ -1174,8 +1193,9 @@ namespace SharpenUp.Tests
 
             // Error
             Assert.NotNull( result.Error );
-            Assert.Equal( "Inner Exception", result.Error.Type );
-            Assert.Equal( "A Friendly Name is Required", result.Error.Message );
+            Assert.Equal( _defaultExplanation, result.Error.Explanation );
+            Assert.Equal( "No Friendly Name Was Provided", result.Error.Message );
+            Assert.Equal( ErrorType.NoFriendlyName, result.Error.ErrorType ); ;
         }
 
         [Fact]
@@ -1197,8 +1217,9 @@ namespace SharpenUp.Tests
 
             // Error
             Assert.NotNull( result.Error );
-            Assert.Equal( "Inner Exception", result.Error.Type );
-            Assert.Equal( "No Public Status Page was found!", result.Error.Message );
+            Assert.Equal( _defaultExplanation, result.Error.Explanation );
+            Assert.Equal( "No Public Status Page Was Found", result.Error.Message );
+            Assert.Equal( ErrorType.PublicStatusPage_NoPageFound, result.Error.ErrorType );
         }
 
         [Fact]
@@ -1220,8 +1241,9 @@ namespace SharpenUp.Tests
 
             // Error
             Assert.NotNull( result.Error );
-            Assert.Equal( "Inner Exception", result.Error.Type );
-            Assert.Equal( "No Public Status Page was found!", result.Error.Message );
+            Assert.Equal( _defaultExplanation, result.Error.Explanation );
+            Assert.Equal( "No Public Status Page Was Found", result.Error.Message );
+            Assert.Equal( ErrorType.PublicStatusPage_NoPageFound, result.Error.ErrorType );
         }
 
         [Fact]

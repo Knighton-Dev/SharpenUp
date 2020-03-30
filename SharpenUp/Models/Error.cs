@@ -5,7 +5,9 @@ namespace SharpenUp.Models
     public class Error
     {
         [JsonProperty( PropertyName = "type" )]
-        public string Type { get; set; }
+        public string Explanation { get; set; }
+
+        public ErrorType? ErrorType { get; set; }
 
         [JsonProperty( PropertyName = "parameter_name" )]
         public string ParameterName { get; set; }
@@ -15,5 +17,13 @@ namespace SharpenUp.Models
 
         [JsonProperty( PropertyName = "message" )]
         public string Message { get; set; }
+    }
+
+    public enum ErrorType
+    {
+        System,
+        NoFriendlyName,
+        MaintenanceWindow_WindowTypeRequiresValue,
+        PublicStatusPage_NoPageFound
     }
 }
