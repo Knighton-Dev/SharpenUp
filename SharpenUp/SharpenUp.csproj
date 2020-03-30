@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackOnBuild>true</PackOnBuild>
-    <PackageVersion>1.4.5</PackageVersion>
+    <PackageVersion>1.5.0</PackageVersion>
     <Authors>Ian Knighton</Authors>
     <Copyright>Knighton.dev</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -12,7 +12,8 @@
     <Summary>A library for working with the Uptime Robot API</Summary>
     <Title>SharpenUp</Title>
     <Description>This is a library for working with the Uptime Robot API</Description>
-    <PackageReleaseNotes>- More minor changes as I work through testing.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added some tests for the Monitors functionality. 
+- Removed the Create and Update functionality. I realized that there was too much involved to do this right, so I pulled it for the time being. </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
