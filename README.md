@@ -11,6 +11,8 @@
 
 This is a library for working with the [Uptime Robot API](https://uptimerobot.com/api). It allows you to easily integrate the metrics and tooling provided by Uptime Robot into your own applications.
 
+*Note: This includes all endpoints **EXCEPT** the endpoints required to create or edit a Monitor. There were too many moving parts involved in that process to feel good about it. If you need to create a monitor, I recommend doing it through the Uptime Robot webpage.*
+
 This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Usage
