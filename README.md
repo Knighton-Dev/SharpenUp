@@ -1,3 +1,5 @@
+**Note: This is no longer and hasn't been under any active development for a while. The repo is archived in case anyone wants to come pick up the pieces.**
+
 ![CircleCI](https://img.shields.io/circleci/build/github/Knighton-Dev/SharpenUp?label=Circle%20CI&style=for-the-badge&logo=CircleCI)
 [![Coveralls](https://img.shields.io/coveralls/github/IanKnighton/SharpenUp?style=for-the-badge)](https://coveralls.io/github/IanKnighton/SharpenUp)
 [![NuGet](https://img.shields.io/nuget/v/SharpenUp?color=pink&logo=nuget&style=for-the-badge)](https://www.nuget.org/packages/KnightonDev.SharpenUp/)
